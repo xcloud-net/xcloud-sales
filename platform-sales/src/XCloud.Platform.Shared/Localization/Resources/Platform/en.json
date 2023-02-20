@@ -1,18 +1,18 @@
 {
   "culture": "en",
   "texts": {
-    "member-ship": "会员体系",
-    "manage-admin": "系统管理员",
-    "add-admin": "添加管理员",
-    "delete-admin": "删除管理员",
-    "manage-user": "用户管理",
-    "view-user": "查看用户",
-    "add-user": "添加用户",
-    "delete-user": "删除用户",
-    "manage-role": "角色管理",
-    "role-edit": "修改角色",
-    "manage-permission": "权限功能",
-    "manage-dept": "部门管理",
-    "reset-pwd": "重置密码"
+    "member-ship": "member ship",
+    "manage-admin": "manage admin",
+    "add-admin": "add admin",
+    "delete-admin": "delete admin",
+    "manage-user": "manage user",
+    "view-user": "view user",
+    "add-user": "add user",
+    "delete-user": "delete user",
+    "manage-role": "manage role",
+    "role-edit": "role edit",
+    "manage-permission": "manage permission",
+    "manage-dept": "manage dept",
+    "reset-pwd": "reset pwd"
   }
 }

@@ -81,6 +81,9 @@ public class SalesMallApiModule : AbpModule
     {
         var pipeline = context.CreateMvcPipelineBuilder();
 
+        //multiple language
+        pipeline.App.UseAbpRequestLocalization();
+
         pipeline.App.UseMiddleware<StoreAuthMiddleware>();
     }
 

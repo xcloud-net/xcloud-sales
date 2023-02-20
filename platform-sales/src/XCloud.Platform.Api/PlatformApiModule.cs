@@ -43,6 +43,9 @@ public class PlatformApiModule : AbpModule
     {
         var pipeline = context.CreateMvcPipelineBuilder();
 
+        //multiple language
+        pipeline.App.UseAbpRequestLocalization();
+        
         if (pipeline.Configuration.IntegrateIdentityServer())
         {
             pipeline.SetIdentityPublicOrigin();
