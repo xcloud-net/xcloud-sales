@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<ItemGroup>
+		<!--
+		ui:
+		<PackageReference Include="AspNetCore.HealthChecks.UI" Version="6.0.4" />
+		response format:
+		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.4" />
+		stats storage:
+		<PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="6.0.4" />
+		-->
+		
+		<PackageReference Include="Steeltoe.Extensions.Configuration.PlaceholderCore" Version="3.1.2" />
+		
+		<PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(abp_version)" />
+		<PackageReference Include="Volo.Abp.Swashbuckle" Version="$(abp_version)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\XCloud.Logging\XCloud.Logging.csproj" />
+	</ItemGroup>
+
+</Project>

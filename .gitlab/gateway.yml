@@ -1,0 +1,20 @@
+image: docker:latest
+
+services:
+  - docker:dind
+ 
+before_script:
+  - echo -n $DOCKER_HUB_PASSWORD | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+  - echo "Docker login successful"
+
+build-and-push-api-gateway:
+  stage: build
+  when: manual
+  variables:
+    image_name: xsales/all:api-gateway
+  script:
+    #build and push main tag
+    - docker build -t $image_name -f ./platform-cloud/api-gateway/Dockerfile ./platform-cloud
+    - docker push $image_name
+    #clean work
+    - docker rmi $image_name

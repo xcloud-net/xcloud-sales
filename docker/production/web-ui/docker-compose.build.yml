@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  web-ui:
+    image: xsales/all:web-ui-v1
+    build:
+      context: .
+      dockerfile: Dockerfile

@@ -1,0 +1,14 @@
+{
+    "Name": "iphone 8p 黑色 128gb",
+    "SpecCombinationJson": [
+        {
+            "SpecId": "颜色",
+            "SpecValueId": "黑色"
+        },
+        {
+            "SpecId": "内存",
+            "SpecValueId": "128gb"
+        }
+    ],
+    "Comment": "以上通过多个规格组合成不可分割的sku，是一个和库存，价格实际绑定的商品单元"
+}

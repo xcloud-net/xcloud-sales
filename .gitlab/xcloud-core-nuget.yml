@@ -1,0 +1,22 @@
+#dotnet nuget push [<ROOT>] [-d|--disable-buffering] [--force-english-output]
+#    [--interactive] [-k|--api-key <API_KEY>] [-n|--no-symbols]
+#    [--no-service-endpoint] [-s|--source <SOURCE>] [--skip-duplicate]
+#    [-sk|--symbol-api-key <API_KEY>] [-ss|--symbol-source <SOURCE>]
+#    [-t|--timeout <TIMEOUT>]
+
+build-and-push-xcloud-core-nuget:
+  image: mcr.microsoft.com/dotnet/sdk:6.0
+  stage: build
+  when: manual
+  before_script:
+    - echo 'before_script'
+  script:
+    - dotnet pack ./platform-sales/src/XCloud.Core/XCloud.Core.csproj -c Release
+    #- dotnet nuget add source "${CI_API_V4_URL}/${CI_PROJECT_ID}/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
+    - >
+      dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" 
+      --name gitlab 
+      --username gitlab-ci-token 
+      --password $CI_JOB_TOKEN 
+      --store-password-in-clear-text
+    - dotnet nuget push "./platform-sales/src/XCloud.Core/bin/Release/*.nupkg" --source gitlab

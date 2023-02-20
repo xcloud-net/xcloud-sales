@@ -1,0 +1,8 @@
+#编译结果copy到runtime容器运行
+FROM bitnami/aspnet-core:6.0
+#FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+COPY ./src/XCloud.Sales/XCloud.Sales.Mall.Api/bin/Release/net6.0/publish /app
+WORKDIR /app
+
+ENTRYPOINT ["dotnet","XCloud.Sales.Mall.Api.dll"]

@@ -1,0 +1,33 @@
+﻿{
+  "GlobalConfiguration": {
+    "DownstreamScheme": "http",
+    "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+    "ServiceDiscoveryProvider": {
+      "Type": "Nacos"
+    }
+  },
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/api/platform/{url}",
+      "DownstreamPathTemplate": "/api/platform/{url}",
+      "ServiceName": "platform-api",
+      "UseServiceDiscovery": true
+    },
+    {
+      "UpstreamPathTemplate": "/api/admin/{url}",
+      "DownstreamPathTemplate": "/api/admin/{url}",
+      "ServiceName": "admin-api",
+      "UseServiceDiscovery": true
+    },
+    {
+      "UpstreamPathTemplate": "/api/metro-ad/{url}",
+      "DownstreamPathTemplate": "/api/metro-ad/{url}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "metro-ad-api",
+          "Port": 5003
+        }
+      ]
+    }
+  ]
+}

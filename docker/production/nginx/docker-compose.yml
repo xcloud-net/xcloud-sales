@@ -1,0 +1,30 @@
+version: "3"
+
+#https://hub.docker.com/_/nginx
+#https://hub.docker.com/r/bitnami/nginx
+
+services:
+  nginx-store:
+    image: nginx:1.18
+    container_name: nginx-store
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+      - 8888:8888
+    volumes:
+      - ./cert/:/nginx-cert/
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      #logs
+      - /var/log/nginx/:/var/log/nginx/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - xx
+networks:
+  xx:
+    external:
+      name: xx

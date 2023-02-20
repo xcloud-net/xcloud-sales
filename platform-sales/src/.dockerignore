@@ -1,0 +1,39 @@
+# docker ignore file should be put in the root folder of the docker build context
+# in this case,the ignore file will be in ./src
+
+# more information
+# https://stackoverflow.com/questions/53945934/docker-compose-and-dockerignore
+
+.git
+.git/*
+.vscode
+.vscode/*
+.vs
+.vs/*
+.logs
+.logs/*
+.github
+.github/*
+src/.vs
+src/.vs/*
+src/TestResults
+src/TestResults/*
+src/*/bin
+src/*/bin/*
+src/*/obj
+src/*/obj/*
+bin
+obj
+*.dll
+*.pdb
+*.assets.json
+*.dgspec.json
+*.targets
+*.csproj.user
+*.cache
+*.exe
+*/node_modules/*
+src/*/*/bin
+src/*/*/bin/*
+src/*/*/obj
+src/*/*/obj/*

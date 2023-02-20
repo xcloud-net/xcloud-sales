@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <!--
+      不支持.net framework了
+      <TargetFrameworks>netcoreapp3.1;net461;</TargetFrameworks>
+    -->
+    <LangVersion>10</LangVersion>
+    <NoWarn>1701;1702;CS1591</NoWarn> 
+  </PropertyGroup>
+
+  <!--nuget package-->
+  <PropertyGroup>
+    <Version>0.1.2</Version>
+    <PackageProjectUrl>https://github.com/xcloud-net</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/xcloud-net</RepositoryUrl>
+    <icon>https://github.com/xcloud-net/xcloud-sales/raw/master/images/logo-sm.png</icon>
+    <license>https://github.com/xcloud-net/xcloud-sales</license>
+  </PropertyGroup>
+
+  <!--控制依赖版本-->
+  <PropertyGroup>
+    <ms_extension_version>6.0.0</ms_extension_version>
+    <ms_version>6.0.0</ms_version>
+    <abp_version>5.1.4</abp_version>
+  </PropertyGroup>
+
+	<Import Project=".\fody.props" />
+</Project>

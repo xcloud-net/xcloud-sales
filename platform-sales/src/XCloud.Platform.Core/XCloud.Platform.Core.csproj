@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\common.props" />
+
+    <ItemGroup>
+        <ProjectReference Include="..\XCloud.Job\XCloud.Job.csproj" />
+        <ProjectReference Include="..\XCloud.Redis\XCloud.Redis.csproj" />
+        <ProjectReference Include="..\XCloud.MessageBus\XCloud.MessageBus.csproj" />
+        <ProjectReference Include="..\XCloud.Platform.Shared\XCloud.Platform.Shared.csproj" />
+        <ProjectReference Include="..\XCloud.Application\XCloud.Application.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.BlobStoring.FileSystem" Version="$(abp_version)" />
+        <PackageReference Include="Volo.Abp.AutoMapper" Version="$(abp_version)" />
+        <PackageReference Include="Volo.Abp.FluentValidation" Version="$(abp_version)" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,25 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Hangfire": "Warning",
+      "RedLockNet": "Warning",
+      "IdentityServer4": "Warning",
+      "DotNetCore.CAP": "Warning"
+    }
+  },
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft": "Warning",
+        "Microsoft.EntityFrameworkCore.Database.Command": "Information",
+        "Hangfire": "Warning",
+        "RedLockNet": "Warning",
+        "IdentityServer4": "Warning",
+        "DotNetCore.CAP": "Warning"
+      }
+    }
+  }
+}

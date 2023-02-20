@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<ItemGroup>
+		<PackageReference Include="SKIT.FlurlHttpClient.Wechat.Api" Version="2.18.0" />
+		<PackageReference Include="SKIT.FlurlHttpClient.Wechat.TenpayV3" Version="2.13.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\XCloud.Core\XCloud.Core.csproj" />
+		<ProjectReference Include="..\XCloud.Platform.Member.Application\XCloud.Platform.Member.Application.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="SKIT.FlurlHttpClient.Wechat.TenpayV3" />
+	</ItemGroup>
+</Project>

@@ -1,0 +1,39 @@
+
+<!--
+
+https://www.cnblogs.com/xiaoliangge/p/11220830.html
+
+<ConfigureAwait ContinueOnCapturedContext="false" />
+<PackageReference Include="ConfigureAwait.Fody" Version="3.3.1" PrivateAssets="All" />
+
+ConfigureAwait(false)能做什么呢？
+默认情况下，当您使用async/await时，它将在开始请求的原始线程上继续运行(状态机)。
+但是，如果当前另一个长时间运行的进程已经接管了该线程，那么你就不得不等待它完成。
+要避免这个问题，可以使用ConfigureAwait的方法和false参数。
+当你用这个方法的时候，这将告诉Task它可以在任何可用的线程上恢复自己继续运行，而不是等待最初创建它的线程。
+这将加快响应速度并避免许多死锁。
+
+但是，这里有一点点损失。当您在另一个线程上继续时，线程同步上下文将丢失,因为状态机改变。
+这里最大的损失是你会失去归属于线程的Culture和Language，
+其中包含了国家语言时区信息，以及来自原始线程的HttpContext.Current之类的信息
+
+.NET Standard与ConfigureAwait(false)
+在.NETCore中，微软删除了导致我们在任何地方都需要ConfigureAwait(false)的SynchronizationContext。
+因此，ASP.NETCore应用程序在技术上不需要任何ConfigureAwait(false)逻辑，因为它是多余的。
+但是，如果在开发有一个使用.NETStandard的库，那么强烈建议仍然使用.ConfigureAwait(false)。
+在.NETCore中，这自动是无效的。
+-->
+<Project>
+  <ItemGroup>
+  <!--
+    <PackageReference Include="ConfigureAwait.Fody" Version="3.3.1" PrivateAssets="All" />
+      <PackageReference Include="ToString.Fody" Version="1.11.0">
+        <PrivateAssets>All</PrivateAssets>
+      </PackageReference>
+
+      <PackageReference Include="Fody" Version="6.2.0">
+        <PrivateAssets>All</PrivateAssets>
+      </PackageReference>
+  -->
+  </ItemGroup>
+</Project>

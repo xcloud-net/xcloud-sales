@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<ItemGroup>
+		<PackageReference Include="DotNetCore.CAP" Version="6.1.0" />
+		<PackageReference Include="DotNetCore.CAP.Dashboard" Version="6.1.0" />
+		<PackageReference Include="DotNetCore.CAP.InMemoryStorage" Version="6.1.0" />
+		<PackageReference Include="DotNetCore.CAP.RedisStreams" Version="6.1.0" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+		<!--
+		<PackageReference Include="DotNetCore.CAP.Kafka" Version="6.0.0" />
+		<PackageReference Include="EasyAbp.Abp.EventBus.CAP" Version="$(abp_version)" />
+		-->
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\XCloud.Core\XCloud.Core.csproj" />
+		<ProjectReference Include="..\XCloud.Redis\XCloud.Redis.csproj" />
+	</ItemGroup>
+
+</Project>

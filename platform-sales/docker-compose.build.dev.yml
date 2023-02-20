@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  #platform
+  platform-api:
+    image: xsales/all:platform-api-fri
+    build:
+      context: ./
+      dockerfile: ./src/XCloud.Platform.Api/Dockerfile.dev
+
+  #mall
+  mall-api:
+    image: xsales/all:mall-api-fri
+    build:
+      context: ./
+      dockerfile: ./src/XCloud.Sales/XCloud.Sales.Mall.Api/Dockerfile.dev

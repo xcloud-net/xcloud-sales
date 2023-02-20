@@ -1,0 +1,20 @@
+image: docker:latest
+
+services:
+  - docker:dind
+ 
+before_script:
+  - echo -n $DOCKER_HUB_PASSWORD | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+  - echo "Docker login successful"
+
+build-and-push-mall-ui:
+  stage: build
+  when: manual
+  variables:
+    image_name: xsales/all:mall-web-ui
+  script:
+    #build and push main tag
+    - docker build -t $image_name -f ./frontend/mall-ui/docker/Dockerfile ./frontend/mall-ui
+    - docker push $image_name
+    - docker rmi $image_name
+    - echo "Docker build and push main tag successful"

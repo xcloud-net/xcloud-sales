@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  mall-api:
+    image: xsales/all:mall-api-fri
+    build:
+      context: ./src
+      dockerfile: ./XCloud.Sales/XCloud.Sales.Mall.Api/Dockerfile

@@ -1,0 +1,150 @@
+version: "3.4"
+
+x-deft:
+  &x-deft
+  restart: unless-stopped
+  networks:
+    - xx
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+  deploy:
+    resources:
+      limits:
+        memory: 800M
+      reservations:
+        memory: 100M
+
+#default dotnet env
+x-env:
+  &x-env
+  ASPNETCORE_ENVIRONMENT: Production
+  app:server_ip: internal.your-domain.com
+  #when use docker-compose, the default value is the container name
+  #app:dev_server: $${app:server_ip}
+  app:mysql:host: 10.0.4.7
+  app:mysql:password: 1q2w3e4r5t+
+  app:redis:host: redis-5
+  app:config:audit: 'false'
+  RemoteServices:Gateway:BaseUrl: http://api-gateway:8888
+  #skywalking settings
+  app:config:apm: 'false'
+  ASPNETCORE_HOSTINGSTARTUPASSEMBLIES: SkyAPM.Agent.AspNetCore
+  SkyWalking:Logging:FilePath: 'logs/skyapm/skyapm-{Date}.log'
+  SkyWalking:Transport:gRPC:Servers: skywalking-oap:11800
+  SkyWalking:Sampling:SamplePer3Secs: 30
+
+#default java env
+x-java-env:
+  &x-java-env
+  spring.profiles.active: prod
+  #JAVA_OPTS: -Xmx512m -Xms512m
+
+services:
+  #平台api
+  platform-api:
+    <<: *x-deft
+    image: xsales/all:platform-api-fri
+    container_name: platform-api
+    ports:
+      - 5002:5002
+    environment:
+      <<: *x-env
+      # dotnet base iamge export ASPNETCORE_URLS=http://+:80 as default
+      ASPNETCORE_URLS: http://*:5002
+      #app:identity_server:server: http://127.0.0.1:5002
+      #qcloud cos settings
+      TencentCloud:AppId: '****'
+      TencentCloud:SecretId: '*****'
+      TencentCloud:SecretKey: '*****'
+      TencentCloud:ContainerName: '*****'
+      TencentCloud:Region: ap-shanghai
+      TencentCloud:KeyDurationSecond: 600
+      #wechat settings
+      Wx:MP:AppID: '*****'
+      Wx:MP:AppSecret: '*****'
+      #skywalking
+      app:config:apm: 'true'
+      SkyWalking:ServiceName: platform-api
+      SKYWALKING__SERVICENAME: platform-api
+    volumes:
+      - /var/logs/platform-api/:/app/logs/
+      # file storage path
+      - ./static_files/:/app/static_files/
+  # mall
+  mall-api:
+    <<: *x-deft
+    image: xsales/all:mall-api-fri
+    container_name: mall-api
+    depends_on:
+      - platform-api
+    ports:
+      - 6001:6001
+    environment:
+      <<: *x-env
+      # dotnet base iamge export ASPNETCORE_URLS=http://+:80 as default
+      ASPNETCORE_URLS: http://*:6001
+      #wechat settings
+      Wx:MP:AppID: '*****'
+      Wx:MP:AppSecret: '*****'
+      #skywalking
+      app:config:apm: 'true'
+      SkyWalking:ServiceName: mall-api
+      SKYWALKING__SERVICENAME: mall-api
+      #enable activity log geo lookup
+      app:config:geo_database: /app/GeoLite2-City.mmdb
+    volumes:
+      - /var/logs/mall-api/:/app/logs/
+      - /home/app/GeoLite2-City.mmdb:/app/GeoLite2-City.mmdb
+  #api网关
+  api-gateway:
+    <<: *x-deft
+    image: xsales/all:api-gateway
+    container_name: api-gateway
+    #覆盖镜像默认启动指令
+    #entrypoint: java -javaagent:/skywalking-agent/skywalking-agent.jar -Dskywalking.agent.service_name=api-gateway -Dlogging.dir=/app/logs/skyapm/ -Dlogging.resolver=JSON -Dskywalking.collector.backend_service=skywalking-oap:11800 -Dagent.sample_n_per_3_secs=30 -jar /app/spring-gateway.jar
+    entrypoint:
+      - java
+      - '-javaagent:/skywalking-agent/skywalking-agent.jar'
+      # Logging max_file_size, default: 300 * 1024 * 1024 = 314572800
+      - '-Dlogging.max_file_size=314572800'
+      - '-Dlogging.max_history_files=10'
+      - '-Dlogging.dir=/app/logs/skyapm/'
+      - '-Dlogging.resolver=JSON'
+      - '-Dskywalking.agent.service_name=api-gateway'
+      - '-Dskywalking.collector.backend_service=skywalking-oap:11800'
+      - '-Dagent.sample_n_per_3_secs=30'
+      - '-jar'
+      - '/app/spring-gateway.jar'
+    depends_on:
+      - platform-api
+      - mall-api
+    ports:
+      - 7888:8888
+    environment:
+      <<: *x-java-env
+      server.port: "8888"
+      micro_services: "mall,platform,admin"
+      # 跨域
+      settings.corsOrigin: |
+        https://your-domain.com,
+        https://www.your-domain.com,
+        https://m.your-domain.com,
+        http://localhost:8000,
+        http://localhost:8001,
+      settings.sys-api-uri: http://platform-api:5002
+      settings.platform-api-uri: http://platform-api:5002
+      settings.platform-ws-api-uri: ws://platform-api:5002
+      settings.mall-api-uri: http://mall-api:6001
+      #thumbor expose 80 as default,so we just let the port to be empty
+      settings.thumbor-service: http://thumbor:80
+    volumes:
+      - /var/logs/api-gateway/:/app/logs/
+      #mount skywalking agent
+      - /home/app/skywalking-agent/:/skywalking-agent/
+networks:
+  xx:
+    external:
+      name: xx

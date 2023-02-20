@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<ItemGroup>
+		<PackageReference Include="Volo.Abp.EntityFrameworkCore.MySQL" Version="$(abp_version)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\XCloud.Database.EntityFrameworkCore\XCloud.Database.EntityFrameworkCore.csproj" />
+	</ItemGroup>
+</Project>

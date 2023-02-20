@@ -1,0 +1,5 @@
+# docker ignore file should be put in the root folder of the docker build context
+# in this case,the ignore file will be in ./src
+
+# more information
+# https://stackoverflow.com/questions/53945934/docker-compose-and-dockerignore

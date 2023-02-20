@@ -1,0 +1,19 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${settings.nacos.addr}
+        namespace: platform
+      config:
+        server-addr: ${settings.nacos.addr}
+        namespace: platform
+        file-extension: yml
+settings:
+  nacos:
+    addr: ${settings.nacos.host}:${settings.nacos.port}
+    host: localhost
+    port: 8848

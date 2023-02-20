@@ -1,0 +1,25 @@
+#编译结果copy到runtime容器运行
+FROM bitnami/aspnet-core:6.0
+#FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+ARG BinPath
+ARG ProjectName
+
+COPY ${BinPath} /app
+WORKDIR /app
+COPY ./run.sh ./run.sh
+
+#ENTRYPOINT ["dotnet","XCloud.Platform.Api.dll"]
+
+#https://stackoverflow.com/questions/34324277/how-to-pass-arg-value-to-entrypoint
+#Both ARG and ENV are not expanded in ENTRYPOINT or CMD.
+#However, because ENVs are passed in as part of the environment, 
+#they are available at run time, so the shell can expand them. 
+#(This means you can't use the array form of ENTRYPOINT or CMD.)
+#https://docs.docker.com/engine/reference/builder/#environment-replacement
+
+ENV EntryFile=${ProjectName}.dll
+
+#sh文件中默认不加载环境变量，所以这里有问题
+#entry point
+ENTRYPOINT [ "sh","-ic","dotnet ${EntryFile}" ]

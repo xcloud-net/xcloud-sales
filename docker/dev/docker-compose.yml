@@ -1,0 +1,150 @@
+version: "3.4"
+
+x-deft:
+  &x-deft
+  restart: unless-stopped
+  networks:
+    - xx
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+  deploy:
+    resources:
+      limits:
+        memory: 800M
+      reservations:
+        memory: 100M
+
+#default dotnet env
+x-env:
+  &x-env
+  ASPNETCORE_ENVIRONMENT: Production
+  app:server_ip: internal.your-domain.com
+  app:mysql:host: mariadb-10
+  app:mysql:password: '123'
+  app:redis:host: redis-5
+  app:config:audit: 'false'
+  RemoteServices:Gateway:BaseUrl: http://api-gateway:8888
+
+#default java env
+x-java-env:
+  &x-java-env
+  spring.profiles.active: prod
+  #JAVA_OPTS: -Xmx512m -Xms512m
+
+services:
+  mariadb-10:
+    <<: *x-deft
+    image: docker.io/bitnami/mariadb:10.6
+    container_name: mariadb-10
+    ports:
+      - '3306:3306'
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      # - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_ROOT_PASSWORD=123
+    volumes:
+      - 'mariadb-data:/bitnami/mariadb'
+  redis-5:
+    <<: *x-deft
+    image: bitnami/redis:5.0
+    container_name: redis-5
+    ports:
+      - 6379:6379
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - redis-data:/bitnami/redis/data
+  #平台api
+  platform-api:
+    <<: *x-deft
+    image: xsales/all:platform-api-fri
+    container_name: platform-api
+    build:
+      context: ../../platform-sales/src/
+      dockerfile: ./XCloud.Platform.Api/Dockerfile
+    ports:
+      - 5002:5002
+    depends_on:
+      - mariadb-10
+      - redis-5
+    environment:
+      <<: *x-env
+      # dotnet base iamge export ASPNETCORE_URLS=http://+:80 as default
+      ASPNETCORE_URLS: http://*:5002
+      #app:identity_server:server: http://127.0.0.1:5002
+      #wechat settings
+      Wx:MP:AppID: '*****'
+      Wx:MP:AppSecret: '*****'
+    volumes:
+      - ./logs/platform-api/:/app/logs/
+      # file storage path
+      - ./static_files/:/app/static_files/
+  # mall
+  mall-api:
+    <<: *x-deft
+    image: xsales/all:mall-api-fri
+    container_name: mall-api
+    build:
+      context: ../../platform-sales/src/
+      dockerfile: ./XCloud.Sales/XCloud.Sales.Mall.Api/Dockerfile
+    depends_on:
+      - platform-api
+    ports:
+      - 6001:6001
+    environment:
+      <<: *x-env
+      # dotnet base iamge export ASPNETCORE_URLS=http://+:80 as default
+      ASPNETCORE_URLS: http://*:6001
+      #wechat settings
+      Wx:MP:AppID: '*****'
+      Wx:MP:AppSecret: '*****'
+    volumes:
+      - ./logs/mall-api/:/app/logs/
+  #api网关
+  api-gateway:
+    <<: *x-deft
+    image: xsales/all:api-gateway
+    container_name: api-gateway
+    build:
+      context: ../../platform-cloud
+      dockerfile: ./api-gateway/Dockerfile
+    depends_on:
+      - platform-api
+      - mall-api
+    ports:
+      - 7888:8888
+    environment:
+      <<: *x-java-env
+      server.port: "8888"
+      micro_services: "mall,platform,admin"
+      # 跨域
+      settings.corsOrigin: |
+        https://your-domain.com,
+        http://localhost:9999,
+      settings.sys-api-uri: http://platform-api:5002
+      settings.platform-api-uri: http://platform-api:5002
+      settings.platform-ws-api-uri: ws://platform-api:5002
+      settings.mall-api-uri: http://mall-api:6001
+    volumes:
+      - ./logs/api-gateway/:/app/logs/
+  # web-ui
+  web-ui:
+    <<: *x-deft
+    container_name: web-ui
+    image: xsales/all:web-ui-v1
+    build:
+      context: ../../frontend/mall-ui/
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - 9999:9999
+
+volumes:
+  mariadb-data:
+  redis-data:
+networks:
+  xx:
+    external:
+      name: xx

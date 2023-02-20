@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\common.props" />
+
+    <ItemGroup>
+      <ProjectReference Include="..\XCloud.Platform.Core\XCloud.Platform.Core.csproj" />
+    </ItemGroup>
+
+</Project>

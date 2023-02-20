@@ -1,0 +1,43 @@
+﻿{
+  "yarp_upstreams": {
+    "mall_api": "http://localhost:8000",
+    "thumbor_service": "http://localhost:8000"
+  },
+  "ReverseProxy": {
+    "Routes": {
+      "mall_api_route": {
+        "ClusterId": "mall_api_cluster",
+        "Match": {
+          "Path": "/api/mall/{**everything}"
+        }
+      },
+      "thumbor_service_route": {
+        "ClusterId": "thumbor_service_cluster",
+        "Match": {
+          "Path": "/internal-api/thumbor/{**everything}"
+        },
+        "Transforms": [
+          {
+            "PathPattern": "/{**everything}"
+          }
+        ]
+      }
+    },
+    "Clusters": {
+      "mall_api_cluster": {
+        "Destinations": {
+          "mall_api_cluster/destination1": {
+            "Address": "${yarp_upstreams:mall_api}"
+          }
+        }
+      },
+      "thumbor_service_cluster": {
+        "Destinations": {
+          "thumbor_service_cluster/destination1": {
+            "Address": "${yarp_upstreams:thumbor_service}"
+          }
+        }
+      }
+    }
+  }
+}

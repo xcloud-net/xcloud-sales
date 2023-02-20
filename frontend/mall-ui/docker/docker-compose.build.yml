@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  mall-web-ui:
+    image: xsales/all:mall-web-ui
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile

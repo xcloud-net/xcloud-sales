@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<ItemGroup>
+		<PackageReference Include="Hangfire.Core" Version="1.7.29" />
+		<PackageReference Include="HangFire.Redis.StackExchange" Version="1.8.5" />
+		<PackageReference Include="Hangfire.AspNetCore" Version="1.7.29" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\XCloud.AspNetMvc\XCloud.AspNetMvc.csproj" />
+		<ProjectReference Include="..\XCloud.Redis\XCloud.Redis.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Hangfire.AspNetCore" />
+	</ItemGroup>
+</Project>

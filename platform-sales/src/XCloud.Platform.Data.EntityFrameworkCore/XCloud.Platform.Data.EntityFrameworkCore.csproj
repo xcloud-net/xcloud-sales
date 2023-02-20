@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\common.props" />
+
+    <ItemGroup>
+        <ProjectReference Include="..\XCloud.Platform.Data\XCloud.Platform.Data.csproj" />
+        <ProjectReference Include="..\XCloud.Database.EntityFrameworkCore.MySQL\XCloud.Database.EntityFrameworkCore.MySQL.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+            <PrivateAssets>compile; contentFiles; build; buildMultitargeting; buildTransitive; analyzers; native</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+</Project>

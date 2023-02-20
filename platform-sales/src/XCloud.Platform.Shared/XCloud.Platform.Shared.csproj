@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<ItemGroup>
+	  <None Remove="Localization\Platform\zh-Hans.json" />
+	  <None Remove="AutoMapper" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Localization\Platform\zh-Hans.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="$(abp_version)" />
+		<PackageReference Include="AutoMapper" Version="10.1.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\XCloud.Core\XCloud.Core.csproj" />
+	</ItemGroup>
+
+</Project>

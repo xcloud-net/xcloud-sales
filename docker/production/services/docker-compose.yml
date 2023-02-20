@@ -1,0 +1,62 @@
+version: "3.4"
+
+x-deft:
+  &x-deft
+  restart: unless-stopped
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+  networks:
+    - xx
+
+services:
+  #https://hub.docker.com/r/phpmyadmin/phpmyadmin
+  mysql-admin:
+    <<: *x-deft
+    image: phpmyadmin/phpmyadmin:5
+    container_name: mysql-admin
+    ports:
+      - 13306:80
+    environment:
+      PMA_HOSTS: "mariadb-10"
+      #PMA_PORTS: "3306,3306"
+      #mysql数据库 https://hub.docker.com/r/bitnami/mysql
+  mariadb-10:
+    <<: *x-deft
+    image: docker.io/bitnami/mariadb:10.6
+    container_name: mariadb-10
+    ports:
+      - '3306:3306'
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      # - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_ROOT_PASSWORD=123
+    volumes:
+      - 'mariadb-data:/bitnami/mariadb'
+  redis-5:
+    <<: *x-deft
+    image: bitnami/redis:5.0
+    container_name: redis-5
+    ports:
+      - 6379:6379
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - redis-data:/bitnami/redis/data
+  thumbor:
+    <<: *x-deft
+    image: minimalcompact/thumbor:7.0.0
+    container_name: thumbor
+    ports:
+      - 7070:80
+volumes:
+  mariadb-data:
+  redis-data:
+
+
+networks:
+  xx:
+    external:
+      name: xx

@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  web-ui:
+    image: xsales/all:web-ui-v1
+    container_name: web-ui
+    restart: unless-stopped
+    ports:
+      - '9999:9999'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - xx
+networks:
+  xx:
+    external:
+      name: xx

@@ -1,0 +1,81 @@
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Volo.Abp.DynamicProxy;
+
+namespace XCloud.Logging.ElasticApm
+{
+    public class ElasticApmInterceptor : IAbpInterceptor, IAutoRegistered
+    {
+        private readonly IServiceProvider serviceProvider;
+        private readonly ILogger logger;
+        public ElasticApmInterceptor(IServiceProvider serviceProvider)
+        {
+            this.serviceProvider = serviceProvider;
+            this.logger = serviceProvider.GetRequiredService<ILogger<ElasticApmInterceptor>>();
+        }
+
+        bool ApmEnabledFor(IAbpMethodInvocation invocation)
+        {
+            if (!Elastic.Apm.Agent.IsConfigured)
+            {
+                return false;
+            }
+
+            if (invocation.Method.IsGenericMethod)
+            {
+                return false;
+            }
+
+            if (invocation.Method.Name.StartsWith("get_") || invocation.Method.Name.StartsWith("set_"))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        async Task IAbpInterceptor.InterceptAsync(IAbpMethodInvocation invocation)
+        {
+            if (this.ApmEnabledFor(invocation) && ElasticApmExtension.GetCurrentTransaction(out var transaction))
+            {
+                var m = invocation.Method;
+
+                var type_name = m.DeclaringType.Name;
+                var method_name = m.Name;
+
+                var full_name = $"{method_name}@{type_name}";
+
+                var span = transaction.StartSpan(full_name, type_name);
+
+                try
+                {
+                    span.SetLabel("function.name", method_name);
+                    var params_data = string.Join(",", m.GetParameters().Select(x => $"{x.ParameterType.Name} {x.Name}"));
+                    span.SetLabel("function.parameters", params_data);
+
+                    await invocation.ProceedAsync();
+
+                    //log return data
+                    //todo
+                }
+                catch (Exception e)
+                {
+                    span.CaptureException(e);
+                    throw;
+                }
+                finally
+                {
+                    span.End();
+                }
+            }
+            else
+            {
+                //如果没有开启apm
+                await invocation.ProceedAsync();
+            }
+        }
+    }
+}

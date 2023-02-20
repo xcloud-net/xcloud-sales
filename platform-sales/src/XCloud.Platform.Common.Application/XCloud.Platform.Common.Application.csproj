@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<ItemGroup>
+		<ProjectReference Include="..\XCloud.Platform.Data\XCloud.Platform.Data.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<!--
+		<PackageReference Include="Volo.Abp.BlobStoring.Minio" Version="$(abp_version)"/>
+		-->
+		<PackageReference Include="Tencent.QCloud.Cos.Sdk" Version="5.4.32" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Tencent.QCloud.Cos.Sdk" />
+	  <None Remove="Storage\QCloud\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Service" />
+	</ItemGroup>
+</Project>

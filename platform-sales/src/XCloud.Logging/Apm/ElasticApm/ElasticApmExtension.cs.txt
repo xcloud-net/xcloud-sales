@@ -1,0 +1,59 @@
+﻿using Elastic.Apm.Api;
+using Elastic.Apm.NetCoreAll;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using XCloud.Core.Helper;
+
+namespace XCloud.Logging.ElasticApm
+{
+    public static class ElasticApmExtension
+    {
+        /*
+            "ElasticApm": {
+    "LogLevel": "Debug",
+    "ServerUrls": "http://localhost:8200",
+    "TransactionSampleRate": 1.0
+  }
+             */
+
+        public static bool IsApmServerConfigAvaliable(this IConfiguration config)
+        {
+            var urls = config["ElasticApm:ServerUrls"];
+            var server_exist = !string.IsNullOrWhiteSpace(urls);
+
+            return server_exist;
+        }
+
+        /// <summary>
+        /// https://www.elastic.co/guide/en/apm/agent/dotnet/current/config-all-options-summary.html
+        /// https://www.elastic.co/guide/en/apm/agent/dotnet/current/config-http.html#config-transaction-ignore-urls
+        /// ElasticApm:TransactionIgnoreUrls:
+        /// [/VAADIN/*, /heartbeat*, /favicon.ico", *.js", *.css", *.jpg", *.jpeg", *.png", *.gif", *.webp", *.svg", *.woff", *.woff2]
+        /// </summary>
+        public static IApplicationBuilder UseElasticApmProvider(this IApplicationBuilder builder)
+        {
+            var config = builder.ApplicationServices.ResolveConfiguration();
+            if (config.IsApmServerConfigAvaliable())
+            {
+                builder.UseAllElasticApm(config);
+            }
+
+            return builder;
+        }
+
+        public static bool GetCurrentTransaction(out ITransaction transaction)
+        {
+            transaction = null;
+            try
+            {
+                transaction = Elastic.Apm.Agent.Tracer.CurrentTransaction;
+                return transaction != null;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+}

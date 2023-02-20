@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  api-gateway:
+    image: xsales/all:api-gateway
+    build:
+      context: ../
+      dockerfile: ./api-gateway/Dockerfile

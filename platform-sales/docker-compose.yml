@@ -1,0 +1,62 @@
+# 此处只做参考
+version: "3.4"
+
+x-deft: &x-deft
+  restart: unless-stopped
+  networks:
+    - xx
+  logging:
+    driver: json-file
+    options:
+      max-size: 5M
+      max-file: "3"
+  deploy:
+    resources:
+      limits:
+        memory: 800M
+      reservations:
+        memory: 100M
+
+x-env: &x-env
+  ASPNETCORE_ENVIRONMENT: Staging
+  #ASPNETCORE_ENVIRONMENT: Production
+
+services:
+  #平台api
+  platform-api:
+    <<: *x-deft
+    image: xsales/all:platform-api-fri
+    container_name: platform-api
+    environment:
+      <<: *x-env
+      #public_origin: "https://id.domain.com"
+    volumes:
+      - /var/logs/platform-api/:/app/logs/
+  #平台管理api
+  admin-api:
+    <<: *x-deft
+    image: xsales/all:admin-api-fri
+    container_name: admin-api
+    environment:
+      <<: *x-env
+    volumes:
+      - /var/logs/admin-api/:/app/logs/
+  #网关
+  gateway-api:
+    <<: *x-deft
+    image: xsales/all:gateway-api-fri
+    container_name: gateway-api
+    depends_on:
+      - platform-api
+      - admin-api
+    environment:
+      <<: *x-env
+      micro_services: "platform,admin"
+      # 跨域
+      CorsHosts: "http://domain.com,http://localhost:8000"
+    volumes:
+      - /var/logs/gateway-api/:/app/logs/
+networks:
+  xx:
+    external:
+      name: xx

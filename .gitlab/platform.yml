@@ -1,0 +1,50 @@
+image: docker:latest
+
+services:
+  - docker:dind
+ 
+before_script:
+  - echo -n $DOCKER_HUB_PASSWORD | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+  - echo "Docker login successful"
+
+test-platform:
+  stage: test
+  when: manual
+  only:
+    - master
+  script:
+    - echo test
+
+build-platform:
+  stage: build
+  when: manual
+  variables:
+    image_name: xsales/all:platform-api-fri
+  #needs:
+  #  - test-platform
+  script:
+    #build and push main tag
+    - docker build -t $image_name -f ./platform-sales/src/XCloud.Platform.Api/Dockerfile ./platform-sales/src
+    - docker push $image_name
+    #push hash tag
+    - docker tag $image_name $image_name-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA
+    - docker push $image_name-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA
+    - docker rmi $image_name-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA
+    #clean work
+    - docker rmi $image_name
+
+deploy-platform-staging:
+  stage: deploy
+  when: manual
+  needs:
+    - build-platform
+  script:
+    - echo deploy platform dev
+  
+deploy-platform-prod:
+  stage: deploy
+  when: manual
+  needs:
+    - build-platform
+  script:
+    - echo deploy platform dev

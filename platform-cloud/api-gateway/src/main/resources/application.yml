@@ -1,0 +1,54 @@
+settings:
+  corsOrigin: http://localhost:8000
+  sys-api-uri: lb://platform-api
+  platform-api-uri: lb://platform-api
+  platform-ws-api-uri: lb:ws//platform-api
+  mall-api-uri: lb://mall-api
+  thumbor-service: http://localhost:7070
+
+spring:
+  profiles:
+    active: dev
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      default-filters:
+        - AddResponseHeader=X-Response-Default-Foo, Default-Bar
+      routes:
+        #平台管理
+        - id: sys-api
+          #已经整合到platform api中
+          uri: ${settings.sys-api-uri}
+          predicates:
+            - Path=/api/sys/**,/internal-api/sys/**
+        #平台服务
+        - id: platform-api
+          uri: ${settings.platform-api-uri}
+          predicates:
+            #nginx将屏蔽internal-api开头的路由,只能在内部跳过nginx调用
+            - Path=/api/platform/**,/internal-api/platform/**
+        #websocket
+        - id: platform-ws-api
+          uri: ${settings.platform-ws-api-uri}
+          predicates:
+            - Path=/api/platform-ws/**
+        #商城
+        - id: mall-api
+          uri: ${settings.mall-api-uri}
+          predicates:
+            - Path=/api/mall/**,/api/mall-admin/**,/api/mall-manager/**,/internal-api/mall/**
+        #thumbor
+        - id: thumbor-service
+          uri: ${settings.thumbor-service}
+          predicates:
+            - Path=/internal-api/thumbor/**
+          filters:
+            - StripPrefix=2
+
+logging:
+  config: classpath:log4j2.xml
+  level:
+    com.springboot.cloud: debug

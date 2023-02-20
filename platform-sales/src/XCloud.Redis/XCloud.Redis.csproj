@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<ItemGroup>
+		<None Remove="Lua\Extend.lua" />
+		<None Remove="Lua\Unlock.lua" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Lua\Extend.lua" />
+		<EmbeddedResource Include="Lua\Unlock.lua" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="RedLock.net" Version="2.2.0" />
+		<PackageReference Include="StackExchange.Redis" Version="2.2.4" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="$(ms_extension_version)" />
+		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="$(ms_extension_version)" />
+		<PackageReference Include="Volo.Abp.Caching" Version="$(abp_version)" />
+		<!--
+		<PackageReference Include="Volo.Abp.Caching.StackExchangeRedis" Version="$(abp_version)" />
+		-->
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\XCloud.Core\XCloud.Core.csproj" />
+	</ItemGroup>
+
+</Project>

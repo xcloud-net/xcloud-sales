@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  platform-api:
+    image: xsales/all:platform-api-fri
+    build:
+      context: ./src
+      dockerfile: ./XCloud.Platform.Api/Dockerfile

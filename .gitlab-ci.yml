@@ -1,0 +1,11 @@
+stages:
+  - test
+  - build
+  - deploy
+
+include:
+  - local: .gitlab/gateway.yml
+  - local: .gitlab/platform.yml
+  - local: .gitlab/mall.yml
+  - local: .gitlab/mall-ui.yml
+  - local: .gitlab/xcloud-core-nuget.yml

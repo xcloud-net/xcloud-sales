@@ -1,0 +1,54 @@
+version: "3.4"
+
+x-deft:
+  &x-deft
+  restart: unless-stopped
+  networks:
+    - xx
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+  deploy:
+    resources:
+      limits:
+        memory: 400M
+      reservations:
+        memory: 100M
+
+x-env:
+  &x-env
+  TZ: Asia/Shanghai
+
+#docker run --name oap --restart always -d
+#-e SW_STORAGE=elasticsearch -e SW_STORAGE_ES_CLUSTER_NODES=elasticsearch:9200
+#apache/skywalking-oap-server
+services:
+  skywalking-oap:
+    <<: *x-deft
+    image: apache/skywalking-oap-server:8.5.0-es7
+    container_name: skywalking-oap
+    ports:
+      - 11800:11800
+      - 12800:12800
+    environment:
+      <<: *x-env
+  skywalking-ui:
+    <<: *x-deft
+    image: apache/skywalking-ui:8.5.0
+    container_name: skywalking-ui
+    depends_on:
+      - skywalking-oap
+    ports:
+      - 18080:8080
+    #设置环境,配置覆盖yml的配置
+    environment:
+      <<: *x-env
+      SW_OAP_ADDRESS: skywalking-oap:12800
+      security.user.admin.password: "123"
+
+networks:
+  xx:
+    external:
+      name: xx

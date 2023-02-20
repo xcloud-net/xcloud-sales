@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\common.props" />
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="$(abp_version)" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.9" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.9" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+            <PrivateAssets>compile; contentFiles; build; buildMultitargeting; buildTransitive; analyzers; native</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\XCloud.Core\XCloud.Core.csproj" />
+    </ItemGroup>
+</Project>
