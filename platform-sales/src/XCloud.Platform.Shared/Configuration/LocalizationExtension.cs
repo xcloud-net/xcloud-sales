@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
+using Volo.Abp.Validation.Localization;
 using Volo.Abp.VirtualFileSystem;
 using XCloud.Platform.Shared.Localization;
 
@@ -22,8 +23,8 @@ public static class LocalizationExtension
 
             options.Resources
                 .Add<PlatformResource>(defaultCultureName: "zh-Hans")
-                .AddVirtualJson("/Localization/Resources/Platform");
-            //.AddBaseTypes(typeof(AbpValidationResource));
+                .AddVirtualJson("/Localization/Resources/Platform")
+                .AddBaseTypes(typeof(AbpValidationResource));
 
             options.DefaultResourceType = typeof(PlatformResource);
         });
