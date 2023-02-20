@@ -8,7 +8,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Localization\Platform\zh-Hans.json" />
+	  <EmbeddedResource Include="Localization\Resources\Platform\en.json" />
+	  <EmbeddedResource Include="Localization\Resources\Platform\zh-Hans.json" />
+	  <None Remove="Localization\Resources\en.json" />
 	</ItemGroup>
 
 	<ItemGroup>

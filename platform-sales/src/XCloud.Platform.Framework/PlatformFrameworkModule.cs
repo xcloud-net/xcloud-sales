@@ -49,7 +49,7 @@ public class PlatformFrameworkModule : AbpModule
         context.Services.Configure<PlatformEfCoreOption>(option =>
         {
             //auto create database
-            option.AutoCreateDatabase = true;
+            option.AutoCreateDatabase = false;
         });
     }
 
