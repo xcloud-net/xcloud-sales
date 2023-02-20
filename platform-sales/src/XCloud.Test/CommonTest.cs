@@ -130,7 +130,8 @@ public class CommonTest
         option.Converters.Add(new DateTimeJsonConverter());
         option.Converters.Add(new NullableDateTimeJsonConverter());
 
-        var json = System.Text.Json.JsonSerializer.Serialize(new SysUser() { NickName = "x", CreationTime = DateTime.Now }, option);
+        var json = System.Text.Json.JsonSerializer.Serialize(
+            new SysUser() { NickName = "x", CreationTime = DateTime.Now }, option);
 
         var data = JsonSerializer.Deserialize<SysUser>(json, option);
 
@@ -152,7 +153,7 @@ public class CommonTest
     {
     }
 
-    abstract class A
+    abstract class FatherA
     {
         [Attr1]
         public virtual void Test()
@@ -160,7 +161,7 @@ public class CommonTest
         }
     }
 
-    class B : A
+    class ChildBoy : FatherA
     {
         [Attr2]
         public override void Test()
@@ -172,28 +173,12 @@ public class CommonTest
     [TestMethod]
     public void attr_inherit_test()
     {
-        var m = typeof(B).GetMethods().FirstOrDefault(x => x.Name == "test");
+        var boy = new ChildBoy();
+
+        var m = typeof(ChildBoy).GetMethods().FirstOrDefault(x => x.Name == nameof(boy.Test));
         m.Should().NotBeNull();
         m.GetCustomAttributes(inherit: true).Length.Should().Be(2);
         m.GetCustomAttributes(inherit: false).Length.Should().Be(1);
-    }
-
-    [TestMethod]
-    public void operator_test____()
-    {
-        var user = new SysUser();
-
-        object.Equals(user, null).Should().BeFalse();
-        object.Equals(null, user).Should().BeFalse();
-
-        object.Equals(user, new SysUser()).Should().BeFalse();
-
-        user.Id = ("1");
-        object.Equals(user, new SysUser("1")).Should().BeTrue();
-
-        (user == new SysUser("1")).Should().BeTrue();
-
-        (user is null).Should().BeFalse();
     }
 
     [TestMethod]

@@ -77,6 +77,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCloud.Platform.Data", "XCl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCloud.Platform.Data.EntityFrameworkCore", "XCloud.Platform.Data.EntityFrameworkCore\XCloud.Platform.Data.EntityFrameworkCore.csproj", "{A1F12306-AA36-40D2-A8D5-05191D334FFE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCloud.Platform.Test", "XCloud.Platform.Test\XCloud.Platform.Test.csproj", "{929CBF37-DC11-4F24-99EB-DF84A11418C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCloud.Sales.Test", "XCloud.Sales\XCloud.Sales.Test\XCloud.Sales.Test.csproj", "{70EF4F3B-17AD-4FAF-A8D7-626A19861D6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -191,6 +195,14 @@ Global
 		{A1F12306-AA36-40D2-A8D5-05191D334FFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1F12306-AA36-40D2-A8D5-05191D334FFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1F12306-AA36-40D2-A8D5-05191D334FFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{929CBF37-DC11-4F24-99EB-DF84A11418C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{929CBF37-DC11-4F24-99EB-DF84A11418C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{929CBF37-DC11-4F24-99EB-DF84A11418C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{929CBF37-DC11-4F24-99EB-DF84A11418C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70EF4F3B-17AD-4FAF-A8D7-626A19861D6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70EF4F3B-17AD-4FAF-A8D7-626A19861D6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70EF4F3B-17AD-4FAF-A8D7-626A19861D6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70EF4F3B-17AD-4FAF-A8D7-626A19861D6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -229,6 +241,8 @@ Global
 		{29093412-65F1-4C41-BC38-45329DFF44F5} = {6F974FDB-D7E4-44E0-9DD6-415C03F605BD}
 		{7C4B7A61-A12C-4002-9F79-1642CB328CF2} = {0652817C-6052-49A2-BD7C-368994BD023A}
 		{A1F12306-AA36-40D2-A8D5-05191D334FFE} = {0652817C-6052-49A2-BD7C-368994BD023A}
+		{929CBF37-DC11-4F24-99EB-DF84A11418C8} = {E76CA1A8-F71D-4E84-BE93-5F6E54FF7D79}
+		{70EF4F3B-17AD-4FAF-A8D7-626A19861D6B} = {E76CA1A8-F71D-4E84-BE93-5F6E54FF7D79}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BCE6D6AC-1FCF-437D-87BD-EA135E67597C}

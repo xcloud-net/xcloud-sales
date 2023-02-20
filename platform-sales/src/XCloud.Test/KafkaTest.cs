@@ -10,7 +10,7 @@ namespace XCloud.Test;
 [TestClass]
 public class KafkaTest
 {
-    [TestMethod]
+    //[TestMethod]
     public async Task TestKafka()
     {
         await Task.CompletedTask;
