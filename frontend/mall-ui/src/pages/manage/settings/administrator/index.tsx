@@ -74,8 +74,9 @@ const AdminPage = (props: any) => {
       title: '操作',
       render: (text, record) => {
         return (
-          <Button.Group size="small">
-            <Button type="primary" onClick={() => {}}>
+          <Button.Group size='small'>
+            <Button type='primary' onClick={() => {
+            }}>
               编辑
             </Button>
           </Button.Group>
@@ -102,11 +103,11 @@ const AdminPage = (props: any) => {
         }}
       />
       <Card
-        size="small"
+        size='small'
         extra={
           <Button
-            size="small"
-            type="primary"
+            size='small'
+            type='primary'
             onClick={() => {
               _show(true);
             }}
@@ -122,7 +123,8 @@ const AdminPage = (props: any) => {
           dataSource={data}
           pagination={false}
           expandable={{
-            expandedRowRender: (x) => <XPermissions />,
+            expandedRowRender: (x) => <XPermissions keys={[]} save={(keys: string[]) => {
+            }} />,
           }}
         />
       </Card>

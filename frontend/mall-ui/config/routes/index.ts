@@ -207,6 +207,11 @@ const adminRoutes: Array<IRoute> = [
             redirect: '/manage/settings/mall',
           },
           {
+            name: '角色',
+            path: '/manage/settings/roles',
+            component: './manage/settings/role',
+          },
+          {
             name: '环境变量',
             path: '/manage/settings/env',
             component: './manage/settings/env',
