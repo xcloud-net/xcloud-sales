@@ -2,9 +2,8 @@ import permissions from '@/utils/permission/data';
 import { Button, Card, Checkbox } from 'antd';
 import { useState } from 'react';
 import { Permission, PermissionGroup } from '@/utils/models';
-import u from '@/utils';
 
-export default () => {
+export default ({ keys, save, loading }: { keys?: string[], save: any, loading?: boolean; }) => {
   const [selectedKeys, _selectedKeys] = useState<any[]>([]);
 
   const renderCheckbox = (d: Permission) => {
@@ -64,7 +63,10 @@ export default () => {
   return (
     <>
       <Card
-        extra={<Button type="primary">保存</Button>}
+        loading={loading}
+        extra={<Button type='primary' onClick={() => {
+          save && save(selectedKeys);
+        }}>保存</Button>}
         style={{
           backgroundColor: 'rgb(250,250,250)',
         }}

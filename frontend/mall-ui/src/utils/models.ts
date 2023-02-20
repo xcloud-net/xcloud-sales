@@ -667,3 +667,10 @@ export interface WarehouseDto {
   Name?: string;
   Address?: string;
 }
+
+export interface RoleDto {
+  Id?: string;
+  Name?: string;
+  Description?: string;
+  PermissionKeys?: string[];
+}
