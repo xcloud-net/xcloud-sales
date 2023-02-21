@@ -377,6 +377,7 @@ export interface SysAdminDto {
   Avatar?: string;
   SysUser?: SysUserDto;
   IsActive?: boolean;
+  Roles?: RoleDto[];
 }
 
 export interface MallUserDto {

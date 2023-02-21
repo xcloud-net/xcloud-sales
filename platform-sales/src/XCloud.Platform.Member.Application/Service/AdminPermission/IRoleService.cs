@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using XCloud.Core.Application;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Core.Domain.AdminPermission;
 using XCloud.Platform.Data.Database;
