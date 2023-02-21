@@ -93,7 +93,7 @@ public class DiagnosticTest
 
         var client = s.ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient("d");
 
-        using var res = await client.GetAsync("https://www.qq.com");
+        using var res = await client.GetAsync("https://www.baidu.com");
 
         var html = await res.Content.ReadAsStringAsync();
 

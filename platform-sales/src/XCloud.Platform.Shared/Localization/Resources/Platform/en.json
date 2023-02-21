@@ -1,0 +1,18 @@
+{
+  "culture": "en",
+  "texts": {
+    "member-ship": "member ship",
+    "manage-admin": "manage admin",
+    "add-admin": "add admin",
+    "delete-admin": "delete admin",
+    "manage-user": "manage user",
+    "view-user": "view user",
+    "add-user": "add user",
+    "delete-user": "delete user",
+    "manage-role": "manage role",
+    "role-edit": "role edit",
+    "manage-permission": "manage permission",
+    "manage-dept": "manage dept",
+    "reset-pwd": "reset pwd"
+  }
+}

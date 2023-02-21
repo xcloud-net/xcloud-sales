@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XCloud.Core.Dto;
-using XCloud.Sales.Services.Orders;
-using XCloud.Sales.Services.Shipping;
+using XCloud.Sales.Service.Authentication;
+using XCloud.Sales.Service.Orders;
+using XCloud.Sales.Service.Shipping;
 
 namespace XCloud.Sales.Mall.Api.Controllers.Admin;
 
@@ -11,13 +12,15 @@ public class ShippingController : ShopBaseController
 {
     private readonly IOrderService _orderService;
     private readonly IOrderProcessingService _orderProcessingService;
+    private readonly IOrderShipmentProcessingService _orderShipmentProcessingService;
     private readonly IShipmentService _shipmentService;
 
     public ShippingController(IOrderService orderService,
         IOrderProcessingService orderProcessingService,
-        IShipmentService shipmentService)
+        IShipmentService shipmentService, IOrderShipmentProcessingService orderShipmentProcessingService)
     {
         this._shipmentService = shipmentService;
+        _orderShipmentProcessingService = orderShipmentProcessingService;
         this._orderService = orderService;
         this._orderProcessingService = orderProcessingService;
     }
@@ -54,7 +57,7 @@ public class ShippingController : ShopBaseController
         var response = await this._shipmentService.CreateShippingAsync(dto);
         response.ThrowIfErrorOccured();
 
-        await this._orderProcessingService.MarkAsShippedAsync(new IdDto() { Id = dto.OrderId });
+        await this._orderShipmentProcessingService.MarkAsShippedAsync(new IdDto() { Id = dto.OrderId });
 
         return response;
     }

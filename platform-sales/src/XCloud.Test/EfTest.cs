@@ -4,29 +4,23 @@ using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using FluentAssertions;
+using Volo.Abp.Domain.Entities;
 using XCloud.Core.Application;
+using XCloud.Platform.Core.Domain.User;
 
 namespace XCloud.Test;
 
 [TestClass]
 public class EfTest
 {
-    [Table(nameof(UserTest))]
-    public class UserTest : EntityBase
-    {
-        public string Name { get; set; }
-    }
-
     public class DbContext : Microsoft.EntityFrameworkCore.DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var constr = "Server=mysql;Database=test-ef-core-01;Uid=root;Pwd=123;port=3306;CharSet=utf8";
-            var serverVersion = ServerVersion.AutoDetect(constr);
-            optionsBuilder.UseMySql(constr, serverVersion);
+            optionsBuilder.UseInMemoryDatabase(databaseName: "test-db");
         }
 
-        public DbSet<UserTest> UserTest { get; set; }
+        public DbSet<SysUser> SysUser { get; set; }
     }
 
     [TestInitialize]
@@ -48,45 +42,51 @@ public class EfTest
     {
         using (var db = new DbContext())
         {
-            (db.UserTest == db.Set<UserTest>()).Should().BeTrue();
+            (db.SysUser == db.Set<SysUser>()).Should().BeTrue();
 
-            var model = new UserTest()
+            var model = new SysUser()
             {
-                Name = DateTime.Now.ToString(),
+                IdentityName = DateTime.Now.ToString(),
                 CreationTime = DateTime.UtcNow
             };
             model.Id = ("123");
 
             (db.Entry(model).State == EntityState.Detached).Should().BeTrue();
 
-            db.Set<UserTest>().Attach(model);
+            db.Set<SysUser>().Attach(model);
             (db.Entry(model).State == EntityState.Unchanged).Should().BeTrue();
 
-            model.Name = "fa";
+            model.IdentityName = "fa";
             (db.Entry(model).State == EntityState.Modified).Should().BeTrue();
 
-            db.Set<UserTest>().Remove(model);
+            db.Set<SysUser>().Remove(model);
             (db.Entry(model).State == EntityState.Deleted).Should().BeTrue();
 
-            db.UserTest.Add(model);
+            db.SysUser.Add(model);
             (db.Entry(model).State == EntityState.Added).Should().BeTrue();
             db.SaveChanges();
             (db.Entry(model).State == EntityState.Unchanged).Should().BeTrue();
 
-            model.Name = "xx";
+            model.IdentityName = "xx";
             (db.Entry(model).State == EntityState.Modified).Should().BeTrue();
             db.SaveChanges();
             (db.Entry(model).State == EntityState.Unchanged).Should().BeTrue();
 
-            {
-                var newUser = db.Set<UserTest>().AsNoTracking().FirstOrDefault(x => x.Name == "xx");
-                (db.Entry(newUser).State == EntityState.Detached).Should().BeTrue();
+            var newUser = db.Set<SysUser>().AsNoTracking().FirstOrDefault(x => x.IdentityName == "xx");
 
-                newUser = db.Set<UserTest>().AsTracking().FirstOrDefault(x => x.Name == "xx");
-                (db.Entry(newUser).State == EntityState.Unchanged).Should().BeTrue();
-            }
+            if (newUser == null)
+                throw new EntityNotFoundException(nameof(newUser));
 
-            db.UserTest.Remove(model);
+            (db.Entry(newUser).State == EntityState.Detached).Should().BeTrue();
+
+            newUser = db.Set<SysUser>().AsTracking().FirstOrDefault(x => x.IdentityName == "xx");
+
+            if (newUser == null)
+                throw new EntityNotFoundException(nameof(newUser));
+
+            (db.Entry(newUser).State == EntityState.Unchanged).Should().BeTrue();
+
+            db.SysUser.Remove(model);
             (db.Entry(model).State == EntityState.Deleted).Should().BeTrue();
             db.SaveChanges();
             (db.Entry(model).State == EntityState.Detached).Should().BeTrue();

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using XCloud.Sales.Services.Finance;
+using XCloud.Sales.Service.Finance;
 
 namespace XCloud.Sales.Mall.Api.Controllers.Admin;
 

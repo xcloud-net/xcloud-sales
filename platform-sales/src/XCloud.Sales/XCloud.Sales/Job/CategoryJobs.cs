@@ -1,5 +1,6 @@
 ﻿using XCloud.Logging;
-using XCloud.Sales.Services.Catalog;
+using XCloud.Sales.Application;
+using XCloud.Sales.Service.Catalog;
 
 namespace XCloud.Sales.Job;
 

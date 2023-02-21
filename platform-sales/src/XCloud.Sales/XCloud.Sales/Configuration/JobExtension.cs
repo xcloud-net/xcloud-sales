@@ -1,7 +1,6 @@
 using Hangfire;
 using Microsoft.Extensions.Options;
 using XCloud.Core;
-using XCloud.Platform.Core.Job;
 using XCloud.Sales.Core;
 using XCloud.Sales.Job;
 

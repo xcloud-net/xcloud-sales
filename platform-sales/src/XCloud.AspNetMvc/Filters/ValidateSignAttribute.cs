@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using XCloud.AspNetMvc.Extension;
 using XCloud.Core.DependencyInjection.Extension;
 using XCloud.Core.Dto;
 using XCloud.Core.Extension;

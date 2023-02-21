@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using XCloud.Core.Cache.RequestCache;
-using XCloud.Sales.Services.Authentication;
+using XCloud.Sales.Service.Authentication;
 
 namespace XCloud.Sales.Framework;
 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using XCloud.Core.Dto;
-using XCloud.Sales.Services.Coupons;
+using XCloud.Sales.Service.Authentication;
+using XCloud.Sales.Service.Coupons;
 
 namespace XCloud.Sales.Mall.Api.Controllers;
 

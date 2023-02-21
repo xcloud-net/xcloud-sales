@@ -7,16 +7,12 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 
 global using XCloud.Sales.Framework;
-global using XCloud.Sales.Services.Authentication;
-
 global using Volo.Abp.Domain.Entities;
 global using XCloud.Core.Extension;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using XCloud.Sales.Services.Stores;
-
 using Volo.Abp;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
@@ -28,6 +24,8 @@ using XCloud.Core.Builder;
 using XCloud.Redis;
 using XCloud.Sales.Clients.Platform;
 using XCloud.Sales.Data.Database;
+using XCloud.Sales.Service.Authentication;
+using XCloud.Sales.Service.Stores;
 
 namespace XCloud.Sales.Mall.Api;
 
@@ -80,6 +78,9 @@ public class SalesMallApiModule : AbpModule
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
     {
         var pipeline = context.CreateMvcPipelineBuilder();
+
+        //multiple language
+        pipeline.App.UseAbpRequestLocalization();
 
         pipeline.App.UseMiddleware<StoreAuthMiddleware>();
     }

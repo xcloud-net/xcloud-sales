@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Volo.Abp;
+using XCloud.AspNetMvc.Extension;
 using XCloud.Core.DependencyInjection.Extension;
 
 namespace XCloud.AspNetMvc.Builder;

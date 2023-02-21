@@ -2,14 +2,14 @@ import XTime from '@/components/manage/time';
 import XUserAvatar from '@/components/manage/user/avatar';
 import u from '@/utils';
 import http from '@/utils/http';
-import { SysAdminDto } from '@/utils/models';
+import { RoleDto, SysAdminDto } from '@/utils/models';
 import { Button, Card, Table } from 'antd';
 import { ColumnType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 import XForm from './form';
 import XSearchForm from './searchForm';
 import XStatus from './status';
-import XPermissions from '../components/permission';
+import XRoles from './roles';
 
 const AdminPage = (props: any) => {
   const [query, _query] = useState({
@@ -18,7 +18,6 @@ const AdminPage = (props: any) => {
   const [data, _data] = useState([]);
   const [total, _total] = useState(1);
   const [loading, _loading] = useState(false);
-
   const [show, _show] = useState(false);
 
   const queryPaging = () => {
@@ -74,8 +73,9 @@ const AdminPage = (props: any) => {
       title: '操作',
       render: (text, record) => {
         return (
-          <Button.Group size="small">
-            <Button type="primary" onClick={() => {}}>
+          <Button.Group size='small'>
+            <Button type='primary' onClick={() => {
+            }}>
               编辑
             </Button>
           </Button.Group>
@@ -102,11 +102,11 @@ const AdminPage = (props: any) => {
         }}
       />
       <Card
-        size="small"
+        size='small'
         extra={
           <Button
-            size="small"
-            type="primary"
+            size='small'
+            type='primary'
             onClick={() => {
               _show(true);
             }}
@@ -122,7 +122,9 @@ const AdminPage = (props: any) => {
           dataSource={data}
           pagination={false}
           expandable={{
-            expandedRowRender: (x) => <XPermissions />,
+            expandedRowRender: (x) => <XRoles model={x} ok={() => {
+              queryPaging();
+            }} />,
           }}
         />
       </Card>

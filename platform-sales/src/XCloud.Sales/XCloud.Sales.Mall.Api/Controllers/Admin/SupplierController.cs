@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using XCloud.Sales.Services.Stock;
 using XCloud.Core.Dto;
+using XCloud.Sales.Service.Authentication;
+using XCloud.Sales.Service.WarehouseStock;
 
 namespace XCloud.Sales.Mall.Api.Controllers.Admin;
 

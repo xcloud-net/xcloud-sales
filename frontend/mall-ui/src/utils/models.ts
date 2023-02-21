@@ -377,6 +377,7 @@ export interface SysAdminDto {
   Avatar?: string;
   SysUser?: SysUserDto;
   IsActive?: boolean;
+  Roles?: RoleDto[];
 }
 
 export interface MallUserDto {
@@ -666,4 +667,11 @@ export interface WarehouseDto {
   Id?: string;
   Name?: string;
   Address?: string;
+}
+
+export interface RoleDto {
+  Id?: string;
+  Name?: string;
+  Description?: string;
+  PermissionKeys?: string[];
 }

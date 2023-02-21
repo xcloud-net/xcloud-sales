@@ -11,6 +11,7 @@ using Volo.Abp.AspNetCore.Mvc.AntiForgery;
 using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
 using XCloud.AspNetMvc.Builder;
+using XCloud.AspNetMvc.Configuration;
 using XCloud.AspNetMvc.Middleware;
 using XCloud.AspNetMvc.Swagger;
 using XCloud.Core.Builder;

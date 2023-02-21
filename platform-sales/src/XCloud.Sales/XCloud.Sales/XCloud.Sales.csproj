@@ -41,4 +41,11 @@
         <None Remove="jieba.NET" />
         <None Remove="Microsoft.EntityFrameworkCore.Design" />
     </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Localization\Resources\Sales\zh-Hans.json" />
+      <None Remove="Localization\Resources\en.json" />
+      <None Remove="Localization\Resources\zh-Hans.json" />
+      <EmbeddedResource Include="Localization\Resources\Sales\en.json" />
+    </ItemGroup>
 </Project>

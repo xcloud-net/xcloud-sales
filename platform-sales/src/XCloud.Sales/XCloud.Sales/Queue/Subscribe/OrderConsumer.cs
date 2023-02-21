@@ -1,6 +1,7 @@
 ﻿using DotNetCore.CAP;
+using XCloud.Sales.Application;
 using XCloud.Sales.Data.Domain.Orders;
-using XCloud.Sales.Services.Orders;
+using XCloud.Sales.Service.Orders;
 
 namespace XCloud.Sales.Queue.Subscribe;
 

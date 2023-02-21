@@ -35,11 +35,11 @@ public interface IXCloudCrudAppService<TEntity, in TEntityDto, in TKey> : IXClou
 
     Task<TEntity[]> QueryByIdsAsync(TKey[] ids);
 
-    Task InsertAsync(TEntityDto dto);
+    Task<TEntity> InsertAsync(TEntityDto dto);
 
     Task DeleteByIdAsync(TKey id);
 
-    Task UpdateAsync(TEntityDto dto);
+    Task<TEntity> UpdateAsync(TEntityDto dto);
 }
 
 /// <summary>
@@ -230,7 +230,7 @@ public abstract class XCloudCrudAppService<TEntity, TEntityDto, TKey> :
         }
     }
 
-    public virtual async Task InsertAsync(TEntityDto dto)
+    public virtual async Task<TEntity> InsertAsync(TEntityDto dto)
     {
         if (dto == null)
             throw new ArgumentNullException(nameof(dto));
@@ -245,9 +245,11 @@ public abstract class XCloudCrudAppService<TEntity, TEntityDto, TKey> :
         await this.InitBeforeInsertAsync(entity);
 
         await this.Repository.InsertAsync(entity);
+
+        return entity;
     }
 
-    public virtual async Task UpdateAsync(TEntityDto dto)
+    public virtual async Task<TEntity> UpdateAsync(TEntityDto dto)
     {
         if (dto == null)
             throw new ArgumentNullException(nameof(dto));
@@ -265,5 +267,7 @@ public abstract class XCloudCrudAppService<TEntity, TEntityDto, TKey> :
         await this.ModifyFieldsForUpdateAsync(entity, dto);
 
         await this.Repository.UpdateAsync(entity);
+
+        return entity;
     }
 }

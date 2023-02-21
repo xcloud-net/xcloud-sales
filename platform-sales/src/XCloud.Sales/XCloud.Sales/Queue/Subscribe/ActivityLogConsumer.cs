@@ -1,7 +1,8 @@
 ﻿using DotNetCore.CAP;
 using XCloud.Logging;
+using XCloud.Sales.Application;
 using XCloud.Sales.Data.Domain.Logging;
-using XCloud.Sales.Services.Logging;
+using XCloud.Sales.Service.Logging;
 
 namespace XCloud.Sales.Queue.Subscribe;
 

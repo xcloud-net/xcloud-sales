@@ -1,10 +1,11 @@
-using XCloud.Sales.Services.AfterSale;
-using XCloud.Sales.Services.Catalog;
-using XCloud.Sales.Services.Coupons;
-using XCloud.Sales.Services.Orders;
-using XCloud.Sales.Services.Promotion;
-using XCloud.Sales.Services.Report;
-using XCloud.Sales.Services.Users;
+using XCloud.Sales.Application;
+using XCloud.Sales.Service.AfterSale;
+using XCloud.Sales.Service.Catalog;
+using XCloud.Sales.Service.Coupons;
+using XCloud.Sales.Service.Orders;
+using XCloud.Sales.Service.Promotion;
+using XCloud.Sales.Service.Report;
+using XCloud.Sales.Service.Users;
 
 namespace XCloud.Sales.ViewService;
 

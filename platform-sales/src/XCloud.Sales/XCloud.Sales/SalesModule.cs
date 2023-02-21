@@ -15,13 +15,14 @@ global using XCloud.Core.Cache;
 global using XCloud.Core.DataSerializer;
 global using XCloud.Core.Extension;
 global using XCloud.Core.IdGenerator;
-global using XCloud.Sales.Services;
+global using XCloud.Sales.Service;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Volo.Abp.Application;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.FluentValidation;
 using Volo.Abp.Http.Client;
+using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using XCloud.Application;
 using XCloud.AspNetMvc;
@@ -33,15 +34,18 @@ using XCloud.MessageBus;
 using XCloud.Redis;
 using XCloud.Platform.Connection.WeChat;
 using XCloud.Platform.Core.Job;
+using XCloud.Platform.Data.EntityFrameworkCore;
 using XCloud.Platform.Framework;
 using XCloud.Sales.Configuration;
 using XCloud.Sales.Core;
+using XCloud.Sales.Data.Database;
 using XCloud.Sales.Data.DataSeeder;
-using XCloud.Sales.Services.Catalog;
+using XCloud.Sales.Service.Catalog;
 
 namespace XCloud.Sales;
 
 [DependsOn(
+    typeof(AbpLocalizationModule),
     typeof(AbpDddApplicationModule),
     typeof(AbpFluentValidationModule),
     typeof(AbpAutoMapperModule),
@@ -60,12 +64,9 @@ public class SalesModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+        context.ConfigSalesLocalization();
         context.AddDbContext();
 
-        Configure<SalesJobOption>(option =>
-        {
-            option.AutoStartJob = true;
-        });
         Configure<AbpAutoMapperOptions>(option => option.AddMaps<SalesModule>(validate: false));
     }
 
@@ -76,11 +77,20 @@ public class SalesModule : AbpModule
         //request data holder
         context.Services.RemoveAll<IRequestCacheProvider>();
         context.Services.AddScoped<IRequestCacheProvider, HttpContextItemRequestCache>();
-        
+
+        this.Configure<SalesJobOption>(option => { option.AutoStartJob = true; });
         this.Configure<PlatformJobOption>(option =>
         {
             //close platform jobs manually
             option.AutoStartJob = false;
+        });
+        this.Configure<PlatformEfCoreOption>(option =>
+        {
+            option.AutoCreateDatabase = false;
+        });
+        this.Configure<SalesEfCoreOption>(option =>
+        {
+            option.AutoCreateDatabase = false;
         });
     }
 

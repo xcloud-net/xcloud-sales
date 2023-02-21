@@ -5,6 +5,7 @@ using Volo.Abp.Modularity;
 using XCloud.Core;
 using XCloud.Database.EntityFrameworkCore.MySQL;
 using XCloud.Redis.DistributedLock;
+using XCloud.Sales.Core;
 using XCloud.Sales.Data;
 using XCloud.Sales.Data.Database;
 

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
 using System.Threading.Tasks;
 using XCloud.Core.Dto;
 using XCloud.Platform.Auth.Application.Admin;
@@ -15,7 +14,8 @@ public class SysRoleController : PlatformBaseController, IAdminController
     private readonly IRoleService _roleService;
     private readonly IAdminPermissionService _permissionService;
 
-    public SysRoleController(IAdminRoleService adminRoleService, IAdminPermissionService permissionService, IRoleService roleService)
+    public SysRoleController(IAdminRoleService adminRoleService, IAdminPermissionService permissionService,
+        IRoleService roleService)
     {
         this._adminRoleService = adminRoleService;
         _permissionService = permissionService;
@@ -28,6 +28,11 @@ public class SysRoleController : PlatformBaseController, IAdminController
         var loginAdmin = await this.GetRequiredAuthedAdminAsync();
 
         var response = await this._roleService.QueryPagingAsync(dto);
+
+        if (response.IsNotEmpty)
+        {
+            await this._adminRoleService.AttachPermissionAsync(response.Items.ToArray());
+        }
 
         return response;
     }
@@ -68,7 +73,7 @@ public class SysRoleController : PlatformBaseController, IAdminController
 
         return new ApiResponse<object>();
     }
-    
+
     [HttpPost("save-role-permissions")]
     public async Task<ApiResponse<object>> SaveRolePermissionsAsync([FromBody] AssignPermissionToRoleInput dto)
     {

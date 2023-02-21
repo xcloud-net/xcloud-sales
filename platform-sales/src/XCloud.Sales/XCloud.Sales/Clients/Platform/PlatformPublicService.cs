@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using XCloud.Core.Dto;
 using XCloud.Platform.Member.Application.Service.User;
+using XCloud.Sales.Application;
 
 namespace XCloud.Sales.Clients.Platform;
 

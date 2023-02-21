@@ -1,6 +1,7 @@
 using Volo.Abp.Data;
+using XCloud.Sales.Application;
 using XCloud.Sales.Data.Domain.Catalog;
-using XCloud.Sales.Services.Catalog;
+using XCloud.Sales.Service.Catalog;
 
 namespace XCloud.Sales.Data.DataSeeder;
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using XCloud.Sales.Services.Orders;
+using XCloud.Sales.Service.Orders;
 
 namespace XCloud.Sales.Mall.Api.Controllers;
 
