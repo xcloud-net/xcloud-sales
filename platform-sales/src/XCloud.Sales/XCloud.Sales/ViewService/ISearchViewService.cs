@@ -1,7 +1,8 @@
+using XCloud.Sales.Application;
 using XCloud.Sales.Data;
 using XCloud.Sales.Data.Domain.Catalog;
-using XCloud.Sales.Services.Catalog;
-using XCloud.Sales.Services.Report;
+using XCloud.Sales.Service.Catalog;
+using XCloud.Sales.Service.Report;
 
 namespace XCloud.Sales.ViewService;
 

@@ -15,7 +15,7 @@ global using XCloud.Core.Cache;
 global using XCloud.Core.DataSerializer;
 global using XCloud.Core.Extension;
 global using XCloud.Core.IdGenerator;
-global using XCloud.Sales.Services;
+global using XCloud.Sales.Service;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Volo.Abp.Application;
@@ -40,7 +40,7 @@ using XCloud.Sales.Configuration;
 using XCloud.Sales.Core;
 using XCloud.Sales.Data.Database;
 using XCloud.Sales.Data.DataSeeder;
-using XCloud.Sales.Services.Catalog;
+using XCloud.Sales.Service.Catalog;
 
 namespace XCloud.Sales;
 

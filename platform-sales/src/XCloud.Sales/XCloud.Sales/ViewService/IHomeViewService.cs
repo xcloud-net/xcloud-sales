@@ -1,8 +1,9 @@
-using XCloud.Sales.Services.Catalog;
-using XCloud.Sales.Services.Common;
-using XCloud.Sales.Services.Configuration;
-using XCloud.Sales.Services.Coupons;
-using XCloud.Sales.Services.Promotion;
+using XCloud.Sales.Application;
+using XCloud.Sales.Service.Catalog;
+using XCloud.Sales.Service.Common;
+using XCloud.Sales.Service.Configuration;
+using XCloud.Sales.Service.Coupons;
+using XCloud.Sales.Service.Promotion;
 
 namespace XCloud.Sales.ViewService;
 

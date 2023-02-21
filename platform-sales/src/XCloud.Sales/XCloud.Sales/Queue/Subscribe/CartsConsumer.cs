@@ -1,5 +1,6 @@
 ﻿using DotNetCore.CAP;
-using XCloud.Sales.Services.ShoppingCart;
+using XCloud.Sales.Application;
+using XCloud.Sales.Service.ShoppingCart;
 
 namespace XCloud.Sales.Queue.Subscribe;
 

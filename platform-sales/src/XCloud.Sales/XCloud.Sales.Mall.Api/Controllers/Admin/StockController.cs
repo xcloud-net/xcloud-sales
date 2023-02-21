@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XCloud.Core.Dto;
-using XCloud.Sales.Services.Stock;
+using XCloud.Sales.Service.Authentication;
+using XCloud.Sales.Service.WarehouseStock;
 
 namespace XCloud.Sales.Mall.Api.Controllers.Admin;
 
@@ -8,29 +9,29 @@ namespace XCloud.Sales.Mall.Api.Controllers.Admin;
 [Route("api/mall-admin/stock")]
 public class StockController : ShopBaseController
 {
-    private readonly IWarehouseStockService _warehouseStockService;
+    private readonly IStockService _stockService;
 
-    public StockController(IWarehouseStockService warehouseStockService)
+    public StockController(IStockService stockService)
     {
-        this._warehouseStockService = warehouseStockService;
+        this._stockService = stockService;
     }
 
     [HttpPost("paging")]
-    public async Task<PagedResponse<WarehouseStockDto>> StockPagingAsync([FromBody] QueryWarehouseStockInput dto)
+    public async Task<PagedResponse<StockDto>> StockPagingAsync([FromBody] QueryWarehouseStockInput dto)
     {
         var storeAdministrator = await this.StoreAuthService.GetRequiredStoreAdministratorAsync();
 
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageStock);
 
-        var response = await this._warehouseStockService.QueryPagingAsync(dto);
+        var response = await this._stockService.QueryPagingAsync(dto);
 
         if (response.IsNotEmpty)
         {
-            await this._warehouseStockService.AttachDataAsync(response.Items.ToArray(),
+            await this._stockService.AttachDataAsync(response.Items.ToArray(),
                 new AttachWarehouseStockDataInput() { Items = true });
             var items = response.Items.SelectMany(x => x.Items).WhereNotNull().ToArray();
-            await this._warehouseStockService.AttachDataAsync(items,
+            await this._stockService.AttachDataAsync(items,
                 new AttachWarehouseStockItemDataInput() { Goods = true });
         }
 
@@ -38,7 +39,7 @@ public class StockController : ShopBaseController
     }
 
     [HttpPost("item-paging")]
-    public async Task<PagedResponse<WarehouseStockItemDto>> StockItemPagingAsync(
+    public async Task<PagedResponse<StockItemDto>> StockItemPagingAsync(
         [FromBody] QueryWarehouseStockItemInput dto)
     {
         var storeAdministrator = await this.StoreAuthService.GetRequiredStoreAdministratorAsync();
@@ -46,11 +47,11 @@ public class StockController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageStock);
 
-        var response = await this._warehouseStockService.QueryItemPagingAsync(dto);
+        var response = await this._stockService.QueryItemPagingAsync(dto);
 
         if (response.IsNotEmpty)
         {
-            await this._warehouseStockService.AttachDataAsync(response.Items.ToArray(),
+            await this._stockService.AttachDataAsync(response.Items.ToArray(),
                 new AttachWarehouseStockItemDataInput()
                 {
                     Goods = true,
@@ -58,9 +59,9 @@ public class StockController : ShopBaseController
                 });
             
             var stocks = response.Items
-                .Where(x => x.WarehouseStock != null)
-                .Select(x => x.WarehouseStock).ToArray();
-            await this._warehouseStockService.AttachDataAsync(stocks, new AttachWarehouseStockDataInput()
+                .Where(x => x.Stock != null)
+                .Select(x => x.Stock).ToArray();
+            await this._stockService.AttachDataAsync(stocks, new AttachWarehouseStockDataInput()
             {
                 Warehouse = true,
                 Supplier = true
@@ -78,7 +79,7 @@ public class StockController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageStock);
 
-        await this._warehouseStockService.ApproveStockAsync(dto.Id);
+        await this._stockService.ApproveStockAsync(dto.Id);
 
         return new ApiResponse<object>();
     }
@@ -91,20 +92,20 @@ public class StockController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageStock);
 
-        await this._warehouseStockService.DeleteUnApprovedStockAsync(dto.Id);
+        await this._stockService.DeleteUnApprovedStockAsync(dto.Id);
 
         return new ApiResponse<object>();
     }
 
     [HttpPost("insert-stock")]
-    public async Task<ApiResponse<object>> InsertStockAsync([FromBody] WarehouseStockDto dto)
+    public async Task<ApiResponse<object>> InsertStockAsync([FromBody] StockDto dto)
     {
         var storeAdministrator = await this.StoreAuthService.GetRequiredStoreAdministratorAsync();
 
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageStock);
 
-        await this._warehouseStockService.InsertWarehouseStockAsync(dto);
+        await this._stockService.InsertWarehouseStockAsync(dto);
 
         return new ApiResponse<object>();
     }

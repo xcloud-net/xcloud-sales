@@ -1,9 +1,9 @@
 ﻿using XCloud.AspNetMvc.Controller;
 using XCloud.Sales.Clients.Platform;
 using XCloud.Sales.Queue;
-using XCloud.Sales.Services.Authentication;
-using XCloud.Sales.Services.Configuration;
-using XCloud.Sales.Services.Stores;
+using XCloud.Sales.Service.Authentication;
+using XCloud.Sales.Service.Configuration;
+using XCloud.Sales.Service.Stores;
 
 namespace XCloud.Sales.Framework;
 

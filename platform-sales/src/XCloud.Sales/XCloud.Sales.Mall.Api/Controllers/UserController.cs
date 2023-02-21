@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using XCloud.Sales.Services.Users;
 using Volo.Abp.Authorization;
 using Volo.Abp.Uow;
 using XCloud.Core.Cache;
 using XCloud.Core.Dto;
+using XCloud.Sales.Service.Authentication;
+using XCloud.Sales.Service.Users;
 
 namespace XCloud.Sales.Mall.Api.Controllers;
 

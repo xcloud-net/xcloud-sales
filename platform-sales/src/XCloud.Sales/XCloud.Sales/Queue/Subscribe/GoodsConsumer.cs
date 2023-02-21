@@ -1,6 +1,7 @@
 ﻿using DotNetCore.CAP;
 using XCloud.Core.Dto;
-using XCloud.Sales.Services.Catalog;
+using XCloud.Sales.Application;
+using XCloud.Sales.Service.Catalog;
 using XCloud.Sales.ViewService;
 
 namespace XCloud.Sales.Queue.Subscribe;

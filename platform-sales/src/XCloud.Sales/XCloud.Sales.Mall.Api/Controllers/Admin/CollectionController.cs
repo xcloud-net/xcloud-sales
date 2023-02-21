@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XCloud.Core.Dto;
 using XCloud.Sales.Data.Domain.Catalog;
-using XCloud.Sales.Services.Catalog;
+using XCloud.Sales.Service.Authentication;
+using XCloud.Sales.Service.Catalog;
 
 namespace XCloud.Sales.Mall.Api.Controllers.Admin;
 

@@ -1,6 +1,7 @@
 using XCloud.Sales.Data.Domain.Catalog;
-using XCloud.Sales.Services.Catalog;
 using XCloud.Core.Dto;
+using XCloud.Sales.Application;
+using XCloud.Sales.Service.Catalog;
 
 namespace XCloud.Sales.ViewService;
 

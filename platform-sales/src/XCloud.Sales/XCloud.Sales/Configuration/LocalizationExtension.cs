@@ -1,5 +1,6 @@
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
+using Volo.Abp.Validation.Localization;
 using Volo.Abp.VirtualFileSystem;
 using XCloud.Platform.Shared.Localization;
 using XCloud.Sales.Localization;
@@ -17,13 +18,14 @@ public static class LocalizationExtension
 
         context.Services.Configure<AbpLocalizationOptions>(options =>
         {
+            options.Languages.Clear();
             options.Languages.Add(new LanguageInfo("en", "en", "English"));
             options.Languages.Add(new LanguageInfo("zh-Hans", "zh-Hans", "简体中文"));
 
             options.Resources
                 .Add<SalesResource>(defaultCultureName: "zh-Hans")
                 .AddVirtualJson("/Localization/Resources/Sales")
-                .AddBaseTypes(typeof(PlatformResource));
+                .AddBaseTypes(typeof(PlatformResource), typeof(AbpValidationResource));
 
             options.DefaultResourceType = typeof(SalesResource);
         });

@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XCloud.Core.Dto;
 using XCloud.Sales.Data.Domain.Orders;
-using XCloud.Sales.Services.Finance;
-using XCloud.Sales.Services.Orders;
+using XCloud.Sales.Service.Authentication;
+using XCloud.Sales.Service.Finance;
+using XCloud.Sales.Service.Orders;
 
 namespace XCloud.Sales.Mall.Api.Controllers.Admin;
 
@@ -12,15 +13,18 @@ public class OrderController : ShopBaseController
 {
     private readonly IOrderService _orderService;
     private readonly IOrderProcessingService _orderProcessingService;
+    private readonly IOrderPaymentProcessingService _orderPaymentProcessingService;
     private readonly IOrderBillService _orderBillService;
 
     public OrderController(IOrderService orderService,
         IOrderProcessingService orderProcessingService,
-        IOrderBillService orderBillService)
+        IOrderBillService orderBillService, 
+        IOrderPaymentProcessingService orderPaymentProcessingService)
     {
         this._orderService = orderService;
         this._orderProcessingService = orderProcessingService;
         this._orderBillService = orderBillService;
+        _orderPaymentProcessingService = orderPaymentProcessingService;
     }
 
     [HttpPost("add-order-note")]
@@ -89,7 +93,7 @@ public class OrderController : ShopBaseController
         if (order == null)
             throw new EntityNotFoundException();
 
-        var bill = await this._orderProcessingService.CreateOrderPayBillAsync(new CreateOrderPayBillInput()
+        var bill = await this._orderPaymentProcessingService.CreateOrderPayBillAsync(new CreateOrderPayBillInput()
             { Id = order.Id });
 
         return new ApiResponse<OrderBillDto>(bill);
@@ -113,7 +117,7 @@ public class OrderController : ShopBaseController
         //commit to ensure next step can read the latest data
 
         //trigger order payment status updation
-        await this._orderProcessingService.TrySetAsPaidAfterBillPaidAsync(new IdDto() { Id = bill.OrderId });
+        await this._orderPaymentProcessingService.TrySetAsPaidAfterBillPaidAsync(new IdDto() { Id = bill.OrderId });
 
         return new ApiResponse<object>();
     }
@@ -128,7 +132,7 @@ public class OrderController : ShopBaseController
             SalesPermissions.ManageOrders);
 
         //trigger order payment status updation
-        await this._orderProcessingService.TrySetAsPaidAfterBillPaidAsync(dto);
+        await this._orderPaymentProcessingService.TrySetAsPaidAfterBillPaidAsync(dto);
 
         return new ApiResponse<object>();
     }

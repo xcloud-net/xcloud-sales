@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XCloud.Core.Dto;
-using XCloud.Sales.Services.Configuration;
+using XCloud.Sales.Service.Configuration;
 
 namespace XCloud.Sales.Mall.Api.Controllers;
 

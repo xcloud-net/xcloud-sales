@@ -3,7 +3,7 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.DynamicProxy;
 using XCloud.Sales.Data.Domain.Logging;
 using XCloud.Sales.Queue;
-using XCloud.Sales.Services.Logging;
+using XCloud.Sales.Service.Logging;
 
 namespace XCloud.Sales.Framework;
 

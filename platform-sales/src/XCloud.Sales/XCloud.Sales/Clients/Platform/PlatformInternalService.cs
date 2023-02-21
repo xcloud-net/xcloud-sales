@@ -9,7 +9,8 @@ using XCloud.Platform.Member.Application.Service.Admin;
 using XCloud.Platform.Member.Application.Service.AdminPermission;
 using XCloud.Platform.Member.Application.Service.User;
 using XCloud.Platform.Shared.Dto;
-using XCloud.Sales.Services.Users;
+using XCloud.Sales.Application;
+using XCloud.Sales.Service.Users;
 using IUserProfileService = XCloud.Platform.Member.Application.Service.User.IUserProfileService;
 
 namespace XCloud.Sales.Clients.Platform;

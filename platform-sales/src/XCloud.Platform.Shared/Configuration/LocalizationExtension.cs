@@ -18,6 +18,7 @@ public static class LocalizationExtension
         });
         context.Services.Configure<AbpLocalizationOptions>(options =>
         {
+            options.Languages.Clear();
             options.Languages.Add(new LanguageInfo("en", "en", "English"));
             options.Languages.Add(new LanguageInfo("zh-Hans", "zh-Hans", "简体中文"));
 

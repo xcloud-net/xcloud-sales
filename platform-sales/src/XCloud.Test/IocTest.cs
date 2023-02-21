@@ -77,14 +77,14 @@ public class IocTest
         {
             using (var scope = provider.CreateScope())
             {
-                //scope:Autofac.Extensions.DependencyInjection.AutofacServiceScope
+                //scope:Autofac.GoodsCombinationExtension.DependencyInjection.AutofacServiceScope
             }
         }
         catch (Exception e)
         {
             /*
          Autofac.Core.Registration.ComponentNotRegisteredException:
-         “The requested service 'Microsoft.Extensions.DependencyInjection.IServiceScopeFactory' has not been registered. 
+         “The requested service 'Microsoft.GoodsCombinationExtension.DependencyInjection.IServiceScopeFactory' has not been registered. 
          To avoid this exception, either register a component to provide the service, 
          check for service registration using IsRegistered(), or use the ResolveOptional() method to resolve an optional dependency.”    
          */

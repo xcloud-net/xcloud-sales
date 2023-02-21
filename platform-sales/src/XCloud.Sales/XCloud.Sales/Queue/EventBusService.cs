@@ -1,11 +1,12 @@
 ﻿using DotNetCore.CAP;
 using Volo.Abp.Application.Services;
 using XCloud.Core.Dto;
+using XCloud.Sales.Application;
 using XCloud.Sales.Data.Domain.Logging;
 using XCloud.Sales.Data.Domain.Orders;
-using XCloud.Sales.Services.Catalog;
-using XCloud.Sales.Services.Logging;
-using XCloud.Sales.Services.ShoppingCart;
+using XCloud.Sales.Service.Catalog;
+using XCloud.Sales.Service.Logging;
+using XCloud.Sales.Service.ShoppingCart;
 
 namespace XCloud.Sales.Queue;
 

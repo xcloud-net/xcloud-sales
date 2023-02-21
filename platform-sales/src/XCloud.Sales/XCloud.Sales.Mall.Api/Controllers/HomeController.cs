@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using XCloud.Sales.Services.Catalog;
-using XCloud.Sales.Services.Coupons;
-using XCloud.Sales.Services.Users;
 using XCloud.Sales.ViewService;
 using XCloud.Core.Cache;
 using XCloud.Core.Dto;
 using XCloud.Core.Helper;
+using XCloud.Sales.Service.Authentication;
+using XCloud.Sales.Service.Catalog;
+using XCloud.Sales.Service.Coupons;
+using XCloud.Sales.Service.Users;
 
 namespace XCloud.Sales.Mall.Api.Controllers;
 

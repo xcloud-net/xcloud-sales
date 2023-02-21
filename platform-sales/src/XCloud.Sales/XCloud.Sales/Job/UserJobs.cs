@@ -1,6 +1,7 @@
 using XCloud.Core.Dto;
 using XCloud.Logging;
-using XCloud.Sales.Services.Users;
+using XCloud.Sales.Application;
+using XCloud.Sales.Service.Users;
 
 namespace XCloud.Sales.Job;
 

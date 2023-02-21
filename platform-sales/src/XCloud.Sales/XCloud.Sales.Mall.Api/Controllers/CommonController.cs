@@ -2,9 +2,10 @@
 using XCloud.Core.Dto;
 using XCloud.Sales.Data.Domain.Catalog;
 using XCloud.Sales.Data.Domain.Logging;
-using XCloud.Sales.Services.Catalog;
-using XCloud.Sales.Services.Logging;
-using XCloud.Sales.Services.Media;
+using XCloud.Sales.Service.Authentication;
+using XCloud.Sales.Service.Catalog;
+using XCloud.Sales.Service.Logging;
+using XCloud.Sales.Service.Media;
 
 namespace XCloud.Sales.Mall.Api.Controllers;
 

@@ -1692,181 +1692,6 @@ namespace XCloud.Sales.Migrations
                     b.ToTable("ShippingMethod", (string)null);
                 });
 
-            modelBuilder.Entity("XCloud.Sales.Data.Domain.Stock.Supplier", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Address")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<string>("ContactName")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("CreationTime")
-                        .HasComment("创建时间");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false)
-                        .HasColumnName("IsDeleted")
-                        .HasComment("是否删除");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("Telephone")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreationTime");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.ToTable("Supplier", (string)null);
-                });
-
-            modelBuilder.Entity("XCloud.Sales.Data.Domain.Stock.Warehouse", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Address")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("CreationTime")
-                        .HasComment("创建时间");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false)
-                        .HasColumnName("IsDeleted")
-                        .HasComment("是否删除");
-
-                    b.Property<double?>("Lat")
-                        .HasColumnType("double");
-
-                    b.Property<double?>("Lng")
-                        .HasColumnType("double");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreationTime");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.ToTable("Warehouse", (string)null);
-                });
-
-            modelBuilder.Entity("XCloud.Sales.Data.Domain.Stock.WarehouseStock", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<bool>("Approved")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("ApprovedByUserId")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<DateTime?>("ApprovedTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("CreationTime")
-                        .HasComment("创建时间");
-
-                    b.Property<DateTime>("ExpirationTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("No")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("Remark")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
-
-                    b.Property<string>("SupplierId")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("WarehouseId")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreationTime");
-
-                    b.ToTable("WarehouseStock", (string)null);
-                });
-
-            modelBuilder.Entity("XCloud.Sales.Data.Domain.Stock.WarehouseStockItem", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int>("CombinationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DeductQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GoodsId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("LastModificationTime")
-                        .HasComment("更新时间，同时也是乐观锁");
-
-                    b.Property<decimal>("Price")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("RuningOut")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("WarehouseStockId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LastModificationTime");
-
-                    b.ToTable("WarehouseStockItem", (string)null);
-                });
-
             modelBuilder.Entity("XCloud.Sales.Data.Domain.Stores.Store", b =>
                 {
                     b.Property<string>("Id")
@@ -2250,6 +2075,215 @@ namespace XCloud.Sales.Migrations
                     b.HasIndex("CreationTime");
 
                     b.ToTable("UserGradeMapping", (string)null);
+                });
+
+            modelBuilder.Entity("XCloud.Sales.Data.Domain.WarehouseStock.Stock", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("ApprovedByUserId")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime?>("ApprovedTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreationTime")
+                        .HasComment("创建时间");
+
+                    b.Property<DateTime>("ExpirationTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("No")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<string>("SupplierId")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("WarehouseId")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreationTime");
+
+                    b.ToTable("Stock", (string)null);
+                });
+
+            modelBuilder.Entity("XCloud.Sales.Data.Domain.WarehouseStock.StockItem", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("CombinationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DeductQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GoodsId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("LastModificationTime")
+                        .HasComment("更新时间，同时也是乐观锁");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("RuningOut")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("WarehouseStockId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LastModificationTime");
+
+                    b.ToTable("StockItem", (string)null);
+                });
+
+            modelBuilder.Entity("XCloud.Sales.Data.Domain.WarehouseStock.StockUsageHistory", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Revert")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("RevertTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("WarehouseStockItemId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StockUsageHistory", (string)null);
+                });
+
+            modelBuilder.Entity("XCloud.Sales.Data.Domain.WarehouseStock.Supplier", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("ContactName")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreationTime")
+                        .HasComment("创建时间");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted")
+                        .HasComment("是否删除");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Telephone")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreationTime");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("Supplier", (string)null);
+                });
+
+            modelBuilder.Entity("XCloud.Sales.Data.Domain.WarehouseStock.Warehouse", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreationTime")
+                        .HasComment("创建时间");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted")
+                        .HasComment("是否删除");
+
+                    b.Property<double?>("Lat")
+                        .HasColumnType("double");
+
+                    b.Property<double?>("Lng")
+                        .HasColumnType("double");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreationTime");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("Warehouse", (string)null);
                 });
 #pragma warning restore 612, 618
         }

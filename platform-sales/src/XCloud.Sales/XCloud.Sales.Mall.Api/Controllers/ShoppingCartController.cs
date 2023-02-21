@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XCloud.Sales.Data.Domain.Logging;
 using XCloud.Sales.Data.Domain.Orders;
-using XCloud.Sales.Services.Catalog;
-using XCloud.Sales.Services.Logging;
-using XCloud.Sales.Services.ShoppingCart;
-using XCloud.Sales.Services.Stores;
-using XCloud.Sales.Services.Users;
 using XCloud.Core.Cache;
 using XCloud.Core.Dto;
+using XCloud.Sales.Service.Authentication;
+using XCloud.Sales.Service.Catalog;
+using XCloud.Sales.Service.Logging;
+using XCloud.Sales.Service.ShoppingCart;
+using XCloud.Sales.Service.Stores;
+using XCloud.Sales.Service.Users;
 
 namespace XCloud.Sales.Mall.Api.Controllers;
 

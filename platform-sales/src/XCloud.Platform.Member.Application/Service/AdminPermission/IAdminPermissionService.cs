@@ -13,6 +13,7 @@ namespace XCloud.Platform.Member.Application.Service.AdminPermission;
 
 public interface IAdminPermissionService : IXCloudApplicationService
 {
+    [Obsolete]
     Task SetRolePermissionsAsync(string roleId, string[] permissionKeys);
 
     Task<GrantedPermissionResponse> GetGrantedPermissionsAsync(GetGrantedPermissionInput dto,

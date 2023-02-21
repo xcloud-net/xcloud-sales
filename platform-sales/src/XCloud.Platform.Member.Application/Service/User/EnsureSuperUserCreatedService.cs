@@ -2,13 +2,16 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.DependencyInjection;
+using XCloud.Core.Application;
 using XCloud.Core.Dto;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Core.Domain.Admin;
+using XCloud.Platform.Core.Domain.AdminPermission;
 using XCloud.Platform.Core.Domain.User;
 using XCloud.Platform.Data.Database;
 using XCloud.Platform.Member.Application.Job;
 using XCloud.Platform.Member.Application.Service.Admin;
+using XCloud.Platform.Member.Application.Service.AdminPermission;
 using XCloud.Platform.Shared;
 using XCloud.Platform.Shared.Helper;
 using XCloud.Redis;
@@ -34,6 +37,9 @@ public class EnsureSuperUserCreatedService : PlatformApplicationService
     private readonly IUserIdCardService _userIdCardService;
     private readonly IUserAccountService _userAccountService;
     private readonly IUserProfileService _userProfileService;
+    private readonly IRoleService _roleService;
+    private readonly IAdminRoleService _adminRoleService;
+    private readonly IAdminPermissionService _adminPermissionService;
 
     public EnsureSuperUserCreatedService(
         IAdminAccountService adminAccountService,
@@ -42,7 +48,8 @@ public class EnsureSuperUserCreatedService : PlatformApplicationService
         IUserAccountService userAccountService,
         IUserProfileService userProfileService,
         IMemberRepository<SysUser> repository,
-        MemberHelper memberHelper)
+        MemberHelper memberHelper, IRoleService roleService, IAdminRoleService adminRoleService,
+        IAdminPermissionService adminPermissionService)
     {
         _adminAccountService = adminAccountService;
         _userMobileService = userMobileService;
@@ -51,6 +58,9 @@ public class EnsureSuperUserCreatedService : PlatformApplicationService
         _userProfileService = userProfileService;
         _repository = repository;
         _memberHelper = memberHelper;
+        _roleService = roleService;
+        _adminRoleService = adminRoleService;
+        _adminPermissionService = adminPermissionService;
     }
 
     public virtual async Task EnsureSuperUserCreatedAsync()
@@ -73,6 +83,8 @@ public class EnsureSuperUserCreatedService : PlatformApplicationService
             var user = await CreateUserAsync(dto);
             //admin identity
             var admin = await CreateAdminAccountAsync(user, dto);
+            var role = await this.EnsureSuperRoleCreatedAsync();
+            await this.TryBindRoleAsync(admin, role);
         }
         else
         {
@@ -153,5 +165,37 @@ public class EnsureSuperUserCreatedService : PlatformApplicationService
         });
 
         return admin;
+    }
+
+    private async Task<SysRole> EnsureSuperRoleCreatedAsync()
+    {
+        var superRoleName = "super-role";
+
+        var db = await this._repository.GetDbContextAsync();
+
+        var role = await db.Set<SysRole>().IgnoreQueryFilters().AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Name == superRoleName);
+
+        if (role == null)
+        {
+            role = new SysRole() { Name = superRoleName, Description = "created by system,do not modify it" };
+            role = await this._roleService.InsertAsync(this.ObjectMapper.Map<SysRole, SysRoleDto>(role));
+        }
+
+        await this._adminPermissionService.SetRolePermissionsAsync(role.Id, new[] { "*" });
+
+        return role;
+    }
+
+    private async Task TryBindRoleAsync(SysAdmin admin, SysRole role)
+    {
+        var adminRoles =
+            await this._adminRoleService.QueryByAdminIdAsync(admin.Id, new CachePolicy() { Source = true });
+        var ids = adminRoles.Ids().ToArray();
+        if (!ids.Contains(role.Id))
+        {
+            ids = ids.Append(role.Id).ToArray();
+            await this._adminRoleService.SetAdminRolesAsync(admin.Id, ids);
+        }
     }
 }

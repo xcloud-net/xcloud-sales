@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using XCloud.Sales.Services;
-using XCloud.Sales.Services.Catalog;
+using XCloud.Sales.Extension;
+using XCloud.Sales.Service.Catalog;
 
 namespace XCloud.Test.Mall;
 
@@ -27,10 +27,10 @@ public class GoodsSpecTest
             new SpecCombinationItemDto() { SpecId=4,SpecValueId=10 },
         };
 
-        string ToString(SpecCombinationItemDto[] data) =>
+        string GetString(SpecCombinationItemDto[] data) =>
             string.Join('\n', data.Select(x => $"{x.SpecId}={x.SpecValueId}"));
 
-        var combines = mappings.GenerateCombination().Select(ToString).ToArray();
+        var combines = mappings.GenerateCombination().Select(GetString).ToArray();
 
     }
 }

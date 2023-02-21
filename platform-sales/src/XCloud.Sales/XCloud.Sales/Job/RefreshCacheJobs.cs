@@ -1,4 +1,5 @@
 using XCloud.Logging;
+using XCloud.Sales.Application;
 using XCloud.Sales.ViewService;
 
 namespace XCloud.Sales.Job;
