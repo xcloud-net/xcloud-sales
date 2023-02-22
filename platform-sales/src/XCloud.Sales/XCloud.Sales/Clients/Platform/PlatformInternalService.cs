@@ -6,7 +6,7 @@ using XCloud.Platform.Common.Application.Service.IdGenerator;
 using XCloud.Platform.Core.Domain.Address;
 using XCloud.Platform.Core.Domain.User;
 using XCloud.Platform.Member.Application.Service.Admin;
-using XCloud.Platform.Member.Application.Service.AdminPermission;
+using XCloud.Platform.Member.Application.Service.Security;
 using XCloud.Platform.Member.Application.Service.User;
 using XCloud.Platform.Shared.Dto;
 using XCloud.Sales.Application;
@@ -24,20 +24,20 @@ public class PlatformInternalService : SalesAppService
     private readonly IAdminAccountService _adminAccountService;
     private readonly IAdminService _adminService;
     private readonly IUserProfileService _userProfileService;
-    private readonly IAdminPermissionService _adminPermissionService;
+    private readonly IAdminSecurityService _adminSecurityService;
 
     public PlatformInternalService(IUserProfileService userProfileService,
         IAdminService adminService,
         IExternalConnectService externalConnectService,
         ISequenceGeneratorService sequenceGeneratorService,
         IUserAddressService userAddressService,
-        IAdminPermissionService adminPermissionService, IAdminAccountService adminAccountService)
+        IAdminSecurityService adminSecurityService, IAdminAccountService adminAccountService)
     {
         this._userProfileService = userProfileService;
         this._adminService = adminService;
         this._sequenceGeneratorService = sequenceGeneratorService;
         this._userAddressService = userAddressService;
-        _adminPermissionService = adminPermissionService;
+        _adminSecurityService = adminSecurityService;
         _adminAccountService = adminAccountService;
         this._externalConnectService = externalConnectService;
     }
@@ -47,7 +47,7 @@ public class PlatformInternalService : SalesAppService
         var dto = new GetGrantedPermissionInput() { AdminId = adminId };
 
         var response =
-            await this._adminPermissionService.GetGrantedPermissionsAsync(dto, new CachePolicy() { Cache = true });
+            await this._adminSecurityService.GetGrantedPermissionsAsync(dto, new CachePolicy() { Cache = true });
 
         return response;
     }

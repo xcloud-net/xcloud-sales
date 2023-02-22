@@ -1,7 +1,7 @@
 ﻿using XCloud.AspNetMvc.Controller;
 using XCloud.Platform.Common.Application.Queue;
 using XCloud.Platform.Member.Application.Queue;
-using XCloud.Platform.Member.Application.Service.AdminPermission;
+using XCloud.Platform.Member.Application.Service.Security;
 
 namespace XCloud.Platform.Framework.Controller;
 
@@ -13,6 +13,6 @@ public abstract class PlatformBaseController : XCloudBaseController
     protected IMemberShipMessageBus MemberShipMessageBus =>
         this.LazyServiceProvider.LazyGetRequiredService<IMemberShipMessageBus>();
     
-    protected IAdminPermissionService PermissionService =>
-        this.LazyServiceProvider.LazyGetRequiredService<IAdminPermissionService>();
+    protected IAdminSecurityService SecurityService =>
+        this.LazyServiceProvider.LazyGetRequiredService<IAdminSecurityService>();
 }

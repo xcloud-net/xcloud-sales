@@ -7,7 +7,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Controllers\StoreManagement\" />
+		<Folder Include="Controller\Store\" />
 	</ItemGroup>
 
 	<ItemGroup>

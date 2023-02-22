@@ -6,12 +6,12 @@ using XCloud.Core.Application;
 using XCloud.Core.Dto;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Core.Domain.Admin;
-using XCloud.Platform.Core.Domain.AdminPermission;
+using XCloud.Platform.Core.Domain.Security;
 using XCloud.Platform.Core.Domain.User;
 using XCloud.Platform.Data.Database;
 using XCloud.Platform.Member.Application.Job;
 using XCloud.Platform.Member.Application.Service.Admin;
-using XCloud.Platform.Member.Application.Service.AdminPermission;
+using XCloud.Platform.Member.Application.Service.Security;
 using XCloud.Platform.Shared;
 using XCloud.Platform.Shared.Helper;
 using XCloud.Redis;
@@ -39,7 +39,6 @@ public class EnsureSuperUserCreatedService : PlatformApplicationService
     private readonly IUserProfileService _userProfileService;
     private readonly IRoleService _roleService;
     private readonly IAdminRoleService _adminRoleService;
-    private readonly IAdminPermissionService _adminPermissionService;
 
     public EnsureSuperUserCreatedService(
         IAdminAccountService adminAccountService,
@@ -48,8 +47,8 @@ public class EnsureSuperUserCreatedService : PlatformApplicationService
         IUserAccountService userAccountService,
         IUserProfileService userProfileService,
         IMemberRepository<SysUser> repository,
-        MemberHelper memberHelper, IRoleService roleService, IAdminRoleService adminRoleService,
-        IAdminPermissionService adminPermissionService)
+        MemberHelper memberHelper, IRoleService roleService, 
+        IAdminRoleService adminRoleService)
     {
         _adminAccountService = adminAccountService;
         _userMobileService = userMobileService;
@@ -60,7 +59,6 @@ public class EnsureSuperUserCreatedService : PlatformApplicationService
         _memberHelper = memberHelper;
         _roleService = roleService;
         _adminRoleService = adminRoleService;
-        _adminPermissionService = adminPermissionService;
     }
 
     public virtual async Task EnsureSuperUserCreatedAsync()
@@ -82,8 +80,10 @@ public class EnsureSuperUserCreatedService : PlatformApplicationService
             //添加测试数据
             var user = await CreateUserAsync(dto);
             //admin identity
-            var admin = await CreateAdminAccountAsync(user, dto);
+            var admin = await CreateAdminAccountAsync(user);
+            //role
             var role = await this.EnsureSuperRoleCreatedAsync();
+            //bind role
             await this.TryBindRoleAsync(admin, role);
         }
         else
@@ -141,7 +141,7 @@ public class EnsureSuperUserCreatedService : PlatformApplicationService
         return user;
     }
 
-    private async Task<SysAdmin> CreateAdminAccountAsync(SysUser user, CreateSeedDataInput dto)
+    private async Task<SysAdmin> CreateAdminAccountAsync(SysUser user)
     {
         var db = await this._repository.GetDbContextAsync();
 
@@ -182,7 +182,7 @@ public class EnsureSuperUserCreatedService : PlatformApplicationService
             role = await this._roleService.InsertAsync(this.ObjectMapper.Map<SysRole, SysRoleDto>(role));
         }
 
-        await this._adminPermissionService.SetRolePermissionsAsync(role.Id, new[] { "*" });
+        await this._roleService.SetRolePermissionsAsync(role.Id, new[] { "*" });
 
         return role;
     }
@@ -191,7 +191,9 @@ public class EnsureSuperUserCreatedService : PlatformApplicationService
     {
         var adminRoles =
             await this._adminRoleService.QueryByAdminIdAsync(admin.Id, new CachePolicy() { Source = true });
+
         var ids = adminRoles.Ids().ToArray();
+
         if (!ids.Contains(role.Id))
         {
             ids = ids.Append(role.Id).ToArray();

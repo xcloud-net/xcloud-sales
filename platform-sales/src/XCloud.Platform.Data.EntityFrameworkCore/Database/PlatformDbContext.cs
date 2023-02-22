@@ -4,15 +4,15 @@ using XCloud.Database.EntityFrameworkCore.MySQL.Mapping;
 using XCloud.Platform.Core.Database;
 using XCloud.Platform.Core.Domain.Address;
 using XCloud.Platform.Core.Domain.Admin;
-using XCloud.Platform.Core.Domain.AdminPermission;
 using XCloud.Platform.Core.Domain.App;
 using XCloud.Platform.Core.Domain.AsyncJob;
-using XCloud.Platform.Core.Domain.Dept;
+using XCloud.Platform.Core.Domain.Department;
 using XCloud.Platform.Core.Domain.IdGenerator;
 using XCloud.Platform.Core.Domain.Logging;
 using XCloud.Platform.Core.Domain.Menu;
 using XCloud.Platform.Core.Domain.Notification;
 using XCloud.Platform.Core.Domain.Region;
+using XCloud.Platform.Core.Domain.Security;
 using XCloud.Platform.Core.Domain.Settings;
 using XCloud.Platform.Core.Domain.Storage;
 using XCloud.Platform.Core.Domain.Token;
@@ -47,8 +47,8 @@ public class PlatformDbContext : AbpDbContextBase<PlatformDbContext>
     public DbSet<SysUserRealName> RealNameEntity { get; set; }
 
     //部门
-    public DbSet<Department> DepartmentEntity { get; set; }
-    public DbSet<DepartmentAssign> DepartmentAssignmentEntity { get; set; }
+    public DbSet<SysDepartment> DepartmentEntity { get; set; }
+    public DbSet<SysDepartmentAssign> DepartmentAssignmentEntity { get; set; }
 
 
     //角色
