@@ -161,7 +161,7 @@ public class PagesService : SalesPagingStringAppService<Pages, PagesDto, QueryPa
         await db.TrySaveChangesAsync();
     }
 
-    protected override async Task<IQueryable<Pages>> GetFilteredQueryableAsync(IQueryable<Pages> query,
+    protected override async Task<IQueryable<Pages>> GetPagingFilteredQueryableAsync(IQueryable<Pages> query,
         QueryPagesInput dto)
     {
         await Task.CompletedTask;
@@ -180,7 +180,7 @@ public class PagesService : SalesPagingStringAppService<Pages, PagesDto, QueryPa
         return query;
     }
 
-    protected override async Task<IOrderedQueryable<Pages>> GetOrderedQueryableAsync(IQueryable<Pages> query,
+    protected override async Task<IOrderedQueryable<Pages>> GetPagingOrderedQueryableAsync(IQueryable<Pages> query,
         QueryPagesInput dto)
     {
         await Task.CompletedTask;

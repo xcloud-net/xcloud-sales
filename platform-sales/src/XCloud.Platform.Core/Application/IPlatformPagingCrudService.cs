@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
+using XCloud.Application.Service;
 using XCloud.Core.Application;
 using XCloud.Core.Dto;
-using XCloud.Database.EntityFrameworkCore.Crud;
 using XCloud.Database.EntityFrameworkCore.Repository;
 
 namespace XCloud.Platform.Core.Application;
@@ -31,7 +31,7 @@ public abstract class
         //
     }
 
-    protected override async Task<IOrderedQueryable<TEntity>> GetOrderedQueryableAsync(IQueryable<TEntity> query,
+    protected override async Task<IOrderedQueryable<TEntity>> GetPagingOrderedQueryableAsync(IQueryable<TEntity> query,
         TPagingRequest dto)
     {
         await Task.CompletedTask;

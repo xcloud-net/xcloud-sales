@@ -7,7 +7,7 @@ using Volo.Abp.Validation;
 using XCloud.Core.Application;
 using XCloud.Core.Dto;
 using XCloud.Core.Helper;
-using XCloud.Database.EntityFrameworkCore.Crud.Helper;
+using XCloud.Database.EntityFrameworkCore.Crud;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Core.Domain.Admin;
 using XCloud.Platform.Core.Domain.User;

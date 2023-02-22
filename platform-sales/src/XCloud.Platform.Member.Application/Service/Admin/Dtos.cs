@@ -1,7 +1,7 @@
 ﻿using Volo.Abp.Application.Dtos;
 using XCloud.Core.Dto;
 using XCloud.Platform.Core.Domain.Admin;
-using XCloud.Platform.Member.Application.Service.AdminPermission;
+using XCloud.Platform.Member.Application.Service.Security;
 using XCloud.Platform.Member.Application.Service.User;
 using XCloud.Platform.Shared;
 

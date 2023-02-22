@@ -36,6 +36,17 @@ public class CommonTest
     }
 
     [TestMethod]
+    public void TestIsOperator()
+    {
+        string nullStr = null;
+        (nullStr is string).Should().BeFalse();
+
+        int deftInt = default;
+        (deftInt is int).Should().BeTrue();
+        (deftInt is double).Should().BeFalse();
+    }
+
+    [TestMethod]
     public void linq_except()
     {
         var a = new[]

@@ -439,7 +439,7 @@ namespace XCloud.Platform.Data.EntityFrameworkCore.Migrations
                     b.ToTable("sys_job", (string)null);
                 });
 
-            modelBuilder.Entity("XCloud.Platform.Core.Domain.Dept.Department", b =>
+            modelBuilder.Entity("XCloud.Platform.Core.Domain.Dept.SysDepartment", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(100)
@@ -507,7 +507,7 @@ namespace XCloud.Platform.Data.EntityFrameworkCore.Migrations
                     b.ToTable("sys_department", (string)null);
                 });
 
-            modelBuilder.Entity("XCloud.Platform.Core.Domain.Dept.DepartmentAssign", b =>
+            modelBuilder.Entity("XCloud.Platform.Core.Domain.Dept.SysDepartmentAssign", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(100)

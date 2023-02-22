@@ -9,8 +9,6 @@ namespace XCloud.Sales.Service.Catalog;
 
 public interface ITagService : ISalesPagingStringAppService<Tag, TagDto, PagedRequest>
 {
-    Task<int> QueryCountAsync();
-    
     Task<TagDto[]> QueryAllAsync();
 
     Task UpdateStatusAsync(UpdateTagStatusInput dto);
@@ -23,12 +21,6 @@ public class TagService : SalesPagingStringAppService<Tag, TagDto, PagedRequest>
     public TagService(ISalesRepository<Tag> tagRepository) : base(tagRepository)
     {
         this._tagRepository = tagRepository;
-    }
-
-    public async Task<int> QueryCountAsync()
-    {
-        var count = await this._tagRepository.CountAsync();
-        return count;
     }
 
     public async Task<TagDto[]> QueryAllAsync()

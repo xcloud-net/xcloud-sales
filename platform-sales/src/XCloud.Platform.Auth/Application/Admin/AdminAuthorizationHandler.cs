@@ -7,23 +7,23 @@ using XCloud.Core.Application;
 using XCloud.Core.Cache;
 using XCloud.Core.Helper;
 using XCloud.Platform.Member.Application.Service.Admin;
-using XCloud.Platform.Member.Application.Service.AdminPermission;
+using XCloud.Platform.Member.Application.Service.Security;
 
 namespace XCloud.Platform.Auth.Application.Admin;
 
 public class AdminAuthorizationHandler : AuthorizationHandler<AdminPermissionRequirement>
 {
     private readonly ILogger _logger;
-    private readonly IAdminPermissionService _permissionService;
+    private readonly IAdminSecurityService _securityService;
     private readonly IAdminRoleService _adminRoleService;
 
     public AdminAuthorizationHandler(
         ILogger<AdminAuthorizationHandler> logger,
-        IAdminPermissionService permissionService,
+        IAdminSecurityService securityService,
         IAdminRoleService adminRoleService)
     {
         this._logger = logger;
-        this._permissionService = permissionService;
+        this._securityService = securityService;
         _adminRoleService = adminRoleService;
     }
 
@@ -56,7 +56,7 @@ public class AdminAuthorizationHandler : AuthorizationHandler<AdminPermissionReq
 
             var policy = new CachePolicy() { Cache = true };
 
-            var permissionDto = await this._permissionService.GetGrantedPermissionsAsync(dto, policy);
+            var permissionDto = await this._securityService.GetGrantedPermissionsAsync(dto, policy);
 
             var allPermissions = permissionDto.GetAllPermissions();
 

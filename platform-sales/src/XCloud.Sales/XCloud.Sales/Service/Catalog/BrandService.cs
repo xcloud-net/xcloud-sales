@@ -13,8 +13,6 @@ public interface IBrandService : ISalesPagingIntAppService<Brand, BrandDto, Quer
 {
     Task UpdateStatusAsync(UpdateBrandStatusInput dto);
 
-    Task<int> QueryCountAsync();
-
     Task<BrandDto[]> AttachDataAsync(BrandDto[] data, AttachBrandDataInput dto);
 
     Task SetPictureIdAsync(int brandId, int pictureId);
@@ -44,12 +42,6 @@ public class BrandService : SalesPagingIntAppService<Brand, BrandDto, QueryBrand
 
         keywords = keywords.Trim().ToLower().RemoveWhitespace();
         return keywords;
-    }
-
-    public async Task<int> QueryCountAsync()
-    {
-        var count = await _brandRepository.CountAsync();
-        return count;
     }
 
     public async Task SetPictureIdAsync(int brandId, int pictureId)
@@ -96,7 +88,7 @@ public class BrandService : SalesPagingIntAppService<Brand, BrandDto, QueryBrand
         return data;
     }
 
-    protected override async Task<IQueryable<Brand>> GetQueryableAsync(DbContext db, QueryBrandDto dto)
+    protected override async Task<IQueryable<Brand>> GetPagingQueryableAsync(DbContext db, QueryBrandDto dto)
     {
         await Task.CompletedTask;
         return db.Set<Brand>().AsNoTracking().IgnoreQueryFilters();
@@ -154,7 +146,7 @@ public class BrandService : SalesPagingIntAppService<Brand, BrandDto, QueryBrand
         return query;
     }
 
-    protected override async Task<IQueryable<Brand>> GetFilteredQueryableAsync(IQueryable<Brand> query,
+    protected override async Task<IQueryable<Brand>> GetPagingFilteredQueryableAsync(IQueryable<Brand> query,
         QueryBrandDto dto)
     {
         var q = await BuildQuery(dto);
@@ -166,7 +158,7 @@ public class BrandService : SalesPagingIntAppService<Brand, BrandDto, QueryBrand
         return brandQuery;
     }
 
-    protected override async Task<IOrderedQueryable<Brand>> GetOrderedQueryableAsync(IQueryable<Brand> query,
+    protected override async Task<IOrderedQueryable<Brand>> GetPagingOrderedQueryableAsync(IQueryable<Brand> query,
         QueryBrandDto dto)
     {
         await Task.CompletedTask;
