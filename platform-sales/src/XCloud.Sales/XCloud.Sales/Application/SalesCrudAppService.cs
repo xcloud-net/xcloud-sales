@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using Volo.Abp.Application.Dtos;
+using XCloud.Application.Service;
 using XCloud.Core.Dto;
-using XCloud.Database.EntityFrameworkCore.Crud;
 using XCloud.Sales.Core;
 using XCloud.Sales.Data;
 
@@ -44,7 +44,7 @@ public abstract class SalesPagingStringAppService<TEntity, TEntityDto, TPagingRe
         entity.Id = this.GuidGenerator.CreateGuidString();
     }
 
-    protected override async Task<IOrderedQueryable<TEntity>> GetOrderedQueryableAsync(IQueryable<TEntity> query,
+    protected override async Task<IOrderedQueryable<TEntity>> GetPagingOrderedQueryableAsync(IQueryable<TEntity> query,
         TPagingRequest dto)
     {
         await Task.CompletedTask;
@@ -91,7 +91,7 @@ public abstract class SalesPagingIntAppService<TEntity, TEntityDto, TPagingReque
         entity.Id = default;
     }
 
-    protected override async Task<IOrderedQueryable<TEntity>> GetOrderedQueryableAsync(IQueryable<TEntity> query,
+    protected override async Task<IOrderedQueryable<TEntity>> GetPagingOrderedQueryableAsync(IQueryable<TEntity> query,
         TPagingRequest dto)
     {
         await Task.CompletedTask;

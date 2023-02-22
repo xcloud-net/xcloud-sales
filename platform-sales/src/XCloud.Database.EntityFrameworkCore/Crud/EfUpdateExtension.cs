@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Volo.Abp.Auditing;
 using XCloud.Core.Application;
 
-namespace XCloud.Database.EntityFrameworkCore.Crud.Helper;
+namespace XCloud.Database.EntityFrameworkCore.Crud;
 
 public static class EfUpdateExtension
 {

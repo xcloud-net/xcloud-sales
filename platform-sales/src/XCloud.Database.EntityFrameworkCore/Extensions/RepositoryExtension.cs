@@ -1,34 +1,24 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Volo.Abp;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Timing;
 using XCloud.Core.Application;
 using XCloud.Core.Dto;
 using XCloud.Core.Extension;
 using XCloud.Core.Helper;
-using XCloud.Database.EntityFrameworkCore.Crud.Helper;
 using XCloud.Database.EntityFrameworkCore.Repository;
 
 namespace XCloud.Database.EntityFrameworkCore.Extensions;
 
 public static class RepositoryExtension
 {
-    /// <summary>
-    /// check input=>delete by uids
-    /// </summary>
-    public static async Task DeleteByIdsAsync<T>(this IEfRepository<T> repo, string[] uids) where T : EntityBase
-    {
-        if (uids == null)
-            throw new ArgumentNullException(nameof(uids));
-        if(!uids.Any())
-            return;
-
-        await repo.DeleteAsync(x => uids.Contains(x.Id));
-    }
-
-    public static async Task<ApiResponse<T>> AddTreeNode<T>(this IEfRepository<T> repo, T model) where T : TreeEntityBase
+    public static async Task<ApiResponse<T>> AddTreeNode<T>(this IEfRepository<T> repo, T model)
+        where T : TreeEntityBase
     {
         if (string.IsNullOrWhiteSpace(model?.Id))
             throw new ArgumentNullException(nameof(model));
@@ -56,9 +46,10 @@ public static class RepositoryExtension
         return res.SetData(model);
     }
 
-    public static async Task DeleteTreeNodeRecursively<T>(this IEfRepository<T> repo, string node_uid) where T : TreeEntityBase
+    public static async Task DeleteTreeNodeRecursively<T>(this IEfRepository<T> repo, string nodeId)
+        where T : TreeEntityBase
     {
-        var node = await repo.QueryOneAsync(x => x.Id == node_uid);
+        var node = await repo.QueryOneAsync(x => x.Id == nodeId);
         if (node == null)
             throw new EntityNotFoundException(nameof(node));
 
@@ -74,43 +65,68 @@ public static class RepositoryExtension
         }
     }
 
-    public static async Task<bool> DeleteSingleNodeWhenNoChildren<T>(this IEfRepository<T> repo, string node_uid) where T : TreeEntityBase
+    public static async Task<bool> DeleteSingleNodeWhenNoChildren<T>(this IEfRepository<T> repo, string nodeId)
+        where T : TreeEntityBase
     {
-        if (await repo.AnyAsync(x => x.ParentId == node_uid))
+        if (await repo.AnyAsync(x => x.ParentId == nodeId))
         {
             return false;
         }
 
-        await repo.DeleteAsync(x => x.Id == node_uid);
+        await repo.DeleteAsync(x => x.Id == nodeId);
 
         return true;
     }
 
-    public static async Task SoftDeleteByIdAsync<T>(this IEfRepository<T> repo, string[] uids) where T : class, IEntityBase, IHasDeletionTime
+    public static async Task SoftDeleteByIdAsync<T>(this IEfRepository<T> repo, string[] ids, IClock clock)
+        where T : class, IEntityBase, ISoftDelete
     {
-        if (ValidateHelper.IsEmptyCollection(uids))
-            throw new ArgumentNullException(nameof(uids));
+        if (ValidateHelper.IsEmptyCollection(ids))
+            throw new ArgumentNullException(nameof(ids));
+
+        if (clock == null)
+            throw new ArgumentNullException(nameof(clock));
 
         var db = await repo.GetDbContextAsync();
 
-        await db.UpdateEntity<T>().IgnoreFilter()
-            .Where(x => x.IsDeleted == false)
-            .Where(x => uids.Contains(x.Id))
-            .SetIsDeleted(true)
-            .ExecuteAsync();
+        var entity = await db.Set<T>().FirstOrDefaultAsync(x => ids.Contains(x.Id));
+
+        if (entity == null)
+            throw new EntityNotFoundException(nameof(entity));
+
+        if (entity is ISoftDelete softDelete)
+            softDelete.IsDeleted = true;
+        else
+            throw new NotSupportedException("entity is not soft delete entity");
+
+        if (entity is IHasDeletionTime hasDeletionTime)
+            hasDeletionTime.DeletionTime = clock.Now;
+
+        await repo.UpdateAsync(entity);
     }
 
-    public static async Task RevokeSoftDeletionByIdAsync<T>(this IEfRepository<T> repo, string[] uids) where T : class, IEntityBase, IHasDeletionTime
+    public static async Task RevokeSoftDeletionByIdAsync<T>(this IEfRepository<T> repo, string[] ids)
+        where T : class, IEntityBase, ISoftDelete
     {
-        if (ValidateHelper.IsEmptyCollection(uids))
-            throw new ArgumentNullException(nameof(uids));
+        if (ValidateHelper.IsEmptyCollection(ids))
+            throw new ArgumentNullException(nameof(ids));
 
         var db = await repo.GetDbContextAsync();
 
-        await db.UpdateEntity<T>().IgnoreFilter()
-            .Where(x => x.IsDeleted == true)
-            .Where(x => uids.Contains(x.Id))
-            .SetIsDeleted(false)
-            .ExecuteAsync();
+        var entity = await db.Set<T>().IgnoreQueryFilters()
+            .FirstOrDefaultAsync(x => ids.Contains(x.Id));
+
+        if (entity == null)
+            throw new EntityNotFoundException(nameof(entity));
+
+        if (entity is ISoftDelete softDelete)
+            softDelete.IsDeleted = false;
+        else
+            throw new NotSupportedException("entity is not soft delete entity");
+
+        if (entity is IHasDeletionTime hasDeletionTime)
+            hasDeletionTime.DeletionTime = null;
+
+        await repo.UpdateAsync(entity);
     }
 }

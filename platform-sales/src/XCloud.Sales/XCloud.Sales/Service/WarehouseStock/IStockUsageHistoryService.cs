@@ -24,6 +24,11 @@ public class StockUsageHistoryService : SalesPagingStringAppService<StockUsageHi
         throw new NotImplementedException();
     }
 
+    public override Task DeleteByIdsAsync(string[] ids)
+    {
+        throw new NotImplementedException();
+    }
+
     public override Task<StockUsageHistory> UpdateAsync(StockUsageHistoryDto dto)
     {
         throw new NotImplementedException();

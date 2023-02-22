@@ -12,7 +12,7 @@ using XCloud.Core.Application;
 using XCloud.Core.Dto;
 using XCloud.Database.EntityFrameworkCore.Repository;
 
-namespace XCloud.Database.EntityFrameworkCore.Crud;
+namespace XCloud.Application.Service;
 
 public interface
     IXCloudPagingAppService<TEntity, TEntityDto, in TPagingRequest, in TKey> : IXCloudCrudAppService<
@@ -38,10 +38,10 @@ public abstract class
         //
     }
 
-    protected virtual async Task<IOrderedQueryable<TEntity>> GetOrderedQueryableAsync(IQueryable<TEntity> query,
+    protected virtual async Task<IOrderedQueryable<TEntity>> GetPagingOrderedQueryableAsync(IQueryable<TEntity> query,
         TPagingRequest dto)
     {
-        this.Logger.LogWarning($"please override {nameof(GetOrderedQueryableAsync)} to speed up your code");
+        this.Logger.LogWarning($"please override {nameof(GetPagingOrderedQueryableAsync)} to speed up your code");
 
         await Task.CompletedTask;
 
@@ -74,14 +74,14 @@ public abstract class
         return query.OrderByDescending(x => x.Id);
     }
 
-    protected virtual async Task<IQueryable<TEntity>> GetFilteredQueryableAsync(IQueryable<TEntity> query,
+    protected virtual async Task<IQueryable<TEntity>> GetPagingFilteredQueryableAsync(IQueryable<TEntity> query,
         TPagingRequest dto)
     {
         await Task.CompletedTask;
         return query;
     }
 
-    protected virtual async Task<IQueryable<TEntity>> GetQueryableAsync(DbContext db, TPagingRequest dto)
+    protected virtual async Task<IQueryable<TEntity>> GetPagingQueryableAsync(DbContext db, TPagingRequest dto)
     {
         await Task.CompletedTask;
         return db.Set<TEntity>().AsNoTracking();
@@ -94,9 +94,9 @@ public abstract class
 
         var db = await this.Repository.GetDbContextAsync();
 
-        var query = await this.GetQueryableAsync(db, dto);
+        var query = await this.GetPagingQueryableAsync(db, dto);
 
-        query = await this.GetFilteredQueryableAsync(query, dto);
+        query = await this.GetPagingFilteredQueryableAsync(query, dto);
 
         var count = 0;
         if (!dto.SkipCalculateTotalCount)
@@ -104,7 +104,7 @@ public abstract class
             count = await query.CountAsync();
         }
 
-        var orderedQuery = await this.GetOrderedQueryableAsync(query, dto);
+        var orderedQuery = await this.GetPagingOrderedQueryableAsync(query, dto);
         
         var datalist = await orderedQuery.PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
 

@@ -1,54 +1,42 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
 using XCloud.Core.Application;
-using XCloud.Core.Extension;
 using XCloud.Core.Helper;
 using XCloud.Core.IdGenerator;
 using XCloud.Database.EntityFrameworkCore.Repository;
 
-namespace XCloud.Database.EntityFrameworkCore.Crud;
-
-public static class CrudHelper
-{
-    public static bool IsEmptyString(string str) => string.IsNullOrWhiteSpace(str);
-
-    public static bool IsEmptyInt(int i) => i <= 0;
-
-    public static bool IsEmptyLong(long i) => i <= 0;
-}
+namespace XCloud.Application.Service;
 
 public interface IXCloudCrudAppService<TEntity, in TEntityDto, in TKey> : IXCloudApplicationService
     where TEntity : class, IEntity<TKey>
     where TEntityDto : class, IEntityDto<TKey>
 {
+    Task<int> QueryCountAsync();
+
     Task<TEntity> QueryByIdAsync(TKey id);
 
     Task<TEntity[]> QueryByIdsAsync(TKey[] ids);
 
     Task<TEntity> InsertAsync(TEntityDto dto);
 
+    Task<TEntity> UpdateAsync(TEntityDto dto);
+
     Task DeleteByIdAsync(TKey id);
 
-    Task<TEntity> UpdateAsync(TEntityDto dto);
+    Task DeleteByIdsAsync(TKey[] ids);
 }
 
 /// <summary>
 /// 底层实现，使用了反射，性能不是最佳。
 /// 当遇到具体业务场景建议override函数来提供更高性能实现
 /// </summary>
-/// <typeparam name="TEntity"></typeparam>
-/// <typeparam name="TEntityDto"></typeparam>
-/// <typeparam name="TKey"></typeparam>
 public abstract class XCloudCrudAppService<TEntity, TEntityDto, TKey> :
     XCloudApplicationService,
     IXCloudCrudAppService<TEntity, TEntityDto, TKey>
@@ -62,50 +50,38 @@ public abstract class XCloudCrudAppService<TEntity, TEntityDto, TKey> :
         this.Repository = repository;
     }
 
+    public virtual async Task<int> QueryCountAsync()
+    {
+        var query = await this.Repository.GetQueryableAsync();
+
+        return await query.CountAsync();
+    }
+
     protected virtual bool IsEmptyKey(TKey id)
     {
         this.Logger.LogWarning($"please override {nameof(IsEmptyKey)} to speed up your code");
 
         var keyType = typeof(TKey);
-        var methods = typeof(CrudHelper).GetPublicStaticMethods();
-
-        MethodInfo GetMethodOrThrow(string name)
-        {
-            var m = methods.FirstOrDefault(x => x.Name == name);
-            if (m == null)
-                throw new NotSupportedException(name);
-            return m;
-        }
-
-        bool CastToBool([CanBeNull] object result)
-        {
-            if (result == null)
-                throw new AbpException("wrong result");
-            return (bool)result;
-        }
 
         if (keyType == typeof(string))
         {
-            var m = GetMethodOrThrow(nameof(CrudHelper.IsEmptyString));
-            var result = m.Invoke(obj: null, parameters: new object[] { id });
-            return CastToBool(result);
+            var notEmpty = id is string strId && !string.IsNullOrWhiteSpace(strId);
+            return !notEmpty;
         }
 
         if (keyType == typeof(int))
         {
-            var m = GetMethodOrThrow(nameof(CrudHelper.IsEmptyInt));
-            var result = m.Invoke(obj: null, parameters: new object[] { id });
-            return CastToBool(result);
+            var notEmpty = id is int intId && intId > 0;
+            return !notEmpty;
         }
 
         if (keyType == typeof(long))
         {
-            var m = GetMethodOrThrow(nameof(CrudHelper.IsEmptyLong));
-            var result = m.Invoke(obj: null, parameters: new object[] { id });
-            return CastToBool(result);
+            var notEmpty = id is long longId && longId > 0;
+            return !notEmpty;
         }
 
-        throw new NotSupportedException("key");
+        throw new NotSupportedException(nameof(IsEmptyKey));
     }
 
     protected virtual async Task CheckBeforeInsertAsync(TEntityDto dto)
@@ -162,8 +138,6 @@ public abstract class XCloudCrudAppService<TEntity, TEntityDto, TKey> :
 
         await Task.CompletedTask;
 
-        var properties = typeof(TEntity).GetProperties();
-
         this.TrySetPrimaryKey(entity);
         this.TrySetCreationTime(entity);
     }
@@ -208,6 +182,14 @@ public abstract class XCloudCrudAppService<TEntity, TEntityDto, TKey> :
             throw new ArgumentNullException(nameof(id));
 
         await this.Repository.DeleteAsync(this.BuildPrimaryKeyEqualExpression(id));
+    }
+
+    public virtual async Task DeleteByIdsAsync(TKey[] ids)
+    {
+        if (ValidateHelper.IsEmptyCollection(ids))
+            throw new ArgumentNullException(nameof(ids));
+
+        await this.Repository.DeleteAsync(x => ids.Contains(x.Id));
     }
 
     protected virtual async Task ModifyFieldsForUpdateAsync(TEntity entity, TEntityDto dto)

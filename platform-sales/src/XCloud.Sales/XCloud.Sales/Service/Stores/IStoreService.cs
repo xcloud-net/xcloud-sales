@@ -56,7 +56,7 @@ public class StoreService : SalesPagingStringAppService<Store, StoreDto, QuerySt
             throw new UserFriendlyException("store name is required");
     }
 
-    protected override async Task<IQueryable<Store>> GetFilteredQueryableAsync(IQueryable<Store> query, QueryStorePagingInput dto)
+    protected override async Task<IQueryable<Store>> GetPagingFilteredQueryableAsync(IQueryable<Store> query, QueryStorePagingInput dto)
     {
         await Task.CompletedTask;
         return query;
