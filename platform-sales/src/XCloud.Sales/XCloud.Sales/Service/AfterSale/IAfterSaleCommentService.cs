@@ -6,20 +6,37 @@ using XCloud.Sales.Data.Domain.Aftersale;
 
 namespace XCloud.Sales.Service.AfterSale;
 
-public interface IAfterSalesCommentService : ISalesAppService
+public interface IAfterSaleCommentService : ISalesAppService
 {
     Task InsertAsync(AfterSalesCommentDto dto);
 
     Task<PagedResponse<AfterSalesCommentDto>> QueryPagingAsync(QueryAfterSalesCommentPagingInput dto);
 }
 
-public class AfterSalesCommentService : SalesAppService, IAfterSalesCommentService
+public class AfterSaleCommentService : SalesAppService, IAfterSaleCommentService
 {
     private readonly ISalesRepository<AfterSalesComment> _repository;
 
-    public AfterSalesCommentService(ISalesRepository<AfterSalesComment> repository)
+    public AfterSaleCommentService(ISalesRepository<AfterSalesComment> repository)
     {
         _repository = repository;
+    }
+
+    private async Task InsertCheckAsync(AfterSalesCommentDto dto)
+    {
+        var db = await this._repository.GetDbContextAsync();
+
+        var start = this.Clock.Now.Date;
+        var end = start.AddDays(1);
+
+        var query = db.Set<AfterSalesComment>()
+            .Where(x => x.AfterSaleId == dto.AfterSaleId)
+            .Where(x => !x.IsAdmin)
+            .Where(x => x.CreationTime >= start && x.CreationTime < end);
+
+        var count = await query.CountAsync();
+        if (count > 5)
+            throw new UserFriendlyException("try comment tomorrow");
     }
 
     public async Task InsertAsync(AfterSalesCommentDto dto)
@@ -29,6 +46,8 @@ public class AfterSalesCommentService : SalesAppService, IAfterSalesCommentServi
 
         if (string.IsNullOrWhiteSpace(dto.AfterSaleId))
             throw new ArgumentNullException(nameof(dto.AfterSaleId));
+
+        await this.InsertCheckAsync(dto);
 
         var entity = this.ObjectMapper.Map<AfterSalesCommentDto, AfterSalesComment>(dto);
 

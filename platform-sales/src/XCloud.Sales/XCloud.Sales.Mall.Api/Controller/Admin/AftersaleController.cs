@@ -13,17 +13,17 @@ public class AfterSaleController : ShopBaseController
 {
     private readonly IOrderService _orderService;
     private readonly IAfterSaleService _aftersaleService;
-    private readonly IAfterSalesCommentService _afterSalesCommentService;
+    private readonly IAfterSaleCommentService _afterSaleCommentService;
     private readonly IGoodsService _goodsService;
 
     public AfterSaleController(IOrderService orderService,
         IGoodsService goodsService,
         IAfterSaleService aftersaleService, 
-        IAfterSalesCommentService afterSalesCommentService)
+        IAfterSaleCommentService afterSaleCommentService)
     {
         this._goodsService = goodsService;
         this._aftersaleService = aftersaleService;
-        _afterSalesCommentService = afterSalesCommentService;
+        _afterSaleCommentService = afterSaleCommentService;
         this._orderService = orderService;
     }
     
@@ -37,7 +37,7 @@ public class AfterSaleController : ShopBaseController
 
         dto.IsAdmin = true;
 
-        await this._afterSalesCommentService.InsertAsync(dto);
+        await this._afterSaleCommentService.InsertAsync(dto);
 
         return new ApiResponse<object>();
     }
@@ -51,7 +51,7 @@ public class AfterSaleController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageAfterSales);
 
-        var response = await this._afterSalesCommentService.QueryPagingAsync(dto);
+        var response = await this._afterSaleCommentService.QueryPagingAsync(dto);
 
         return response;
     }

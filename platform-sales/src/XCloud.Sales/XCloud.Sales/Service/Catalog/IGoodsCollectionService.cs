@@ -1,5 +1,6 @@
 ﻿using XCloud.Core.Application;
 using XCloud.Core.Dto;
+using XCloud.Core.Helper;
 using XCloud.Database.EntityFrameworkCore.Extensions;
 using XCloud.Sales.Application;
 using XCloud.Sales.Data;
@@ -10,19 +11,23 @@ namespace XCloud.Sales.Service.Catalog;
 public interface IGoodsCollectionService : ISalesAppService
 {
     Task<GoodsCollectionDto> QueryByIdAsync(string collectionId);
-    
+
+    [Obsolete("won't load combination data in the next version,pls load manually")]
     Task<GoodsCollectionDto[]> AttachCollectionItemsDataAsync(GoodsCollectionDto[] data);
-        
+
+    Task<GoodsCollectionItemDto[]> AttachDataAsync(GoodsCollectionItemDto[] data,
+        AttachCollectionItemDataInput dto);
+
     Task<GoodsCollectionDto[]> QueryAllAsync();
-        
+
     Task<ApiResponse<GoodsCollection>> InsertAsync(GoodsCollection input);
-        
+
     Task<ApiResponse<GoodsCollection>> UpdateAsync(GoodsCollection dto);
 
     Task SoftDeleteCollectionAsync(string id);
 
     Task RemoveCollectionItemByIdAsync(string id);
-        
+
     Task<ApiResponse<GoodsCollectionItem>> InsertItemAsync(GoodsCollectionItemDto dto);
 
     Task<GoodsCollectionItemDto[]> QueryItemsByCollectionIdAsync(string collectionId);
@@ -61,6 +66,33 @@ public class GoodsCollectionService : SalesAppService, IGoodsCollectionService
         return data;
     }
 
+    public async Task<GoodsCollectionItemDto[]> AttachDataAsync(GoodsCollectionItemDto[] data,
+        AttachCollectionItemDataInput dto)
+    {
+        if (ValidateHelper.IsEmptyCollection(data))
+            return data;
+
+        var db = await this._salesRepository.GetDbContextAsync();
+
+        if (dto.Combination)
+        {
+            var combinationIds = data.Select(x => x.GoodsSpecCombinationId).Distinct().ToArray();
+            var combinationList = await db.Set<GoodsSpecCombination>().WhereIdIn(combinationIds).ToArrayAsync();
+
+            foreach (var m in data)
+            {
+                var combination = combinationList.FirstOrDefault(x => x.Id == m.GoodsSpecCombinationId);
+                if (combination == null)
+                    continue;
+
+                m.GoodsSpecCombination =
+                    this.ObjectMapper.Map<GoodsSpecCombination, GoodsSpecCombinationDto>(combination);
+            }
+        }
+
+        return data;
+    }
+
     public async Task<GoodsCollectionDto[]> AttachCollectionItemsDataAsync(GoodsCollectionDto[] data)
     {
         if (!data.Any())
@@ -77,7 +109,6 @@ public class GoodsCollectionService : SalesAppService, IGoodsCollectionService
             {
                 item,
                 combination,
-                goods
             };
 
         var ids = data.Ids().ToArray();
@@ -95,7 +126,6 @@ public class GoodsCollectionService : SalesAppService, IGoodsCollectionService
                 var dto = ObjectMapper.Map<GoodsCollectionItem, GoodsCollectionItemDto>(d.item);
                 dto.GoodsSpecCombination =
                     ObjectMapper.Map<GoodsSpecCombination, GoodsSpecCombinationDto>(d.combination);
-                dto.Goods = ObjectMapper.Map<Goods, GoodsDto>(d.goods);
 
                 list.Add(dto);
             }

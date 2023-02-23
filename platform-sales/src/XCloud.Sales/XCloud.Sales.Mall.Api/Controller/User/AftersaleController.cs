@@ -12,18 +12,18 @@ public class AfterSaleController : ShopBaseController
 {
     private readonly IOrderService _orderService;
     private readonly IAfterSaleService _aftersaleService;
-    private readonly IAfterSalesCommentService _afterSalesCommentService;
+    private readonly IAfterSaleCommentService _afterSaleCommentService;
     private readonly IGoodsService _goodsService;
 
     public AfterSaleController(IOrderService orderService,
         IAfterSaleService aftersaleService,
         IGoodsService goodsService,
-        IAfterSalesCommentService afterSalesCommentService)
+        IAfterSaleCommentService afterSaleCommentService)
     {
         this._aftersaleService = aftersaleService;
         this._orderService = orderService;
         this._goodsService = goodsService;
-        _afterSalesCommentService = afterSalesCommentService;
+        _afterSaleCommentService = afterSaleCommentService;
     }
 
     [HttpPost("add-comment")]
@@ -31,9 +31,13 @@ public class AfterSaleController : ShopBaseController
     {
         var loginUser = await this.StoreAuthService.GetRequiredStoreUserAsync();
 
+        var aftersale = await this._aftersaleService.QueryByIdAsync(dto.AfterSaleId);
+        if (aftersale == null || aftersale.UserId != loginUser.Id)
+            throw new EntityNotFoundException(nameof(aftersale));
+        
         dto.IsAdmin = false;
 
-        await this._afterSalesCommentService.InsertAsync(dto);
+        await this._afterSaleCommentService.InsertAsync(dto);
 
         return new ApiResponse<object>();
     }
@@ -44,7 +48,14 @@ public class AfterSaleController : ShopBaseController
     {
         var loginUser = await this.StoreAuthService.GetRequiredStoreUserAsync();
 
-        var response = await this._afterSalesCommentService.QueryPagingAsync(dto);
+        var aftersale = await this._aftersaleService.QueryByIdAsync(dto.AfterSalesId);
+        if (aftersale == null || aftersale.UserId != loginUser.Id)
+            throw new EntityNotFoundException(nameof(aftersale));
+        
+        dto.SkipCalculateTotalCount = true;
+        dto.PageSize = 10;
+
+        var response = await this._afterSaleCommentService.QueryPagingAsync(dto);
 
         return response;
     }
@@ -79,13 +90,13 @@ public class AfterSaleController : ShopBaseController
     {
         var loginUser = await this.StoreAuthService.GetRequiredStoreUserAsync();
 
-        dto.UserId = loginUser.Id;
-
         var order = await this._orderService.QueryByIdAsync(dto.OrderId);
 
         if (order == null || order.UserId != loginUser.Id)
             throw new EntityNotFoundException();
 
+        dto.UserId = loginUser.Id;
+        
         var response = await this._aftersaleService.InsertAsync(dto);
 
         return response;

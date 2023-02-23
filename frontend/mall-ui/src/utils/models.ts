@@ -675,3 +675,23 @@ export interface RoleDto {
   Description?: string;
   PermissionKeys?: string[];
 }
+
+export interface GoodsCollectionItemDto {
+  Id?: string;
+  CollectionId?: string;
+  GoodsId?: number;
+  GoodsSpecCombinationId?: number;
+  Quantity?: number;
+  CreationTime?: string;
+  GoodsSpecCombination?: GoodsCombinationDto;
+}
+
+export interface GoodsCollectionDto {
+  Id?: string;
+  Name?: string;
+  Description?: string;
+  Keywords?: string;
+  ApplyedCount?: number;
+  LastModificationTime?: string;
+  Items?: GoodsCollectionItemDto[];
+}

@@ -1,15 +1,16 @@
 import XDetailDialog from '@/components/detailDialog';
 import XDetail from './index';
+import u from '@/utils';
 
-const index = function(props: { detailId: number, onClose: any }) {
+const index = function(props: { detailId: string, onClose: any }) {
   const { detailId, onClose } = props;
 
-  const active = detailId > 0;
+  const active = !u.isEmpty(detailId);
 
   return (
     <>
       <XDetailDialog open={active} onClose={onClose}>
-        <XDetail goodsId={detailId} />
+        <XDetail detailId={detailId} />
       </XDetailDialog>
     </>
   );

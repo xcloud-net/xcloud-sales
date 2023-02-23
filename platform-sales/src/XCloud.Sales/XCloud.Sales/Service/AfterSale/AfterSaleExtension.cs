@@ -2,7 +2,7 @@ using XCloud.Sales.Data.Domain.Aftersale;
 
 namespace XCloud.Sales.Service.AfterSale;
 
-public static class AfterSalesExtension
+public static class AfterSaleExtension
 {
     public static void SetAfterSalesStatus(this AfterSales afterSales, AfterSalesStatus status)
     {
