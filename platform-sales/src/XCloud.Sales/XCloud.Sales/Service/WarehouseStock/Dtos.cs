@@ -51,6 +51,7 @@ public class QuerySupplierPagingInput : PagedRequest
 
 public class DeductStockInput : IEntityDto
 {
+    public string OrderItemId { get; set; }
     public int CombinationId { get; set; }
     public int Quantity { get; set; }
 }
