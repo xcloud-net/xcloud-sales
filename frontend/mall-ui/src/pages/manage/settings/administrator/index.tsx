@@ -2,7 +2,7 @@ import XTime from '@/components/manage/time';
 import XUserAvatar from '@/components/manage/user/avatar';
 import u from '@/utils';
 import http from '@/utils/http';
-import { RoleDto, SysAdminDto } from '@/utils/models';
+import { SysAdminDto } from '@/utils/models';
 import { Button, Card, Table } from 'antd';
 import { ColumnType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
@@ -53,6 +53,12 @@ const AdminPage = (props: any) => {
         var name = record.IdentityName;
         return <a>{name}</a>;
       },
+    },
+    {
+      title: '角色',
+      render: (x) => <XRoles model={x} ok={() => {
+        queryPaging();
+      }} />,
     },
     {
       title: '状态',
@@ -121,11 +127,6 @@ const AdminPage = (props: any) => {
           columns={columns}
           dataSource={data}
           pagination={false}
-          expandable={{
-            expandedRowRender: (x) => <XRoles model={x} ok={() => {
-              queryPaging();
-            }} />,
-          }}
         />
       </Card>
     </>

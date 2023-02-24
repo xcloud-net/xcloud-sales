@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<ItemGroup>
+	  <PackageReference Include="OpenIddict" Version="3.1.1" />
+	  <PackageReference Include="OpenIddict.AspNetCore" Version="3.1.1" />
+	  <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="3.1.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\XCloud.Platform.Auth\XCloud.Platform.Auth.csproj" />
+	  <ProjectReference Include="..\XCloud.Platform.Framework\XCloud.Platform.Framework.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Database" />
+	</ItemGroup>
+</Project>

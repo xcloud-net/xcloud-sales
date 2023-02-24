@@ -266,6 +266,20 @@ public class GoodsSpecCombinationService : SalesAppService, IGoodsSpecCombinatio
             }
         }
 
+        if (dto.Goods)
+        {
+            var goodsIds = data.Select(x => x.GoodsId).Distinct().ToArray();
+            var goodsList = await db.Set<Goods>().WhereIdIn(goodsIds).ToArrayAsync();
+
+            foreach (var m in data)
+            {
+                var g = goodsList.FirstOrDefault(x => x.Id == m.GoodsId);
+                if(g==null)
+                    continue;
+                m.Goods = this.ObjectMapper.Map<Goods, GoodsDto>(g);
+            }
+        }
+
         if (dto.Images)
         {
             var query = from goodsPicture in db.Set<GoodsPicture>().AsNoTracking()

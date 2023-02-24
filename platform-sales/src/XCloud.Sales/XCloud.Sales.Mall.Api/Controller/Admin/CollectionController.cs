@@ -14,8 +14,8 @@ public class GoodsCollectionController : ShopBaseController
     private readonly IGoodsService _goodsService;
     private readonly IGoodsSpecCombinationService _goodsSpecCombinationService;
 
-    public GoodsCollectionController(IGoodsCollectionService collectionService, 
-        IGoodsService goodsService, 
+    public GoodsCollectionController(IGoodsCollectionService collectionService,
+        IGoodsService goodsService,
         IGoodsSpecCombinationService goodsSpecCombinationService)
     {
         this._collectionService = collectionService;
@@ -24,7 +24,8 @@ public class GoodsCollectionController : ShopBaseController
     }
 
     [HttpPost("query-combination-for-selection")]
-    public async Task<ApiResponse<GoodsSpecCombinationDto[]>> QueryCombinationForSelectionAsync([FromBody] QueryGoodsForCollectionItemSelectionInput dto)
+    public async Task<ApiResponse<GoodsSpecCombinationDto[]>> QueryCombinationForSelectionAsync(
+        [FromBody] QueryGoodsForCollectionItemSelectionInput dto)
     {
         if (string.IsNullOrWhiteSpace(dto.CollectionId))
             throw new ArgumentNullException(nameof(dto.CollectionId));
@@ -59,7 +60,15 @@ public class GoodsCollectionController : ShopBaseController
 
         data = await this._collectionService.AttachCollectionItemsDataAsync(data);
 
-        var goods = data.SelectMany(x => x.Items).Select(x => x.Goods).WhereNotNull().ToArray();
+        var combinations = data
+            .SelectMany(x => x.Items)
+            .Select(x => x.GoodsSpecCombination)
+            .WhereNotNull().ToArray();
+
+        await this._goodsSpecCombinationService.AttachDataAsync(combinations,
+            new GoodsCombinationAttachDataInput() { Goods = true });
+
+        var goods = combinations.Select(x => x.Goods).WhereNotNull().ToArray();
 
         await this._goodsService.AttachDataAsync(goods, new AttachGoodsDataInput() { Images = true });
 

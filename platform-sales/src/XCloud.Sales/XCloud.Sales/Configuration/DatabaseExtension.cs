@@ -26,14 +26,14 @@ public static class DatabaseExtension
             });
         });
         context.Services.AddScoped(typeof(ISalesRepository<>), typeof(SalesEfRepository<>));
-        context.Services.Configure<SalesEfCoreOption>(option => option.AutoCreateDatabase = true);
+        context.Services.Configure<SalesDatabaseOption>(option => option.AutoCreateDatabase = true);
     }
 
     public static bool AutoCreateSalesDatabase(this IServiceProvider serviceProvider)
     {
         using var s = serviceProvider.CreateScope();
 
-        var option = s.ServiceProvider.GetRequiredService<IOptions<SalesEfCoreOption>>().Value;
+        var option = s.ServiceProvider.GetRequiredService<IOptions<SalesDatabaseOption>>().Value;
 
         if (option == null)
             throw new ConfigException(nameof(AutoCreateSalesDatabase));

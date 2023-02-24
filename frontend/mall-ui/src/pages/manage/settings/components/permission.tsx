@@ -1,6 +1,6 @@
 import permissions from '@/utils/permission/data';
 import { Button, Card, Checkbox } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Permission, PermissionGroup } from '@/utils/models';
 
 export default ({ keys, save, loading }: { keys?: string[], save: any, loading?: boolean; }) => {
@@ -59,6 +59,10 @@ export default ({ keys, save, loading }: { keys?: string[], save: any, loading?:
       </Card>
     );
   };
+
+  useEffect(() => {
+    keys && _selectedKeys(keys);
+  }, [keys]);
 
   return (
     <>

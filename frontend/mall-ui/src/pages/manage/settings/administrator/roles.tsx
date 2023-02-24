@@ -47,18 +47,27 @@ export default ({ model, ok }: { model: SysAdminDto, ok: any }) => {
     if (u.isEmpty(model.Roles)) {
       return null;
     }
-    return <Space direction={'horizontal'}>
-      {(model.Roles || []).map((x, i) => <Tag key={i}>{x.Name}</Tag>)}
-    </Space>;
+    return <div>
+      {(model.Roles || []).map((x, i) => <Tag style={{
+        marginRight: 5,
+        marginBottom: 5,
+      }} key={i}>{x.Name}</Tag>)}
+    </div>;
   };
+
+  useEffect(() => {
+    model.Roles && _selectedIds(model.Roles.map(x => x.Id || ''));
+  }, [model]);
 
   return <>
     <Space direction={'horizontal'}>
       {renderRoles()}
-      <Button onClick={() => {
+      <Button type={'primary'} onClick={() => {
+        _show(true);
       }}>修改</Button>
     </Space>
-    <Modal confirmLoading={loading} open={show} onCancel={() => {
+    <Modal title={'绑定角色'} confirmLoading={loading} open={show} onCancel={() => {
+      _show(false);
     }} onOk={() => {
       saveRoles();
     }} okText={'确定'}>

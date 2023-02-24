@@ -3,7 +3,7 @@
 	<Import Project="..\common.props" />
 
 	<ItemGroup>
-		<ProjectReference Include="..\XCloud.Platform.AuthServer\XCloud.Platform.AuthServer.csproj" />
+		<ProjectReference Include="..\XCloud.Platform.Auth.IdentityServer\XCloud.Platform.Auth.IdentityServer.csproj" />
 		<ProjectReference Include="..\XCloud.Platform.Framework\XCloud.Platform.Framework.csproj" />
 	</ItemGroup>
 

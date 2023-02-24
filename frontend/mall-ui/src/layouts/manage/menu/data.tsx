@@ -28,8 +28,10 @@ import {
   SearchOutlined,
   SettingOutlined,
   ShopFilled,
+  ShopOutlined,
   ShoppingCartOutlined,
   TagOutlined,
+  TeamOutlined,
   UsergroupAddOutlined,
   UserOutlined,
 } from '@ant-design/icons';
@@ -194,10 +196,10 @@ const routes: Array<LayoutMenu> = [
     ],
   },
   {
-    name: '系统',
+    name: '商城',
     path: '#',
-    key: 'settings',
-    icon: <SettingOutlined />,
+    key: 'mall-settings',
+    icon: <ShopOutlined />,
     routes: [
       {
         name: '商城会员',
@@ -224,11 +226,14 @@ const routes: Array<LayoutMenu> = [
         path: '/manage/settings/mall',
         icon: <SettingOutlined />,
       },
-      {
-        name: '环境变量',
-        path: '/manage/settings/env',
-        icon: <CodeOutlined />,
-      },
+    ],
+  },
+  {
+    name: '系统',
+    path: '#',
+    key: 'settings',
+    icon: <SettingOutlined />,
+    routes: [
       {
         name: '平台用户',
         path: '/manage/settings/user/list',
@@ -237,7 +242,7 @@ const routes: Array<LayoutMenu> = [
       {
         name: '系统管理员',
         path: '/manage/settings/administrator',
-        icon: <UserOutlined />,
+        icon: <TeamOutlined />,
       },
       {
         name: '角色',
@@ -248,6 +253,11 @@ const routes: Array<LayoutMenu> = [
         name: '省市区',
         path: '/manage/settings/region',
         icon: <EnvironmentOutlined />,
+      },
+      {
+        name: '环境变量',
+        path: '/manage/settings/env',
+        icon: <CodeOutlined />,
       },
       {
         name: '活动日志',

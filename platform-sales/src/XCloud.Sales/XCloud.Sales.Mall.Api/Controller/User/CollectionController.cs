@@ -13,14 +13,17 @@ public class GoodsCollectionController : ShopBaseController
     private readonly IGoodsService _goodsService;
     private readonly IGoodsPriceService _goodsPriceService;
     private readonly IUserGradeService _userGradeService;
+    private readonly IGoodsSpecCombinationService _goodsSpecCombinationService;
 
     public GoodsCollectionController(IGoodsCollectionService collectionService, IGoodsService goodsService,
-        IGoodsPriceService goodsPriceService, IUserGradeService userGradeService)
+        IGoodsPriceService goodsPriceService, IUserGradeService userGradeService,
+        IGoodsSpecCombinationService goodsSpecCombinationService)
     {
         this._collectionService = collectionService;
         this._goodsService = goodsService;
         this._goodsPriceService = goodsPriceService;
         this._userGradeService = userGradeService;
+        _goodsSpecCombinationService = goodsSpecCombinationService;
     }
 
     [HttpPost("by-id")]
@@ -32,12 +35,14 @@ public class GoodsCollectionController : ShopBaseController
 
         await this._collectionService.AttachCollectionItemsDataAsync(new[] { collection });
 
-        var goods = collection.Items
-            .SelectMany(x => new[] { x.Goods, x.GoodsSpecCombination?.Goods })
-            .WhereNotNull().ToArray();
-
         var combinations = collection.Items
             .Select(x => x.GoodsSpecCombination)
+            .WhereNotNull().ToArray();
+
+        await this._goodsSpecCombinationService.AttachDataAsync(combinations,
+            new GoodsCombinationAttachDataInput() { Goods = true });
+
+        var goods = combinations.Select(x => x.Goods)
             .WhereNotNull().ToArray();
 
         await this._goodsService.AttachDataAsync(goods, new AttachGoodsDataInput() { Images = true });
@@ -81,13 +86,15 @@ public class GoodsCollectionController : ShopBaseController
 
         data = await this._collectionService.AttachCollectionItemsDataAsync(data);
 
-        var goods = data.SelectMany(x => x.Items)
-            .SelectMany(x => new[] { x.Goods, x.GoodsSpecCombination?.Goods })
-            .WhereNotNull().ToArray();
-
-        var combinations = data.SelectMany(x => x.Items)
+        var combinations = data
+            .SelectMany(x => x.Items)
             .Select(x => x.GoodsSpecCombination)
             .WhereNotNull().ToArray();
+
+        await this._goodsSpecCombinationService.AttachDataAsync(combinations,
+            new GoodsCombinationAttachDataInput() { Goods = true });
+
+        var goods = combinations.Select(x => x.Goods).WhereNotNull().ToArray();
 
         await this._goodsService.AttachDataAsync(goods, new AttachGoodsDataInput() { Images = true });
 

@@ -1,7 +1,7 @@
 import XDetailDialog from '@/components/detailDialog';
 import XDetail from './index';
 
-const index = function (props: any) {
+const index = function(props: { detailId: number, onClose: any }) {
   const { detailId, onClose } = props;
 
   const active = detailId > 0;

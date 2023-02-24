@@ -1,7 +1,5 @@
-using XCloud.Database.EntityFrameworkCore.Extensions;
 using XCloud.Redis;
 using XCloud.Sales.Application;
-using XCloud.Sales.Clients.Platform;
 using XCloud.Sales.Data;
 using XCloud.Sales.Data.Domain.WarehouseStock;
 using XCloud.Sales.Service.Catalog;
@@ -11,28 +9,30 @@ namespace XCloud.Sales.Service.WarehouseStock;
 public interface IStockProcessingService : ISalesAppService
 {
     Task UpdateGoodsStockFromWarehouseStockAsync(int combinationId);
-
+    
+    Task RevertStockDeductionAsync(string orderId);
+    
     Task DeductStockAsync(DeductStockInput dto);
 }
 
 public class StockProcessingService : SalesAppService, IStockProcessingService
 {
     private readonly ISalesRepository<Stock> _salesRepository;
+    private readonly ISalesRepository<StockItem> _stockItemRepository;
     private readonly IStockUsageHistoryService _stockUsageHistoryService;
-    private readonly PlatformInternalService _platformInternalService;
     private readonly IGoodsStockService _goodsStockService;
     private readonly IStockService _stockService;
 
     public StockProcessingService(ISalesRepository<Stock> salesRepository,
-        PlatformInternalService platformInternalService,
         IStockUsageHistoryService stockUsageHistoryService,
-        IGoodsStockService goodsStockService, IStockService stockService)
+        IGoodsStockService goodsStockService, IStockService stockService,
+        ISalesRepository<StockItem> stockItemRepository)
     {
         _stockUsageHistoryService = stockUsageHistoryService;
         _goodsStockService = goodsStockService;
         _stockService = stockService;
+        _stockItemRepository = stockItemRepository;
         this._salesRepository = salesRepository;
-        this._platformInternalService = platformInternalService;
     }
 
     public async Task UpdateGoodsStockFromWarehouseStockAsync(int combinationId)
@@ -47,9 +47,83 @@ public class StockProcessingService : SalesAppService, IStockProcessingService
         throw new NotImplementedException();
     }
 
+    private async Task<int> DeductStockAsync(string orderItemId, string stockItemId, int quantity)
+    {
+        if (string.IsNullOrWhiteSpace(orderItemId))
+            throw new ArgumentNullException(nameof(orderItemId));
+
+        if (string.IsNullOrWhiteSpace(stockItemId))
+            throw new ArgumentNullException(nameof(stockItemId));
+
+        if (quantity <= 0)
+            throw new ArgumentNullException(nameof(quantity));
+
+        var db = await this._salesRepository.GetDbContextAsync();
+
+        var entity = await db.Set<StockItem>().FirstOrDefaultAsync(x => x.Id == stockItemId);
+
+        if (entity == null)
+            throw new EntityNotFoundException(nameof(entity));
+
+        var availableQuantity = entity.Quantity - entity.DeductQuantity;
+
+        if (entity.RuningOut || availableQuantity <= 0)
+            return 0;
+
+        var deductQuantity = Math.Min(quantity, availableQuantity);
+
+        entity.DeductQuantity += deductQuantity;
+        entity.RuningOut = entity.Quantity <= entity.DeductQuantity;
+        entity.LastModificationTime = this.Clock.Now;
+
+        await this._stockItemRepository.UpdateAsync(entity);
+
+        var history = new StockUsageHistoryDto()
+        {
+            OrderItemId = orderItemId,
+            WarehouseStockItemId = entity.Id,
+            Quantity = deductQuantity,
+            Revert = false,
+            RevertTime = null
+        };
+
+        await this._stockUsageHistoryService.InsertAsync(history);
+
+        return deductQuantity;
+    }
+
+    private async Task<StockItem[]> QueryStockItemsByCombinationIdAsync(int combinationId)
+    {
+        if (combinationId <= 0)
+            throw new ArgumentNullException(nameof(combinationId));
+
+        var db = await this._salesRepository.GetDbContextAsync();
+
+        var now = this.Clock.Now;
+
+        var query = from item in db.Set<StockItem>().AsNoTracking()
+            join stock in db.Set<Stock>().AsNoTracking()
+                on item.WarehouseStockId equals stock.Id
+            select new { item, stock };
+
+        query = query.Where(x => x.stock.Approved);
+        //query = query.Where(x => x.stock.ExpirationTime > now);
+        query = query
+            .Where(x => x.item.CombinationId == combinationId)
+            .Where(x => x.item.DeductQuantity < x.item.Quantity)
+            .Where(x => !x.item.RuningOut);
+
+        var warehouseStocks = await query
+            .OrderBy(x => x.stock.CreationTime)
+            .Select(x => x.item)
+            .ToArrayAsync();
+
+        return warehouseStocks;
+    }
+
     public async Task DeductStockAsync(DeductStockInput dto)
     {
-        if (dto.CombinationId <= 0 || dto.Quantity <= 0)
+        if (string.IsNullOrWhiteSpace(dto.OrderItemId) || dto.CombinationId <= 0 || dto.Quantity <= 0)
             throw new ArgumentNullException(nameof(DeductStockAsync));
 
         using var dlock = await this.RedLockClient.RedLockFactory.CreateLockAsync(
@@ -58,57 +132,30 @@ public class StockProcessingService : SalesAppService, IStockProcessingService
 
         if (dlock.IsAcquired)
         {
-            var db = await this._salesRepository.GetDbContextAsync();
-
-            var now = this.Clock.Now;
-
-            var query = from item in db.Set<StockItem>().AsTracking()
-                join stock in db.Set<Stock>().AsTracking()
-                    on item.WarehouseStockId equals stock.Id
-                select new { item, stock };
-
-            query = query.Where(x => x.stock.Approved);
-            //query = query.Where(x => x.stock.ExpirationTime > now);
-            query = query
-                .Where(x => x.item.CombinationId == dto.CombinationId)
-                .Where(x => x.item.DeductQuantity < x.item.Quantity)
-                .Where(x => !x.item.RuningOut);
-
-            var warehouseStocks = await query
-                .OrderBy(x => x.stock.CreationTime)
-                .ToArrayAsync();
+            var warehouseStocks = await this.QueryStockItemsByCombinationIdAsync(dto.CombinationId);
 
             var totalStockToDeduct = dto.Quantity;
 
-            foreach (var m in warehouseStocks)
+            foreach (var stockEntity in warehouseStocks)
             {
-                var stockEntity = m.item;
-                var quantityAvailable = stockEntity.Quantity - stockEntity.DeductQuantity;
-                var quantityToDeduct = Math.Min(quantityAvailable, totalStockToDeduct);
-                //
-                stockEntity.DeductQuantity += quantityToDeduct;
-                if (stockEntity.DeductQuantity >= stockEntity.Quantity)
-                {
-                    stockEntity.RuningOut = true;
-                }
-
-                stockEntity.LastModificationTime = now;
-
-                //check deduct is done?
-                totalStockToDeduct -= quantityToDeduct;
-                if (totalStockToDeduct <= 0)
-                {
-                    //deduct finished
+                var deductNumber = await this.DeductStockAsync(dto.OrderItemId, stockEntity.Id, totalStockToDeduct);
+                
+                //stock run out
+                if (deductNumber <= 0)
                     break;
-                }
+                
+                //update current stock to deduct
+                totalStockToDeduct -= deductNumber;
+                
+                //check if deduct is done
+                if (totalStockToDeduct <= 0)
+                    break;
             }
 
             if (totalStockToDeduct > 0)
             {
                 throw new UserFriendlyException("stock is not enough");
             }
-
-            await db.TrySaveChangesAsync();
         }
         else
         {

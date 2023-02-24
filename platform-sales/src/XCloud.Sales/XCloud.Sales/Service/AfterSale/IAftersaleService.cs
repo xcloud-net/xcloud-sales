@@ -193,7 +193,7 @@ public class AfterSaleService : SalesAppService, IAfterSaleService
             throw new ArgumentNullException(nameof(ApproveAsync));
 
         var db = await this._returnRequestRepository.GetDbContextAsync();
-        
+
         var afterSales = await db.Set<AfterSales>().IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == dto.Id);
         if (afterSales == null)
             throw new EntityNotFoundException();
@@ -283,8 +283,26 @@ public class AfterSaleService : SalesAppService, IAfterSaleService
 
         await db.SaveChangesAsync();
 
-        //todo update order status
-        throw new NotImplementedException("cancel after sale");
+        //update order status
+        await this.TryRevertOrderAfterSaleAsync(aftersales.OrderId);
+    }
+
+    private async Task TryRevertOrderAfterSaleAsync(string orderId)
+    {
+        if (string.IsNullOrWhiteSpace(orderId))
+            throw new ArgumentNullException(nameof(orderId));
+
+        var db = await this._returnRequestRepository.GetDbContextAsync();
+
+        var order = await db.Set<Order>().IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == orderId);
+
+        if (order == null)
+            return;
+
+        order.IsAftersales = false;
+        order.LastModificationTime = this.Clock.Now;
+
+        await db.TrySaveChangesAsync();
     }
 
     public async Task<AfterSalesDto[]> AttachDataAsync(AfterSalesDto[] data, AttachDataInput dto)
@@ -368,7 +386,7 @@ public class AfterSaleService : SalesAppService, IAfterSaleService
     public async Task<int> QueryPendingCountAsync(QueryAftersalePendingCountInput dto)
     {
         if (dto == null)
-            throw new ArgumentNullException(nameof(QueryPendingCountAsync));
+            throw new ArgumentNullException(nameof(dto));
 
         var db = await _returnRequestRepository.GetDbContextAsync();
 

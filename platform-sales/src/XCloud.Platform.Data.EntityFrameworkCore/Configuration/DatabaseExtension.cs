@@ -1,10 +1,9 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Options;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.Modularity;
-using XCloud.Core;
 using XCloud.Database.EntityFrameworkCore.MySQL;
+using XCloud.Platform.Core;
 using XCloud.Platform.Data.Database;
 using XCloud.Platform.Data.EntityFrameworkCore.Database;
 using XCloud.Platform.Shared;
@@ -14,18 +13,6 @@ namespace XCloud.Platform.Data.EntityFrameworkCore.Configuration;
 
 public static class DatabaseExtension
 {
-    public static bool AutoCreatePlatformDatabase(this IServiceProvider serviceProvider)
-    {
-        using var s = serviceProvider.CreateScope();
-
-        var option = s.ServiceProvider.GetRequiredService<IOptions<PlatformEfCoreOption>>()?.Value;
-
-        if (option == null)
-            throw new ConfigException(nameof(AutoCreatePlatformDatabase));
-
-        return option.AutoCreateDatabase;
-    }
-
     public static async Task TryCreatePlatformDatabase(this IApplicationBuilder app)
     {
         using var s = app.ApplicationServices.CreateScope();

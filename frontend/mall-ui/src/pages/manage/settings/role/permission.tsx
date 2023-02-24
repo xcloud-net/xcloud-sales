@@ -33,20 +33,23 @@ export default ({ model, ok }: { model: RoleDto, ok: any }) => {
     if (u.isEmpty(pers)) {
       return null;
     }
-    return <Space direction={'horizontal'}>
-      {pers.map((x, i) => <Tag key={i}>{x.name}</Tag>)}
-    </Space>;
+    return <div>
+      {pers.map((x, i) => <Tag style={{
+        marginRight: 5,
+        marginBottom: 5,
+      }} key={i}>{x.name}</Tag>)}
+    </div>;
   };
 
   return <>
     <div>
       <Space direction={'horizontal'}>
         {renderPermissions()}
-        <Button onClick={() => {
+        <Button type={'primary'} onClick={() => {
           _show(true);
         }}>修改</Button>
       </Space>
-      <Modal confirmLoading={loading} open={show} onCancel={() => {
+      <Modal title={'绑定权限'} confirmLoading={loading} open={show} onCancel={() => {
         _show(false);
       }} okText={null}>
         <XPermissionForm loading={loading} keys={model.PermissionKeys} save={(keys: string[]) => {

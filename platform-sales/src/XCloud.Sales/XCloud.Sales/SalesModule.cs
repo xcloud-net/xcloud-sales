@@ -33,8 +33,8 @@ using XCloud.Job;
 using XCloud.MessageBus;
 using XCloud.Redis;
 using XCloud.Platform.Connection.WeChat;
+using XCloud.Platform.Core.Database;
 using XCloud.Platform.Core.Job;
-using XCloud.Platform.Data.EntityFrameworkCore;
 using XCloud.Platform.Framework;
 using XCloud.Sales.Configuration;
 using XCloud.Sales.Core;
@@ -84,11 +84,11 @@ public class SalesModule : AbpModule
             //close platform jobs manually
             option.AutoStartJob = false;
         });
-        this.Configure<PlatformEfCoreOption>(option =>
+        this.Configure<PlatformDatabaseOption>(option =>
         {
             option.AutoCreateDatabase = false;
         });
-        this.Configure<SalesEfCoreOption>(option =>
+        this.Configure<SalesDatabaseOption>(option =>
         {
             option.AutoCreateDatabase = false;
         });

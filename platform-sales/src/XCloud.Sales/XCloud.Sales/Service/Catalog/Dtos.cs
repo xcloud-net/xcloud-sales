@@ -357,6 +357,8 @@ public class GoodsCombinationAttachDataInput : IEntityDto
     public bool CalculateSpecCombinationErrors { get; set; } = false;
 
     public bool Images { get; set; } = false;
+
+    public bool Goods { get; set; } = false;
 }
 
 public class CombinationBySkuInput : IEntityDto
@@ -469,9 +471,13 @@ public class UpdateTagStatusInput : IEntityDto<string>
     public bool? IsDeleted { get; set; }
 }
 
+public class AttachCollectionItemDataInput : IEntityDto
+{
+    public bool Combination { get; set; } = false;
+}
+
 public class GoodsCollectionItemDto : GoodsCollectionItem, IEntityDto
 {
-    public GoodsDto Goods { get; set; }
     public GoodsSpecCombinationDto GoodsSpecCombination { get; set; }
 }
 
