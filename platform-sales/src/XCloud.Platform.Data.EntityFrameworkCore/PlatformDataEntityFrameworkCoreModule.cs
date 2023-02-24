@@ -7,6 +7,7 @@ using Volo.Abp;
 using Volo.Abp.Modularity;
 using XCloud.Database.EntityFrameworkCore.MySQL;
 using Volo.Abp.AutoMapper;
+using XCloud.Platform.Core.Database;
 using XCloud.Platform.Data.EntityFrameworkCore.Configuration;
 
 namespace XCloud.Platform.Data.EntityFrameworkCore;
@@ -18,7 +19,7 @@ public class PlatformDataEntityFrameworkCoreModule : AbpModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.ConfigureDataAccess();
-        this.Configure<PlatformEfCoreOption>(option => option.AutoCreateDatabase = true);
+        this.Configure<PlatformDatabaseOption>(option => option.AutoCreateDatabase = true);
         this.Configure<AbpAutoMapperOptions>(option => option.AddMaps<PlatformDataEntityFrameworkCoreModule>(false));
     }
 

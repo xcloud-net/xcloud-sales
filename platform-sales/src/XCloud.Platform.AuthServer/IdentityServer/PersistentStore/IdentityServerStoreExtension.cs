@@ -3,12 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using XCloud.Core.DependencyInjection.Extension;
 using XCloud.Database.EntityFrameworkCore.MySQL;
-using XCloud.Platform.AuthServer.IdentityStore.IdsDbContext;
-using XCloud.Platform.AuthServer.IdentityStore.IdsStores;
+using XCloud.Platform.AuthServer.IdentityServer.PersistentStore.EntityFrameworkCore;
+using XCloud.Platform.AuthServer.IdentityServer.PersistentStore.InMemory;
 
-namespace XCloud.Platform.AuthServer.IdentityStore;
+namespace XCloud.Platform.AuthServer.IdentityServer.PersistentStore;
 
-public static class IdentityServerStoreBuilder
+public static class IdentityServerStoreExtension
 {
     /// <summary>
     /// 使用写死的配置数据
@@ -17,10 +17,10 @@ public static class IdentityServerStoreBuilder
     /// <returns></returns>
     public static IIdentityServerBuilder AddConfigurationStore(this IIdentityServerBuilder identityBuilder)
     {
-        //identityBuilder.AddInMemoryApiScopes(IdentityConfig.TestApiScopes());
-        //identityBuilder.AddInMemoryApiResources(IdentityConfig.TestApiResource());
-        //identityBuilder.AddInMemoryIdentityResources(IdentityConfig.TestIdentityResource());
-        //identityBuilder.AddInMemoryClients(IdentityConfig.TestClients());
+        //identityBuilder.AddInMemoryApiScopes(IdentityServerStaticConfig.TestApiScopes());
+        //identityBuilder.AddInMemoryApiResources(IdentityServerStaticConfig.TestApiResource());
+        //identityBuilder.AddInMemoryIdentityResources(IdentityServerStaticConfig.TestIdentityResource());
+        //identityBuilder.AddInMemoryClients(IdentityServerStaticConfig.TestClients());
 
         identityBuilder.Services.RemoveAll<IClientStore>().AddTransient<IClientStore, ClientStore>();
         identityBuilder.Services.RemoveAll<IResourceStore>().AddTransient<IResourceStore, ResourceStore>();

@@ -1,19 +1,23 @@
-﻿using System.IO;
+using System;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using FluentAssertions;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Volo.Abp.Modularity;
 using XCloud.AspNetMvc.Builder;
+using XCloud.Core;
 using XCloud.Core.DependencyInjection.Extension;
+using XCloud.Platform.AuthServer.IdentityServer.GrantValidator;
+using XCloud.Platform.AuthServer.IdentityServer.PersistentStore;
 using XCloud.Platform.Shared;
-using XCloud.Platform.AuthServer.GrantProvider;
-using XCloud.Platform.AuthServer.Service;
-using XCloud.Platform.AuthServer.Validator;
 
-namespace XCloud.Platform.AuthServer;
+namespace XCloud.Platform.AuthServer.IdentityServer;
 
-public static class AuthServerBuilder
+public static class IdentityServerConfigurationExtension
 {
     /// <summary>
     /// 配置identity server
@@ -53,9 +57,9 @@ public static class AuthServerBuilder
         identityBuilder.AddResourceOwnerValidator<UserPasswordValidator>();
         identityBuilder.AddExtensionGrantValidator<InternalGrantValidator>();
         //身份信息
-        identityBuilder.AddProfileService<DefaultProfileService>();
+        identityBuilder.AddProfileService<PlatformProfileService>();
         //允许的跳转地址
-        identityBuilder.AddRedirectUriValidator<MyRedirectUriValidator>();
+        identityBuilder.AddRedirectUriValidator<PlatformRedirectUriValidator>();
 
         //identityBuilder.AddClientStoreCache();
         identityBuilder.AddInMemoryCaching();
@@ -85,5 +89,24 @@ public static class AuthServerBuilder
             await next.Invoke();
         });
         return builder;
+    }
+
+    public static bool IntegrateIdentityServer(this IConfiguration configuration)
+    {
+        return configuration["app:identity_server:IntegrateIdentityServer"] == "true";
+    }
+
+    public static void ConfigAuthServer(this ServiceConfigurationContext context)
+    {
+        //identity server
+        var config = context.Services.GetConfiguration();
+        if (IntegrateIdentityServer(config))
+        {
+            //ids配置
+            context.Services
+                .AddIdentityServerComponents()
+                .AddOperationStore()
+                .AddConfigurationStore();
+        }
     }
 }

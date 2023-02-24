@@ -8,18 +8,18 @@ using Volo.Abp;
 using XCloud.Core.Extension;
 using XCloud.Platform.Auth.Authentication;
 
-namespace XCloud.Platform.AuthServer.Service;
+namespace XCloud.Platform.AuthServer.IdentityServer;
 
 /// <summary>
 ///  Profile就是用户资料，ids 4里面定义了一个IProfileService的接口用来获取用户的一些信息
 ///  ，主要是为当前的认证上下文绑定claims。我们可以实现IProfileService从外部创建claim扩展到ids4里面。
 ///  然后返回
 /// </summary>
-public class DefaultProfileService : IProfileService
+public class PlatformProfileService : IProfileService
 {
     private readonly ILogger _logger;
 
-    public DefaultProfileService(ILogger<DefaultProfileService> logger)
+    public PlatformProfileService(ILogger<PlatformProfileService> logger)
     {
         this._logger = logger;
     }
@@ -58,8 +58,8 @@ public class DefaultProfileService : IProfileService
     {
         try
         {
-            var user_uid = context.Subject?.Claims?.GetSubjectId();
-            if (user_uid == null || user_uid.Length <= 0)
+            var userId = context.Subject?.Claims?.GetSubjectId();
+            if (userId == null || userId.Length <= 0)
             {
                 throw new UserFriendlyException("subject找不到");
             }

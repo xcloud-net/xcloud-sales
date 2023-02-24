@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp;
 using Volo.Abp.Modularity;
-using XCloud.AspNetMvc;
 using XCloud.AspNetMvc.Builder;
 using XCloud.AspNetMvc.Configuration;
 using XCloud.AspNetMvc.Swagger;
 using XCloud.Core.Builder;
 using XCloud.Platform.AuthServer;
+using XCloud.Platform.AuthServer.IdentityServer;
+using XCloud.Platform.AuthServer.IdentityServer.PersistentStore;
 using XCloud.Platform.Common.Application.Service.Messenger;
 using XCloud.Platform.Framework;
 using XCloud.Platform.Member.Application;
@@ -38,6 +39,14 @@ public class PlatformApiModule : AbpModule
     {
         //PlatformMemberModule
         context.Services.GetMvcBuilder().AddApplicationPartIfNotExists(typeof(PlatformMemberModule).Assembly);
+    }
+
+    public override void PostConfigureServices(ServiceConfigurationContext context)
+    {
+        context.Services.Configure<AuthServerDatabaseOption>(option =>
+        {
+            option.AutoCreateDatabase = false;
+        });
     }
 
     public override void OnPreApplicationInitialization(ApplicationInitializationContext context)

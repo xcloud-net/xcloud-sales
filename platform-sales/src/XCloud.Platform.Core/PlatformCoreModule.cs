@@ -7,6 +7,7 @@ using Volo.Abp.FluentValidation;
 using Volo.Abp.Modularity;
 using XCloud.Application;
 using XCloud.Job;
+using XCloud.Platform.Core.Database;
 using XCloud.Platform.Core.Job;
 using XCloud.Platform.Shared;
 
@@ -27,6 +28,7 @@ public class PlatformCoreModule : AbpModule
         {
             option.AutoStartJob = true;
         });
+        this.Configure<PlatformDatabaseOption>(option => option.AutoCreateDatabase = false);
         this.Configure<AbpAutoMapperOptions>(option => option.AddMaps<PlatformCoreModule>(false));
     }
 }

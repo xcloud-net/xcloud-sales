@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
 
-namespace XCloud.Platform.AuthServer.IdentityStore.IdsStores;
+namespace XCloud.Platform.AuthServer.IdentityServer.PersistentStore.InMemory;
 
 /// <summary>
 /// Implementation of IPersistedGrantStore thats uses EF.

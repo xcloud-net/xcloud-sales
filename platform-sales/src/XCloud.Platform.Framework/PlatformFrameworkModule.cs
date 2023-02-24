@@ -7,6 +7,7 @@ using XCloud.Core.Builder;
 using XCloud.Job;
 using XCloud.MessageBus;
 using XCloud.Platform.Connection.WeChat;
+using XCloud.Platform.Core.Database;
 using XCloud.Platform.Core.Job;
 using XCloud.Platform.Data.EntityFrameworkCore;
 using XCloud.Platform.Framework.Configuration;
@@ -46,7 +47,7 @@ public class PlatformFrameworkModule : AbpModule
             //disable job auto start
             option.AutoStartJob = true;
         });
-        context.Services.Configure<PlatformEfCoreOption>(option =>
+        context.Services.Configure<PlatformDatabaseOption>(option =>
         {
             //auto create database
             option.AutoCreateDatabase = false;

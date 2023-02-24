@@ -1,9 +1,9 @@
-﻿using IdentityServer4.Models;
-using IdentityServer4.Validation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityServer4.Models;
+using IdentityServer4.Validation;
 using Volo.Abp;
 using XCloud.Core.Application.WorkContext;
 using XCloud.Core.Extension;
@@ -11,7 +11,7 @@ using XCloud.Platform.Auth.Authentication;
 using XCloud.Platform.Common.Application.Service.Token;
 using XCloud.Platform.Shared;
 
-namespace XCloud.Platform.AuthServer.GrantProvider;
+namespace XCloud.Platform.AuthServer.IdentityServer.GrantValidator;
 
 public class InternalGrantValidator : IExtensionGrantValidator
 {

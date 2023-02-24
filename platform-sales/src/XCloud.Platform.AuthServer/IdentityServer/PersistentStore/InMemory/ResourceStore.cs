@@ -10,7 +10,7 @@ using IdentityServer4.Models;
 using IdentityServer4.Stores;
 using XCloud.Core.Application.WorkContext;
 
-namespace XCloud.Platform.AuthServer.IdentityStore.IdsStores;
+namespace XCloud.Platform.AuthServer.IdentityServer.PersistentStore.InMemory;
 
 /// <summary>
 /// Implementation of IResourceStore thats uses EF.
@@ -34,7 +34,7 @@ public class ResourceStore : IResourceStore
 
         var apiResourceNamesArray = apiResourceNames.ToArray();
 
-        var res = IdentityConfig.TestApiResource().Where(x => apiResourceNamesArray.Contains(x.Name)).ToArray();
+        var res = IdentityServerStaticConfig.TestApiResource().Where(x => apiResourceNamesArray.Contains(x.Name)).ToArray();
 
         return res;
     }
@@ -48,7 +48,7 @@ public class ResourceStore : IResourceStore
 
         var scopeNamesArray = scopeNames.ToArray();
 
-        var res = IdentityConfig.TestApiResource().Where(x => scopeNamesArray.Intersect(x.Scopes).Any()).ToArray();
+        var res = IdentityServerStaticConfig.TestApiResource().Where(x => scopeNamesArray.Intersect(x.Scopes).Any()).ToArray();
 
         return res;
     }
@@ -62,7 +62,7 @@ public class ResourceStore : IResourceStore
 
         var scopeNamesArray = scopeNames.ToArray();
 
-        var res = IdentityConfig.TestApiScopes().Where(x => scopeNamesArray.Contains(x.Name)).ToArray();
+        var res = IdentityServerStaticConfig.TestApiScopes().Where(x => scopeNamesArray.Contains(x.Name)).ToArray();
 
         return res;
     }
@@ -76,7 +76,7 @@ public class ResourceStore : IResourceStore
 
         var scopeNamesArray = scopeNames.ToArray();
 
-        var res = IdentityConfig.TestIdentityResource().Where(x => scopeNamesArray.Contains(x.Name)).ToArray();
+        var res = IdentityServerStaticConfig.TestIdentityResource().Where(x => scopeNamesArray.Contains(x.Name)).ToArray();
 
         return res;
     }
@@ -87,9 +87,9 @@ public class ResourceStore : IResourceStore
 
         var res = new Resources()
         {
-            ApiScopes = IdentityConfig.TestApiScopes(),
-            ApiResources = IdentityConfig.TestApiResource(),
-            IdentityResources = IdentityConfig.TestIdentityResource(),
+            ApiScopes = IdentityServerStaticConfig.TestApiScopes(),
+            ApiResources = IdentityServerStaticConfig.TestApiResource(),
+            IdentityResources = IdentityServerStaticConfig.TestIdentityResource(),
             OfflineAccess = true
         };
 

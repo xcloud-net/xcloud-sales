@@ -9,7 +9,7 @@ using IdentityServer4.Stores;
 using Microsoft.Extensions.Logging;
 using XCloud.Core.Application.WorkContext;
 
-namespace XCloud.Platform.AuthServer.IdentityStore.IdsStores;
+namespace XCloud.Platform.AuthServer.IdentityServer.PersistentStore.InMemory;
 
 /// <summary>
 /// Implementation of IClientStore thats uses EF.
@@ -35,7 +35,7 @@ public class ClientStore : IClientStore
     {
         await Task.CompletedTask;
 
-        var res = IdentityConfig.TestClients().Where(x => x.ClientId == clientId).FirstOrDefault();
+        var res = IdentityServerStaticConfig.TestClients().Where(x => x.ClientId == clientId).FirstOrDefault();
 
 #if DEBUG
         var json = this._context.JsonSerializer.SerializeToString(new { res });

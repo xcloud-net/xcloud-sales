@@ -2,7 +2,7 @@
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 
-namespace XCloud.Platform.AuthServer.IdentityStore.IdsDbContext;
+namespace XCloud.Platform.AuthServer.IdentityServer.PersistentStore.EntityFrameworkCore;
 
 /// <summary>
 /// ids授权数据库

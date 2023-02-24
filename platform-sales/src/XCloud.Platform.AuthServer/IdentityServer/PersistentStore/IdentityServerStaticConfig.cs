@@ -6,12 +6,12 @@ using XCloud.Core.Extension;
 using XCloud.Platform.Shared;
 using static IdentityServer4.IdentityServerConstants;
 
-namespace XCloud.Platform.AuthServer.IdentityStore;
+namespace XCloud.Platform.AuthServer.IdentityServer.PersistentStore;
 
 /// <summary>
 /// https://identityserver4.readthedocs.io/en/release/reference/identity_resource.html
 /// </summary>
-public static class IdentityConfig
+public static class IdentityServerStaticConfig
 {
     public static List<ApiScope> TestApiScopes()
     {
