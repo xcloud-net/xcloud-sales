@@ -1,9 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Options;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.Modularity;
-using XCloud.Core;
 using XCloud.Database.EntityFrameworkCore.MySQL;
 using XCloud.Platform.Core;
 using XCloud.Platform.Data.Database;

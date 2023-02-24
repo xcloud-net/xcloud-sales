@@ -13,7 +13,6 @@ global using XCloud.Core.Extension;
 using Hangfire;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
-using XCloud.Job;
 using XCloud.Platform.Common.Application;
 using XCloud.Platform.Core.Job;
 using XCloud.Platform.Member.Application.Configuration;

@@ -9,7 +9,6 @@ using XCloud.Platform.Core.Domain.Admin;
 using XCloud.Platform.Core.Domain.Security;
 using XCloud.Platform.Core.Domain.User;
 using XCloud.Platform.Data.Database;
-using XCloud.Platform.Member.Application.Job;
 using XCloud.Platform.Member.Application.Service.Admin;
 using XCloud.Platform.Member.Application.Service.Security;
 using XCloud.Platform.Shared;

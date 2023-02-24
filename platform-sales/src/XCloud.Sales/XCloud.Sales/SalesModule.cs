@@ -35,7 +35,6 @@ using XCloud.Redis;
 using XCloud.Platform.Connection.WeChat;
 using XCloud.Platform.Core.Database;
 using XCloud.Platform.Core.Job;
-using XCloud.Platform.Data.EntityFrameworkCore;
 using XCloud.Platform.Framework;
 using XCloud.Sales.Configuration;
 using XCloud.Sales.Core;

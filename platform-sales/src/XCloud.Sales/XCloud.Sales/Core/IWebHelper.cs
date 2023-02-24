@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http;
-using XCloud.AspNetMvc;
 using XCloud.AspNetMvc.Extension;
 
 namespace XCloud.Sales.Core;

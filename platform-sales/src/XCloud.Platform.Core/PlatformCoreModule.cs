@@ -6,7 +6,6 @@ using Volo.Abp.BlobStoring.FileSystem;
 using Volo.Abp.FluentValidation;
 using Volo.Abp.Modularity;
 using XCloud.Application;
-using XCloud.Job;
 using XCloud.Platform.Core.Database;
 using XCloud.Platform.Core.Job;
 using XCloud.Platform.Shared;

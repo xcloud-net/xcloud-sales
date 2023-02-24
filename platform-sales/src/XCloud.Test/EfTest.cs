@@ -1,11 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using FluentAssertions;
 using Volo.Abp.Domain.Entities;
-using XCloud.Core.Application;
 using XCloud.Platform.Core.Domain.User;
 
 namespace XCloud.Test;

@@ -10,9 +10,7 @@ global using Volo.Abp.Auditing;
 using Hangfire;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
-using XCloud.Job;
 using XCloud.Platform.Common.Application.Configuration;
-using XCloud.Platform.Common.Application.Service.Storage;
 using XCloud.Platform.Core;
 using XCloud.Platform.Core.Job;
 

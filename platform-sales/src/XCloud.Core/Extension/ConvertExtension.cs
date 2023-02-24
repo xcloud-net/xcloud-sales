@@ -2,8 +2,9 @@
 
 public static class ConvertExtension
 {
-    private static readonly IReadOnlyCollection<string> bool_string_list =
-        new List<string>() {
+    private static readonly IReadOnlyCollection<string> BoolStringList =
+        new List<string>()
+        {
             "1", "true", "yes", "on", "success", "ok",
             true.ToString().ToLower()
         }.AsReadOnly();
@@ -17,5 +18,5 @@ public static class ConvertExtension
     /// 转换为布尔值
     /// </summary>
     public static bool ToBool(this string data) =>
-        bool_string_list.Contains(data.ToLower());
+        BoolStringList.Contains(data.ToLower(), StringComparer.OrdinalIgnoreCase);
 }
