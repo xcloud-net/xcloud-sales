@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.Json;
 using System.Threading;
-using System.Threading.Tasks;
+using Volo.Abp;
 using XCloud.Core.DataSerializer.TextJson;
 using XCloud.Core.Dto;
 using XCloud.Core.Extension;
@@ -87,7 +87,7 @@ public class CommonTest
     }
 
     [TestMethod]
-    public void Xxffddss()
+    public void TestOption()
     {
         var collection = new ServiceCollection();
 
@@ -145,6 +145,7 @@ public class CommonTest
             new SysUser() { NickName = "x", CreationTime = DateTime.Now }, option);
 
         var data = JsonSerializer.Deserialize<SysUser>(json, option);
+        Console.WriteLine(data);
 
         json = System.Text.Json.JsonSerializer.Serialize(new { name = "x", time = 123 }, option);
         data = JsonSerializer.Deserialize<SysUser>(json, option);
@@ -185,9 +186,13 @@ public class CommonTest
     public void attr_inherit_test()
     {
         var boy = new ChildBoy();
+        boy.Test();
 
         var m = typeof(ChildBoy).GetMethods().FirstOrDefault(x => x.Name == nameof(boy.Test));
-        m.Should().NotBeNull();
+        
+        if (m == null)
+            throw new AbpException(nameof(m));
+        
         m.GetCustomAttributes(inherit: true).Length.Should().Be(2);
         m.GetCustomAttributes(inherit: false).Length.Should().Be(1);
     }
@@ -197,6 +202,8 @@ public class CommonTest
     {
         var obj = JObject.Parse("{\"name\":\"wj\"}");
         var field = obj["name"];
+        if (field == null)
+            throw new ArgumentException(nameof(field));
 
         var value = field.Value<string>();
         value.Should().Be("wj");
@@ -221,9 +228,10 @@ public class CommonTest
         var id = (int)CrudEnum.Delete;
 
         var e = (CrudEnum)id;
-        e.ToString().Should().Be("Delete");
+        e.ToString().Should().Be(nameof(CrudEnum.Delete));
 
-        ((CrudEnum)4564).ToString().Should().Be("4564");
+        id = 4564;
+        ((CrudEnum)id).ToString().Should().Be(id.ToString());
     }
 
     [TestMethod]
@@ -274,40 +282,6 @@ public class CommonTest
         a = null;
         (a is int).Should().BeFalse();
     }
-
-    [TestMethod]
-    public async Task InvokeMethod___()
-    {
-        var obj = new CommonTest();
-        var methods = obj.GetType()
-            .GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-
-        bool IsAsync(Type t)
-        {
-            return t.IsAssignableTo_<Task>();
-        }
-
-        async Task Invoke(string name)
-        {
-            var m = methods.FirstOrDefault(x => x.Name == name);
-            var res = m.Invoke(obj, new object[] { });
-            if (IsAsync(m.ReturnType))
-            {
-                var task = (Task)res;
-                await task;
-            }
-        }
-
-        await Invoke(nameof(xx_1));
-        await Invoke(nameof(xx_2));
-        await Invoke(nameof(xx_3));
-    }
-
-    void xx_1() => Console.WriteLine(string.Empty);
-
-    async Task<string> xx_2() => await Task.FromResult(string.Empty);
-
-    async Task xx_3() => await Task.FromResult(string.Empty);
 
     /// <summary>
     /// todo 通过il生成cap consumer

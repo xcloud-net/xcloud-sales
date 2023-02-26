@@ -37,6 +37,27 @@ public class TestUserAccountService : PlatformApplicationService
     {
         var user = await this.CreateUserAccountAsync();
         var admin = await this.CreateAdminAccountAsync(user);
+
+        await this.EnsureRoleAsync(admin);
+
+        await this._userAccountService.UpdateUserStatusAsync(new UpdateUserStatusDto()
+        {
+            Id = user.Id,
+            IsActive = false,
+            IsDeleted = true
+        });
+
+        await this._adminAccountService.UpdateAdminStatusAsync(new UpdateAdminStatusDto()
+        {
+            Id = admin.Id,
+            IsActive = false,
+            IsSuperAdmin = false,
+        });
+    }
+
+    private async Task EnsureRoleAsync(SysAdmin admin)
+    {
+        await Task.CompletedTask;
     }
 
     private async Task<SysAdmin> CreateAdminAccountAsync(SysUser user)
