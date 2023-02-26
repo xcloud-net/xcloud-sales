@@ -13,7 +13,7 @@ namespace XCloud.Test;
 [TestClass]
 public class ThreadTest
 {
-    void __wait__() => Thread.Sleep(TimeSpan.FromSeconds(1));
+    private void __wait__() => Thread.Sleep(TimeSpan.FromSeconds(1));
 
     [TestMethod]
     public void Parallel_test1()
@@ -60,8 +60,8 @@ public class ThreadTest
         releaseWithWait.Should().NotThrow();
     }
 
-    static readonly ThreadLocal<int> ThreadLocal = new ThreadLocal<int>();
-    static readonly AsyncLocal<int> AsyncLocal = new AsyncLocal<int>();
+    private static readonly ThreadLocal<int> ThreadLocal = new ThreadLocal<int>();
+    private static readonly AsyncLocal<int> AsyncLocal = new AsyncLocal<int>();
 
     [TestMethod]
     public async Task test_async_local()
@@ -77,7 +77,7 @@ public class ThreadTest
         (AsyncLocal.Value == data).Should().BeTrue();
     }
 
-    async Task test_async_local_children(int expect, int newData)
+    private async Task test_async_local_children(int expect, int newData)
     {
         (AsyncLocal.Value == expect).Should().BeTrue();
 
@@ -90,7 +90,7 @@ public class ThreadTest
         (AsyncLocal.Value == newData).Should().BeTrue();
     }
 
-    async Task test_async_local_children_2(int expect, int newData)
+    private async Task test_async_local_children_2(int expect, int newData)
     {
         (AsyncLocal.Value == expect).Should().BeTrue();
 

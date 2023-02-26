@@ -51,6 +51,9 @@ public class AfterSaleCommentService : SalesAppService, IAfterSaleCommentService
 
         var entity = this.ObjectMapper.Map<AfterSalesCommentDto, AfterSalesComment>(dto);
 
+        entity.Id = this.GuidGenerator.CreateGuidString();
+        entity.CreationTime = this.Clock.Now;
+        
         await this._repository.InsertAsync(entity);
     }
 

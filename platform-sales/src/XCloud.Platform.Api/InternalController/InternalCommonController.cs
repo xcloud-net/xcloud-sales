@@ -6,7 +6,7 @@ using XCloud.Platform.Common.Application.Service.IdGenerator;
 using XCloud.Platform.Framework.Controller;
 using XCloud.Platform.Shared.Dto;
 
-namespace XCloud.Platform.Api.Controller.Private;
+namespace XCloud.Platform.Api.InternalController;
 
 [Route("/internal-api/platform/common")]
 public class InternalCommonController : PlatformBaseController

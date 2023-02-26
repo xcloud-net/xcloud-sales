@@ -37,9 +37,10 @@ public class GoodsSpecCombinationController : ShopBaseController
         this._goodsSpecCombinationService = goodsSpecCombinationService;
         _storeGoodsMappingService = storeGoodsMappingService;
     }
-    
+
     [HttpPost("query-combination-for-selection")]
-    public async Task<ApiResponse<GoodsSpecCombinationDto[]>> QueryCombinationForSelectionAsync([FromBody] QueryCombinationForSelectionInput dto)
+    public async Task<ApiResponse<GoodsSpecCombinationDto[]>> QueryCombinationForSelectionAsync(
+        [FromBody] QueryCombinationForSelectionInput dto)
     {
         dto.Take = 30;
 
@@ -77,9 +78,11 @@ public class GoodsSpecCombinationController : ShopBaseController
                 SpecCombinationDetail = true,
                 CalculateSpecCombinationErrors = true,
                 GradePrices = true,
-                Stores = true
+                Stores = true,
+                Images = true
             });
 
+        //todo remove
         var goods = response.Items.Select(x => x.Goods).Where(x => x != null).ToArray();
         await this._goodsService.AttachDataAsync(goods, new AttachGoodsDataInput() { Images = true });
 
@@ -253,7 +256,7 @@ public class GoodsSpecCombinationController : ShopBaseController
             return new ApiResponse<GoodsSpecCombination>(res);
         }
     }
-    
+
     [HttpPost("store-mapping-list")]
     public async Task<ApiResponse<StoreDto[]>> StoreMappingList([FromBody] IdDto<int> dto)
     {
@@ -268,7 +271,8 @@ public class GoodsSpecCombinationController : ShopBaseController
 
         var combinationDto = this.ObjectMapper.Map<GoodsSpecCombination, GoodsSpecCombinationDto>(combination);
 
-        await this._goodsSpecCombinationService.AttachDataAsync(new[] { combinationDto }, new GoodsCombinationAttachDataInput() { Stores = true });
+        await this._goodsSpecCombinationService.AttachDataAsync(new[] { combinationDto },
+            new GoodsCombinationAttachDataInput() { Stores = true });
 
         return new ApiResponse<StoreDto[]>(combinationDto.Stores);
     }
@@ -287,10 +291,9 @@ public class GoodsSpecCombinationController : ShopBaseController
             throw new EntityNotFoundException(nameof(SaveStoreMapping));
 
         await this._storeGoodsMappingService.SaveGoodsStoreMappingAsync(dto);
-            
+
         await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(combination.GoodsId));
 
         return new ApiResponse<object>();
     }
-
 }

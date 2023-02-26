@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import XAction from './action';
 import XGoods from './goods';
 import XSummary from './summary';
+import XComment from './comment';
 import LinearProgress from '@/components/loading/linear';
 
 export default (props: { detailId?: string }) => {
@@ -46,6 +47,7 @@ export default (props: { detailId?: string }) => {
         />
         <XSummary model={data} />
         <XGoods model={data} />
+        <XComment model={data} />
       </>
     );
   };
@@ -58,7 +60,7 @@ export default (props: { detailId?: string }) => {
           <>
             {u.isEmpty(data.Id) || renderDetail()}
             {u.isEmpty(data.Id) && (
-              <Alert severity="warning">售后数据未关联</Alert>
+              <Alert severity='warning'>售后数据未关联</Alert>
             )}
           </>
         )}

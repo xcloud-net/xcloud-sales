@@ -336,6 +336,7 @@ public class GoodsService : SalesAppService, IGoodsService
         await db.TrySaveChangesAsync();
     }
 
+    [Obsolete]
     private PictureDto BuildPictureDto(Picture picture, GoodsPicture goodsPicture)
     {
         var picDto = ObjectMapper.Map<Picture, PictureDto>(picture);
@@ -461,8 +462,10 @@ public class GoodsService : SalesAppService, IGoodsService
                 }
 
                 m.XPictures = pictureList.ToArray();
+                m.MainPictures = m.XPictures.Where(x => x.CombinationId <= 0).ToArray();
 
                 //------------------------------------------------
+                //todo remove picture entity
                 m.Pictures = xdata.Select(x => BuildPictureDto(x.picture, x.goodsPicture)).ToArray();
 
                 foreach (var pic in m.Pictures)

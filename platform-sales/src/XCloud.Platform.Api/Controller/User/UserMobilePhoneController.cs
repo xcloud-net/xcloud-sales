@@ -5,7 +5,7 @@ using XCloud.Platform.Auth.Application.User;
 using XCloud.Platform.Framework.Controller;
 using XCloud.Platform.Member.Application.Service.User;
 
-namespace XCloud.Platform.Api.Controller.Public.User;
+namespace XCloud.Platform.Api.Controller.User;
 
 [Route("/api/platform/user/mobile")]
 public class UserMobilePhoneController : PlatformBaseController, IUserController

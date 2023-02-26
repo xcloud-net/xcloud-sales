@@ -102,7 +102,7 @@ const uploadFileV3 = (file: File) => {
 
       var res: {
         data: ApiResponse<StorageMetaDto[]>;
-      } = await http.apiRequest.post('/platform/qcloud-fs/upload', p);
+      } = await http.apiRequest.post('/platform/storage/upload', p);
 
       resolve(res.data || {});
     } catch (e) {

@@ -5,7 +5,7 @@ using XCloud.Platform.Common.Application.Service.Region;
 using XCloud.Platform.Core.Domain.Region;
 using XCloud.Platform.Framework.Controller;
 
-namespace XCloud.Platform.Api.Controller.Public;
+namespace XCloud.Platform.Api.Controller;
 
 [Route("/api/platform/region")]
 public class RegionController : PlatformBaseController
