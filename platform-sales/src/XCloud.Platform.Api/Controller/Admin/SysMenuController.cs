@@ -10,7 +10,7 @@ using XCloud.Platform.Common.Application.Service.Menu;
 using XCloud.Platform.Core.Domain.Menu;
 using XCloud.Platform.Framework.Controller;
 
-namespace XCloud.Platform.Api.Controller.Public.Admin;
+namespace XCloud.Platform.Api.Controller.Admin;
 
 [Route("/api/sys/menu")]
 public class SysMenuController : PlatformBaseController, IAdminController

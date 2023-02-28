@@ -5,7 +5,7 @@ using XCloud.Platform.Auth.Application.Admin;
 using XCloud.Platform.Framework.Controller;
 using XCloud.Platform.Member.Application.Service.Security;
 
-namespace XCloud.Platform.Api.Controller.Public.Admin;
+namespace XCloud.Platform.Api.Controller.Admin;
 
 [Route("/api/sys/role")]
 public class SysRoleController : PlatformBaseController, IAdminController

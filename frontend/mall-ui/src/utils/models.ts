@@ -264,6 +264,7 @@ export interface GoodsDto {
   Published?: boolean;
   GoodsAttributes?: any[];
   XPictures?: MallStorageMetaDto[];
+  MainPictures?: MallStorageMetaDto[];
   AdminComment?: string;
   StickyTop?: boolean;
   IsNew?: boolean;
@@ -694,4 +695,25 @@ export interface GoodsCollectionDto {
   ApplyedCount?: number;
   LastModificationTime?: string;
   Items?: GoodsCollectionItemDto[];
+}
+
+/*
+
+public string AfterSaleId { get; set; }
+    public string Content { get; set; }
+    public string PictureJson { get; set; }
+    public bool IsAdmin { get; set; }
+    public DateTime CreationTime { get; set; }
+
+* */
+
+export interface AfterSalesCommentDto {
+  Id?: string;
+  AfterSaleId?: string;
+  Content?: string;
+  PictureJson?: string;
+  IsAdmin?: boolean;
+  CreationTime?: string;
+  AfterSales?: AfterSaleDto;
+  Pictures?: MallStorageMetaDto[];
 }

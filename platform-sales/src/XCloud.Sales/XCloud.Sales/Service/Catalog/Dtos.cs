@@ -295,6 +295,8 @@ public class GoodsDto : Goods, IEntityDto
 
     public GoodsAttribute[] GoodsAttributes { get; set; }
 
+    public MallStorageMetaDto[] MainPictures { get; set; }
+
     public MallStorageMetaDto[] XPictures { get; set; }
     
     [Obsolete]

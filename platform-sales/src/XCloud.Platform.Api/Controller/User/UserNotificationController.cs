@@ -7,7 +7,7 @@ using XCloud.Platform.Auth.Application.User;
 using XCloud.Platform.Common.Application.Service.Notification;
 using XCloud.Platform.Framework.Controller;
 
-namespace XCloud.Platform.Api.Controller.Public.User;
+namespace XCloud.Platform.Api.Controller.User;
 
 [Route("/api/platform/user/notification")]
 public class UserNotificationController : PlatformBaseController, IUserController

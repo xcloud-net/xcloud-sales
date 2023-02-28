@@ -17,7 +17,7 @@ using XCloud.Platform.Shared;
 using XCloud.Platform.Shared.Dto;
 using XCloud.Platform.Shared.Storage;
 
-namespace XCloud.Platform.Api.Controller.Public;
+namespace XCloud.Platform.Api.Controller;
 
 [Route("/api/platform/storage")]
 public class StorageController : PlatformBaseController, IUserController

@@ -9,7 +9,7 @@ using XCloud.Platform.Common.Application.Service.Address;
 using XCloud.Platform.Core.Domain.Address;
 using XCloud.Platform.Framework.Controller;
 
-namespace XCloud.Platform.Api.Controller.Public.User;
+namespace XCloud.Platform.Api.Controller.User;
 
 [Route("/api/platform/user/address")]
 public class UserAddressController : PlatformBaseController, IUserController

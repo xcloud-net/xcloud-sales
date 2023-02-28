@@ -5,15 +5,34 @@ using System;
 
 namespace XCloud.Test;
 
-public class SimpleLogInterceptor : IInterceptor
+public interface ISimple
 {
-    public SimpleLogInterceptor() { }
+    string Name { get; set; }
+}
 
+public class SimpleEntity
+{
+    public virtual string Name { get; set; }
 
-    private readonly Action<string> action;
-    public SimpleLogInterceptor(Action<string> action)
+    //public void set_Name(string n) { }
+
+    public void Throw() => throw new NotImplementedException();
+}
+
+public class WatchFieldsChangeInterceptor : IInterceptor
+{
+    public WatchFieldsChangeInterceptor(bool invoke)
     {
-        this.action = action;
+        this._invoke = invoke;
+    }
+
+
+    private readonly Action<string> _actionOrNull;
+    private readonly bool _invoke;
+
+    public WatchFieldsChangeInterceptor(Action<string> action, bool invoke) : this(invoke)
+    {
+        this._actionOrNull = action;
     }
 
     public void Intercept(Castle.DynamicProxy.IInvocation invocation)
@@ -24,58 +43,35 @@ public class SimpleLogInterceptor : IInterceptor
             return;
             */
 
-        //对接口的proxy这里是未实现
-        //invocation.Proceed();
-
-        this.action?.Invoke(name);
-    }
-}
-
-public class XxInterceptor : IInterceptor
-{
-    public XxInterceptor() { }
-
-    public void Intercept(Castle.DynamicProxy.IInvocation invocation)
-    {
-        invocation.Proceed();
+        this._actionOrNull?.Invoke(name);
+        
+        if (this._invoke)
+        {
+            invocation.Proceed();
+        }
     }
 }
 
 [TestClass]
 public class CastleDynamicProxyTest
 {
-    public interface ISimple
-    {
-        string Name { get; set; }
-    }
-
-    public class SimpleSamepleEntity
-    {
-        public virtual string Name { get; set; }
-
-        //public void set_Name(string n) { }
-
-        public virtual int Age { get; set; }
-
-        public void Throw() => throw new NotImplementedException();
-    }
-
     [TestMethod]
     public void castle_proxy_with_target()
     {
         int change = 0;
 
-        var obj = new SimpleSamepleEntity() { };
+        var obj = new SimpleEntity() { };
 
         var generator = new Castle.DynamicProxy.ProxyGenerator();
-        var entity = (SimpleSamepleEntity)generator.CreateClassProxyWithTarget(
-            classToProxy: typeof(SimpleSamepleEntity),
+        var entity = (SimpleEntity)generator.CreateClassProxyWithTarget(
+            classToProxy: typeof(SimpleEntity),
             target: obj,
-            interceptors: new SimpleLogInterceptor(column => ++change));
+            interceptors: new WatchFieldsChangeInterceptor(column => ++change, true));
 
         entity.Name = "Richie";
-        entity.Age = 50;
+        Console.Write(entity.Name);
 
+        //get and set
         change.Should().Be(2);
     }
 
@@ -86,7 +82,7 @@ public class CastleDynamicProxyTest
 
         var generator = new Castle.DynamicProxy.ProxyGenerator();
         var entity = generator.CreateInterfaceProxyWithoutTarget<ISimple>(
-            interceptors: new SimpleLogInterceptor(column => ++change));
+            interceptors: new WatchFieldsChangeInterceptor(column => ++change, false));
 
         entity.Name = "Richie";
 
@@ -96,15 +92,16 @@ public class CastleDynamicProxyTest
     [TestMethod]
     public void castle_proxy_throw()
     {
-        var obj = new SimpleSamepleEntity() { };
+        var obj = new SimpleEntity() { };
 
         var generator = new Castle.DynamicProxy.ProxyGenerator();
-        var entity = (SimpleSamepleEntity)generator.CreateClassProxyWithTarget(
-            classToProxy: typeof(SimpleSamepleEntity),
+        var entity = (SimpleEntity)generator.CreateClassProxyWithTarget(
+            classToProxy: typeof(SimpleEntity),
             target: obj,
-            interceptors: new XxInterceptor());
+            interceptors: new WatchFieldsChangeInterceptor(null, true));
+
+        entity.Name = "test-name";
 
         new Action(() => entity.Throw()).Should().Throw<NotImplementedException>();
-
     }
 }

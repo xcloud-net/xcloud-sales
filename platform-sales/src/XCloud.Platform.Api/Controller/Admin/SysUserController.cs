@@ -7,7 +7,7 @@ using XCloud.Platform.Core.Domain.User;
 using XCloud.Platform.Framework.Controller;
 using XCloud.Platform.Member.Application.Service.User;
 
-namespace XCloud.Platform.Api.Controller.Public.Admin;
+namespace XCloud.Platform.Api.Controller.Admin;
 
 [Route("/api/sys/user")]
 public class SysUserController : PlatformBaseController, IAdminController

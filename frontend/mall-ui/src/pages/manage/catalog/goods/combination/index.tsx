@@ -2,16 +2,7 @@ import XTime from '@/components/manage/time';
 import u from '@/utils';
 import http from '@/utils/http';
 import { ReloadOutlined } from '@ant-design/icons';
-import {
-  Button,
-  Card,
-  message,
-  Space,
-  Table,
-  Tooltip,
-  Popover,
-  Tag,
-} from 'antd';
+import { Button, Card, message, Popover, Space, Table, Tag, Tooltip } from 'antd';
 import { ColumnType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
 import XPrice from './form/price';
@@ -19,9 +10,9 @@ import XStatus from './form/status';
 import XStock from './form/stock';
 import XSpecForm from './form/spec';
 import XDetailModal from './detailModal';
-import ImgPreview from '@/components/image/PreviewGroup';
 import XSearchForm from './searchForm';
 import XStore from './form/store';
+import XPicture from './form/pictures';
 import XQrcode from '@/components/qrcode';
 import { GoodsCombinationDto } from '@/utils/models';
 
@@ -61,7 +52,7 @@ export default (props: any): React.ReactNode => {
       render: (x) => (
         <>
           <div>
-            <a href={`/store/goods/${x.Goods?.Id}`} target="blank">
+            <a href={`/store/goods/${x.Goods?.Id}`} target='blank'>
               {`${x.Goods?.Name}`}
             </a>
           </div>
@@ -69,7 +60,7 @@ export default (props: any): React.ReactNode => {
           {u.isEmpty(x.Sku) || (
             <Popover
               content={<XQrcode value={x.Sku || ''} height={50} />}
-              title="SKU"
+              title='SKU'
             >
               <p>
                 <Tag>{`编号：${x.Sku}`}</Tag>
@@ -138,11 +129,9 @@ export default (props: any): React.ReactNode => {
       title: '图片',
       render: (record: GoodsCombinationDto) => {
         return (
-          <ImgPreview
-            data={(record.Goods?.XPictures || []).filter(
-              (x) => x.CombinationId == record.Id,
-            )}
-          />
+          <XPicture data={record} ok={() => {
+            queryList();
+          }} />
         );
       },
     },
@@ -178,10 +167,10 @@ export default (props: any): React.ReactNode => {
         }}
       />
       <Card
-        size="small"
+        size='small'
         extra={
           <Space>
-            <Tooltip title="刷新当前页面">
+            <Tooltip title='刷新当前页面'>
               <Button
                 icon={<ReloadOutlined />}
                 onClick={() => {
@@ -193,7 +182,7 @@ export default (props: any): React.ReactNode => {
         }
       >
         <Table
-          size="small"
+          size='small'
           rowKey={(x) => x.Id}
           loading={loading}
           columns={columns}

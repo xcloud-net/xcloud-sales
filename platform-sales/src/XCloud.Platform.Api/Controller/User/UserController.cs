@@ -15,7 +15,7 @@ using XCloud.Platform.Framework.Controller;
 using XCloud.Platform.Member.Application.Extension;
 using XCloud.Platform.Member.Application.Service.User;
 
-namespace XCloud.Platform.Api.Controller.Public.User;
+namespace XCloud.Platform.Api.Controller.User;
 
 [Route("/api/platform/user")]
 public class UserController : PlatformBaseController, IUserController

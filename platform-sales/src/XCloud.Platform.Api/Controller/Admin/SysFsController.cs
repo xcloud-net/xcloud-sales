@@ -5,7 +5,7 @@ using XCloud.Platform.Auth.Application.Admin;
 using XCloud.Platform.Common.Application.Service.Storage;
 using XCloud.Platform.Framework.Controller;
 
-namespace XCloud.Platform.Api.Controller.Public.Admin;
+namespace XCloud.Platform.Api.Controller.Admin;
 
 [Route("/api/sys/fs")]
 public class SysFsController : PlatformBaseController, IAdminController

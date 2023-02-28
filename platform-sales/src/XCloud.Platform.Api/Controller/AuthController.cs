@@ -18,7 +18,7 @@ using XCloud.Platform.Auth.Authentication;
 using XCloud.Platform.Auth.IdentityServer;
 using XCloud.Platform.Framework.Controller;
 
-namespace XCloud.Platform.Api.Controller.Public;
+namespace XCloud.Platform.Api.Controller;
 
 [Route("/api/platform/auth")]
 public class AuthController : PlatformBaseController
