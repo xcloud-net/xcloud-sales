@@ -21,7 +21,6 @@ public class PagesController : ShopBaseController
     [HttpPost("paging")]
     public async Task<PagedResponse<PagesDto>> PagingAsync([FromBody] QueryPagesInput dto)
     {
-        dto.NormalizePageParameters(20);
         dto.SkipCalculateTotalCount = true;
         dto.IsPublished = true;
 

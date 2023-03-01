@@ -2,6 +2,7 @@
 using XCloud.Core.Dto;
 using XCloud.Sales.Application;
 using XCloud.Sales.Service.Catalog;
+using XCloud.Sales.Service.Search;
 using XCloud.Sales.ViewService;
 
 namespace XCloud.Sales.Queue.Subscribe;

@@ -24,7 +24,7 @@ public static class QueryExtension
     public static SearchDescriptor<T> QueryPage_<T>(this SearchDescriptor<T> sd, int page, int pagesize)
         where T : class, IESIndex
     {
-        var skip = Com.GetPagedSkip(page, pagesize);
+        var skip = PageHelper.GetPagedSkip(page, pagesize);
         return sd.Skip(skip).Take(page);
     }
 

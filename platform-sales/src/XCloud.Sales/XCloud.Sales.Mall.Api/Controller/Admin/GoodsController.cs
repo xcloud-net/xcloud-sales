@@ -4,6 +4,7 @@ using XCloud.Core.Helper;
 using XCloud.Sales.Data.Domain.Catalog;
 using XCloud.Sales.Service.Authentication;
 using XCloud.Sales.Service.Catalog;
+using XCloud.Sales.Service.Search;
 
 namespace XCloud.Sales.Mall.Api.Controller.Admin;
 

@@ -9,7 +9,8 @@ public enum OrderProcessingAction : int
     Pay,
     Delivery,
     Close,
-    Finish
+    Finish,
+    AfterSale
 }
 
 [ExposeServices(typeof(OrderUtils))]
@@ -40,11 +41,17 @@ public class OrderUtils : ITransientDependency
 
         state.Configure(OrderStatus.Delivering)
             .Permit(OrderProcessingAction.Close, OrderStatus.Cancelled)
-            .Permit(OrderProcessingAction.Finish, OrderStatus.Complete);
+            .Permit(OrderProcessingAction.Finish, OrderStatus.Complete)
+            .Permit(OrderProcessingAction.AfterSale, OrderStatus.AfterSale);
 
+        //no further flows
         state.Configure(OrderStatus.Complete);
 
+        //no further flows
         state.Configure(OrderStatus.Cancelled);
+
+        //no further flows
+        state.Configure(OrderStatus.AfterSale);
 
         return state;
     }
@@ -55,6 +62,11 @@ public class OrderUtils : ITransientDependency
         return status.Select(x => (int)x).ToArray();
     }
 
+    public bool IsInAfterSalePending(Order order)
+    {
+        return order.IsAftersales;
+    }
+
     public async Task EnsureOrderCanBeTakeActionAsync(Order order)
     {
         if (order == null)
@@ -63,11 +75,11 @@ public class OrderUtils : ITransientDependency
         if (order.IsDeleted)
             throw new UserFriendlyException("order is deleted");
 
-        if (order.IsAftersales || !string.IsNullOrWhiteSpace(order.AfterSalesId))
+        if (IsInAfterSalePending(order))
             throw new UserFriendlyException("order is in after sale");
 
         await Task.CompletedTask;
     }
 
-    public bool MoneyEqual(decimal price1, decimal price2) => (int)(price1 * 100) == (int)(price2 * 100);
+    public bool IsMoneyEqual(decimal price1, decimal price2) => (int)(price1 * 100) == (int)(price2 * 100);
 }

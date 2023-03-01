@@ -22,6 +22,24 @@ namespace XCloud.Test;
 [TestClass]
 public class CommonTest
 {
+    [TestMethod]
+    public void TestPages()
+    {
+        var request = new PagedRequest();
+
+        (request.Page > 0 && request.PageSize > 0).Should().BeTrue();
+
+        var response = new PagedResponse<string>(new string[] { }, request, 198);
+
+        (request.Page == response.PageIndex).Should().BeTrue();
+
+        Console.WriteLine(response.TotalCount);
+        Console.WriteLine(response.PageIndex);
+        Console.WriteLine(response.TotalPages);
+
+        new Action(() => new PagedRequest() { Page = 0 }.ThrowIfException()).Should().Throw<Exception>();
+    }
+
     enum MyEnum
     {
         One = 1,
@@ -189,10 +207,10 @@ public class CommonTest
         boy.Test();
 
         var m = typeof(ChildBoy).GetMethods().FirstOrDefault(x => x.Name == nameof(boy.Test));
-        
+
         if (m == null)
             throw new AbpException(nameof(m));
-        
+
         m.GetCustomAttributes(inherit: true).Length.Should().Be(2);
         m.GetCustomAttributes(inherit: false).Length.Should().Be(1);
     }

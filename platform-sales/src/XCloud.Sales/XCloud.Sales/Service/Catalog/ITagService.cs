@@ -7,20 +7,30 @@ using XCloud.Sales.Data.Domain.Catalog;
 
 namespace XCloud.Sales.Service.Catalog;
 
-public interface ITagService : ISalesPagingStringAppService<Tag, TagDto, PagedRequest>
+public interface ITagService : ISalesPagingStringAppService<Tag, TagDto, QueryTagPagingInput>
 {
     Task<TagDto[]> QueryAllAsync();
 
     Task UpdateStatusAsync(UpdateTagStatusInput dto);
 }
 
-public class TagService : SalesPagingStringAppService<Tag, TagDto, PagedRequest>, ITagService
+public class TagService : SalesPagingStringAppService<Tag, TagDto, QueryTagPagingInput>, ITagService
 {
     private readonly ISalesRepository<Tag> _tagRepository;
 
     public TagService(ISalesRepository<Tag> tagRepository) : base(tagRepository)
     {
         this._tagRepository = tagRepository;
+    }
+
+    protected override async Task<IQueryable<Tag>> GetPagingFilteredQueryableAsync(IQueryable<Tag> query, QueryTagPagingInput dto)
+    {
+        await Task.CompletedTask;
+
+        if (!string.IsNullOrWhiteSpace(dto.Name))
+            query = query.Where(x => x.Name.Contains(dto.Name));
+        
+        return query;
     }
 
     public async Task<TagDto[]> QueryAllAsync()

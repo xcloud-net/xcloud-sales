@@ -4,6 +4,7 @@ using XCloud.Sales.Service.Common;
 using XCloud.Sales.Service.Configuration;
 using XCloud.Sales.Service.Coupons;
 using XCloud.Sales.Service.Promotion;
+using XCloud.Sales.Service.Search;
 
 namespace XCloud.Sales.ViewService;
 

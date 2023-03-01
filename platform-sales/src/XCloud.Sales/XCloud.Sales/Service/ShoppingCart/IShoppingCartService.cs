@@ -125,7 +125,7 @@ public class ShoppingCartService : SalesAppService, IShoppingCartService
         return res.ToArray();
     }
 
-    IEnumerable<PlaceOrderCheckInput> BuildPlaceOrderCheckInputs(string storeId, ShoppingCartItem[] items)
+    private IEnumerable<PlaceOrderCheckInput> BuildPlaceOrderCheckInputs(string storeId, ShoppingCartItem[] items)
     {
         foreach (var m in items)
         {

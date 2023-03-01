@@ -253,17 +253,17 @@ static class ESTest
 
     static void HowToUseNestedQuery(QueryContainer qc)
     {
-        var attr_list = new List<___AttrParam>();
+        var attrList = new List<___AttrParam>();
 
-        var attr_query = new QueryContainer();
-        foreach (var attr in attr_list)
+        var attrQuery = new QueryContainer();
+        foreach (var attr in attrList)
         {
-            attr_query = attr_query || new TermQuery() { Field = $"ProductAttributes.{attr.Id}", Value = attr.value };
+            attrQuery = attrQuery || new TermQuery() { Field = $"ProductAttributes.{attr.Id}", Value = attr.value };
         }
         qc = qc && new NestedQuery()
         {
             Path = "ProductAttributes",
-            Query = attr_query
+            Query = attrQuery
         };
     }
 

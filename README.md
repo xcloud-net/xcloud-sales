@@ -5,3 +5,5 @@
 ### 👋进一步了解请移步：
 
 https://docs.qq.com/doc/DWFFHcllXYU1CbFBv
+
+> Note: 项目急寻核心开发团队！

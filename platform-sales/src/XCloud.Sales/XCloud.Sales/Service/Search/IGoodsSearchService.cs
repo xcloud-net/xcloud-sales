@@ -5,18 +5,19 @@ using XCloud.Sales.Application;
 using XCloud.Sales.Data;
 using XCloud.Sales.Data.Domain.Catalog;
 using XCloud.Sales.Data.Domain.Stores;
+using XCloud.Sales.Service.Catalog;
 
-namespace XCloud.Sales.Service.Catalog;
+namespace XCloud.Sales.Service.Search;
 
 public interface IGoodsSearchService : ISalesAppService
 {
     Task UpdateGoodsKeywordsAsync(int goodsId);
 
-    Task<ApiResponse<Tag[]>> QueryRelatedTagsAsync(SearchProductsInput dto);
+    Task <Tag[]> QueryRelatedTagsAsync(SearchProductsInput dto);
 
-    Task<ApiResponse<Brand[]>> QueryRelatedBrandsAsync(SearchProductsInput dto);
+    Task<Brand[]> QueryRelatedBrandsAsync(SearchProductsInput dto);
 
-    Task<ApiResponse<Category[]>> QueryRelatedCategoriesAsync(SearchProductsInput dto);
+    Task<Category[]> QueryRelatedCategoriesAsync(SearchProductsInput dto);
 
     Task<PagedResponse<GoodsDto>> SearchGoodsV2Async(SearchProductsInput dto);
 
@@ -141,7 +142,7 @@ public class GoodsSearchService : SalesAppService, IGoodsSearchService
         await db.TrySaveChangesAsync();
     }
 
-    public async Task<ApiResponse<Brand[]>> QueryRelatedBrandsAsync(SearchProductsInput dto)
+    public async Task<Brand[]> QueryRelatedBrandsAsync(SearchProductsInput dto)
     {
         var db = await _goodsRepository.GetDbContextAsync();
 
@@ -155,10 +156,10 @@ public class GoodsSearchService : SalesAppService, IGoodsSearchService
 
         var brands = await db.Set<Brand>().Where(x => idsQuery.Contains(x.Id)).Take(dto.PageSize).ToArrayAsync();
 
-        return new ApiResponse<Brand[]>(brands);
+        return brands;
     }
 
-    public async Task<ApiResponse<Category[]>> QueryRelatedCategoriesAsync(SearchProductsInput dto)
+    public async Task<Category[]> QueryRelatedCategoriesAsync(SearchProductsInput dto)
     {
         var db = await _goodsRepository.GetDbContextAsync();
 
@@ -172,10 +173,10 @@ public class GoodsSearchService : SalesAppService, IGoodsSearchService
 
         var datas = await db.Set<Category>().Where(x => idsQuery.Contains(x.Id)).Take(dto.PageSize).ToArrayAsync();
 
-        return new ApiResponse<Category[]>(datas);
+        return datas;
     }
 
-    public async Task<ApiResponse<Tag[]>> QueryRelatedTagsAsync(SearchProductsInput dto)
+    public async Task<Tag[]> QueryRelatedTagsAsync(SearchProductsInput dto)
     {
         var db = await _goodsRepository.GetDbContextAsync();
 
@@ -193,7 +194,7 @@ public class GoodsSearchService : SalesAppService, IGoodsSearchService
 
         var datas = await db.Set<Tag>().Where(x => idsQuery.Contains(x.Id)).Take(dto.PageSize).ToArrayAsync();
 
-        return new ApiResponse<Tag[]>(datas);
+        return datas;
     }
 
     public virtual async Task<PagedResponse<GoodsDto>> SearchGoodsV2Async(SearchProductsInput dto)
@@ -227,11 +228,7 @@ public class GoodsSearchService : SalesAppService, IGoodsSearchService
 
         query = orderedQuery;
 
-        var count = 0;
-        if (!dto.SkipCalculateTotalCount)
-        {
-            count = await query.CountAsync();
-        }
+        var count = await query.CountOrDefaultAsync(dto);
 
         var items = await query.PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
 
