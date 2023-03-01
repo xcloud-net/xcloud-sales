@@ -56,8 +56,8 @@ public class FavoritesService : SalesAppService, IFavoritesService
             from goods in goodsGrouping.DefaultIfEmpty()
             select new { favorite, goods };
 
-        if (dto.userId > 0)
-            query = query.Where(x => x.favorite.UserId == dto.userId);
+        if (dto.UserId > 0)
+            query = query.Where(x => x.favorite.UserId == dto.UserId);
 
         var count = 0;
 

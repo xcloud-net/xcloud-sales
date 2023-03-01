@@ -36,7 +36,7 @@ public class FavoritesController : ShopBaseController
     {
         var loginUser = await this.StoreAuthService.GetRequiredStoreUserAsync();
 
-        dto.userId = loginUser.Id;
+        dto.UserId = loginUser.Id;
         dto.SkipCalculateTotalCount = true;
 
         var res = await this._favoritesService.QueryPagingAsync(dto);

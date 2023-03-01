@@ -13,7 +13,7 @@ public class FavoritesDto : Favorites, IEntityDto
 
 public class QueryFavoritesInput : PagedRequest
 {
-    public int userId { get; set; }
+    public int UserId { get; set; }
 }
 
 public class QueryPrepaidCardPagingInput : PagedRequest

@@ -70,6 +70,7 @@ public class AfterSaleService : SalesAppService, IAfterSaleService
             return;
 
         order.SetOrderStatus(OrderStatus.AfterSale);
+        order.IsAftersales = false;
         order.LastModificationTime = this.Clock.Now;
 
         await db.TrySaveChangesAsync();

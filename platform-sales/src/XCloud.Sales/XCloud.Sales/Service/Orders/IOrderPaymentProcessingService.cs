@@ -64,7 +64,7 @@ public class OrderPaymentProcessingService : SalesAppService, IOrderPaymentProce
         if (payedSum > order.OrderTotal)
             throw new UserFriendlyException("this order is overpayed,pls start refund progress");
 
-        if (this._orderUtils.MoneyEqual(payedSum, order.OrderTotal))
+        if (this._orderUtils.IsMoneyEqual(payedSum, order.OrderTotal))
             throw new UserFriendlyException("order is payed,if you don't see that,pls refresh");
 
         var restPrice = order.OrderTotal - payedSum;
@@ -121,7 +121,7 @@ public class OrderPaymentProcessingService : SalesAppService, IOrderPaymentProce
 
             order.SetPaymentStatus(PaymentStatus.Pending);
             order.OverPaid = paidSum > order.OrderTotal;
-            if (_orderUtils.MoneyEqual(paidSum, order.OrderTotal) || order.OverPaid)
+            if (_orderUtils.IsMoneyEqual(paidSum, order.OrderTotal) || order.OverPaid)
             {
                 var lastBill = bills.MaxBy(x => x.CreationTime);
 
