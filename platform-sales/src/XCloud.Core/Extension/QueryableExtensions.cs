@@ -19,7 +19,7 @@ public static class QueryableExtensions
     /// </summary>
     public static IQueryable<T> QueryPage<T>(this IOrderedQueryable<T> query, int page, int pageSize)
     {
-        var skip = Com.GetPagedSkip(page, pageSize);
+        var skip = PageHelper.GetPagedSkip(page, pageSize);
 
         IQueryable<T> q = query;
 

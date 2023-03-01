@@ -192,13 +192,4 @@ public static class Com
             return deft;
         }
     }
-
-    public static int GetPagedSkip(int page, int pageSize)
-    {
-        (page >= 1 && pageSize >= 1).Should().BeTrue("page和size不能小于1");
-
-        var skip = (page - 1) * pageSize;
-
-        return skip;
-    }
 }

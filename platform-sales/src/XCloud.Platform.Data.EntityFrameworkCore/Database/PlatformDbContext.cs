@@ -1,4 +1,4 @@
-﻿using XCloud.Database.EntityFrameworkCore.DatabaseContext;
+﻿using XCloud.Database.EntityFrameworkCore.Database;
 using XCloud.Database.EntityFrameworkCore.Extensions;
 using XCloud.Database.EntityFrameworkCore.MySQL.Mapping;
 using XCloud.Platform.Core.Database;

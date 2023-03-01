@@ -9,7 +9,7 @@ namespace XCloud.Sales.Service.Catalog;
 
 public class QueryTagPagingInput : PagedRequest
 {
-    //
+    public string Name { get; set; }
 }
 
 public class FormatGoodsSpecCombinationInput : IEntityDto<int>
@@ -42,6 +42,7 @@ public class UpdateGoodsStatusInput : IEntityDto
 public class SaveAttributesInput : IEntityDto
 {
     public int GoodsId { get; set; }
+    
     public GoodsAttribute[] GoodsAttributes { get; set; }
 }
 
@@ -136,56 +137,6 @@ public class SearchOptionsDto : IEntityDto
     public BrandDto Brand { get; set; }
     public CategoryDto Category { get; set; }
     public Tag Tag { get; set; }
-}
-
-public class QueryGoodsCombinationInput : PagedRequest, IEntityDto
-{
-    public QueryGoodsCombinationInput()
-    {
-        this.IsDeleted = false;
-    }
-
-    public int? StockQuantityLessThanOrEqualTo { get; set; }
-    public int? StockQuantityGreaterThanOrEqualTo { get; set; }
-
-    public decimal? PriceMin { get; set; }
-    public decimal? PriceMax { get; set; }
-    public string Sku { get; set; }
-
-    public string Keywords { get; set; }
-
-    public bool? IsDeleted { get; set; } = false;
-}
-
-public class SearchProductsInput : PagedRequest, IEntityDto
-{
-    public SearchProductsInput()
-    {
-        this.IsDeleted = false;
-    }
-
-    public int? StockQuantityLessThanOrEqualTo { get; set; }
-    public int? StockQuantityGreaterThanOrEqualTo { get; set; }
-
-    public bool? IsNew { get; set; }
-    public bool? IsHot { get; set; }
-
-    public bool? WithoutBrand { get; set; }
-    public bool? WithoutCategory { get; set; }
-    public string TagId { get; set; }
-    public string StoreId { get; set; }
-    public int? CategoryId { get; set; }
-    public int? BrandId { get; set; }
-    public decimal? PriceMin { get; set; }
-    public decimal? PriceMax { get; set; }
-    public string Keywords { get; set; }
-    public GoodsSortingEnum OrderBy { get; set; }
-    public bool? IsPublished { get; set; }
-    public string Sku { get; set; }
-
-    public AttachGoodsDataInput AttachDataOptions { get; set; }
-
-    public bool? IsDeleted { get; set; } = false;
 }
 
 public class UpdateBrandStatusInput : IEntityDto

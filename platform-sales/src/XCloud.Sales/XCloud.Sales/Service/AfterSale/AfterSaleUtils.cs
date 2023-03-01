@@ -12,7 +12,12 @@ public class AfterSaleUtils : ITransientDependency
 
     public int[] DoneStatus()
     {
-        var status = new[] { AfterSalesStatus.Cancelled, AfterSalesStatus.Complete };
+        var status = new[]
+        {
+            AfterSalesStatus.Cancelled,
+            AfterSalesStatus.Complete
+        };
+
         return status.Select(x => (int)x).ToArray();
     }
 
@@ -20,13 +25,14 @@ public class AfterSaleUtils : ITransientDependency
     {
         var status = new[]
         {
-            AfterSalesStatus.None, 
-            AfterSalesStatus.Complete, 
-            AfterSalesStatus.Cancelled, 
+            AfterSalesStatus.None,
+            AfterSalesStatus.Complete,
+            AfterSalesStatus.Cancelled,
             AfterSalesStatus.Approved,
             AfterSalesStatus.Rejected,
             AfterSalesStatus.Processing
         };
-        return status.Select(x => (int)x).ToArray();
+
+        return status.Select(x => (int)x).Except(this.DoneStatus()).ToArray();
     }
 }

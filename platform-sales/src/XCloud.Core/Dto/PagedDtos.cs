@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Volo.Abp.Application.Dtos;
 using XCloud.Core.Helper;
 
@@ -20,21 +19,13 @@ public class PagedRequest : IEntityDto
 
     public int PageSize { get; set; }
 
-    public void NormalizePageParameters(int maxPageSize)
-    {
-        this.PageSize = Math.Min(maxPageSize, this.PageSize);
-        this.PageSize = Math.Max(1, this.PageSize);
-
-        this.Page = Math.Max(1, this.Page);
-    }
-
     public PagedResultRequestDto AsAbpPagedRequestDto()
     {
         this.ThrowIfException();
 
         return new PagedResultRequestDto()
         {
-            SkipCount = Com.GetPagedSkip(this.Page, this.PageSize),
+            SkipCount = PageHelper.GetPagedSkip(this.Page, this.PageSize),
             MaxResultCount = this.PageSize
         };
     }
@@ -43,8 +34,9 @@ public class PagedRequest : IEntityDto
     {
         maxPageSize ??= 1000;
 
-        (this.Page >= 1).Should().BeTrue();
-        (this.PageSize >= 1 && this.PageSize <= maxPageSize.Value).Should().BeTrue($"max page size:{maxPageSize}");
+        PageHelper.EnsurePage(this.Page);
+        PageHelper.EnsurePageSize(this.PageSize);
+        PageHelper.EnsureMaxPageSize(this.PageSize, maxPageSize.Value);
     }
 
     public static implicit operator PagedResultRequestDto(PagedRequest dto) => dto.AsAbpPagedRequestDto();
@@ -56,18 +48,24 @@ public class PagedRequest : IEntityDto
 /// <typeparam name="T">T</typeparam>
 public class PagedResponse<T> : ApiResponse<T>, IPagedResult<T>
 {
-    public PagedResponse() { }
+    public PagedResponse()
+    {
+        //
+    }
 
     public PagedResponse(IEnumerable<T> source, PagedRequest dto, int totalCount) : this(dto.Page, dto.PageSize)
     {
-        TotalCount = totalCount;
+        this.TotalCount = totalCount;
         this.Items = source.ToArray();
     }
 
-    public PagedResponse(int page, int pagesize)
+    public PagedResponse(int page, int pageSize) : this()
     {
-        this.PageIndex = Math.Max(page, 1);
-        this.PageSize = Math.Max(pagesize, 1);
+        PageHelper.EnsurePage(page);
+        PageHelper.EnsurePageSize(pageSize);
+
+        this.PageIndex = page;
+        this.PageSize = pageSize;
     }
 
     public bool IsNotEmpty => ValidateHelper.IsNotEmptyCollection(this.Items);
@@ -83,12 +81,7 @@ public class PagedResponse<T> : ApiResponse<T>, IPagedResult<T>
                 return default;
             }
 
-            var item_count = TotalCount;
-            var page_size = PageSize;
-
-            var res = item_count % page_size == 0 ?
-                item_count / page_size :
-                item_count / page_size + 1;
+            var res = TotalCount % PageSize == 0 ? TotalCount / PageSize : TotalCount / PageSize + 1;
 
             return (int)res;
         }
@@ -105,18 +98,15 @@ public class PagedResponse<T> : ApiResponse<T>, IPagedResult<T>
     public int PageIndex { get; set; }
 
     private IReadOnlyList<T> _items;
-        
+
     /// <summary>
     /// not null
     /// </summary>
     [NotNull]
     public IReadOnlyList<T> Items
     {
-        get => this._items ?? (this._items = Array.Empty<T>());
-        set
-        {
-            this._items = value ?? Array.Empty<T>();
-        }
+        get => this._items ??= Array.Empty<T>();
+        set => this._items = value ?? Array.Empty<T>();
     }
 
     public long TotalCount { get; set; }

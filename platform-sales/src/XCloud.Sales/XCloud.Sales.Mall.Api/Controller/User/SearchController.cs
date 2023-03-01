@@ -6,6 +6,7 @@ using XCloud.Sales.Data.Domain.Logging;
 using XCloud.Sales.Service.Authentication;
 using XCloud.Sales.Service.Catalog;
 using XCloud.Sales.Service.Logging;
+using XCloud.Sales.Service.Search;
 using XCloud.Sales.Service.Users;
 using XCloud.Sales.ViewService;
 

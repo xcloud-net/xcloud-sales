@@ -1,25 +1,25 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Volo.Abp.EntityFrameworkCore;
-using System;
-using Microsoft.Extensions.DependencyInjection;
 using XCloud.Core.Helper;
 
-namespace XCloud.Database.EntityFrameworkCore.DatabaseContext;
+namespace XCloud.Database.EntityFrameworkCore.Database;
 
 public abstract class AbpDbContextBase<DbContextImpl> : AbpDbContext<DbContextImpl> where DbContextImpl : DbContext
 {
-    private readonly ILoggerFactory loggerFactory;
+    private readonly ILoggerFactory _loggerFactory;
     public AbpDbContextBase(IServiceProvider serviceProvider, DbContextOptions<DbContextImpl> option) : base(option)
     {
-        this.loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+        this._loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (this.loggerFactory != null)
+        if (this._loggerFactory != null)
         {
-            optionsBuilder.UseLoggerFactory(this.loggerFactory);
+            optionsBuilder.UseLoggerFactory(this._loggerFactory);
         }
     }
 

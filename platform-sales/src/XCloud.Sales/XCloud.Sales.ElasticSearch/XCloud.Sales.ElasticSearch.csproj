@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\..\common.props" />
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\XCloud.Elasticsearch\XCloud.Elasticsearch.csproj" />
+      <ProjectReference Include="..\XCloud.Sales\XCloud.Sales.csproj" />
+    </ItemGroup>
+
+</Project>

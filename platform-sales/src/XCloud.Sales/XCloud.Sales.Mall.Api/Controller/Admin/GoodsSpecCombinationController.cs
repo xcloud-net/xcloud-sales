@@ -3,6 +3,7 @@ using XCloud.Core.Dto;
 using XCloud.Sales.Data.Domain.Catalog;
 using XCloud.Sales.Service.Authentication;
 using XCloud.Sales.Service.Catalog;
+using XCloud.Sales.Service.Search;
 using XCloud.Sales.Service.Stores;
 using XCloud.Sales.Service.Users;
 

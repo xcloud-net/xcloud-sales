@@ -3,6 +3,7 @@
 	<Import Project="..\..\common.props" />
 
 	<ItemGroup>
+		<ProjectReference Include="..\XCloud.Sales.ElasticSearch\XCloud.Sales.ElasticSearch.csproj" />
 		<ProjectReference Include="..\XCloud.Sales\XCloud.Sales.csproj" />
 	</ItemGroup>
 

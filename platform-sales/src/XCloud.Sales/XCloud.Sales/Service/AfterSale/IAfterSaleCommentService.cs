@@ -1,5 +1,6 @@
 using XCloud.Core.Application;
 using XCloud.Core.Dto;
+using XCloud.Database.EntityFrameworkCore.Extensions;
 using XCloud.Sales.Application;
 using XCloud.Sales.Data;
 using XCloud.Sales.Data.Domain.Aftersale;
@@ -16,14 +17,25 @@ public interface IAfterSaleCommentService : ISalesAppService
 public class AfterSaleCommentService : SalesAppService, IAfterSaleCommentService
 {
     private readonly ISalesRepository<AfterSalesComment> _repository;
+    private readonly IAfterSaleService _afterSaleService;
+    private readonly AfterSaleUtils _afterSaleUtils;
 
-    public AfterSaleCommentService(ISalesRepository<AfterSalesComment> repository)
+    public AfterSaleCommentService(ISalesRepository<AfterSalesComment> repository, IAfterSaleService afterSaleService, AfterSaleUtils afterSaleUtils)
     {
         _repository = repository;
+        _afterSaleService = afterSaleService;
+        _afterSaleUtils = afterSaleUtils;
     }
 
     private async Task InsertCheckAsync(AfterSalesCommentDto dto)
     {
+        var entity = await this._afterSaleService.QueryByIdAsync(dto.AfterSaleId);
+        if (entity == null)
+            throw new EntityNotFoundException(nameof(InsertCheckAsync));
+
+        if (!this._afterSaleUtils.PendingStatus().Contains(entity.AfterSalesStatusId))
+            throw new UserFriendlyException("");
+        
         var db = await this._repository.GetDbContextAsync();
 
         var start = this.Clock.Now.Date;
@@ -72,12 +84,10 @@ public class AfterSaleCommentService : SalesAppService, IAfterSaleCommentService
         if (!string.IsNullOrWhiteSpace(dto.AfterSalesId))
             query = query.Where(x => x.AfterSaleId == dto.AfterSalesId);
 
-        var count = 0;
-        if (!dto.SkipCalculateTotalCount)
-            count = await query.CountAsync();
+        var count = await query.CountOrDefaultAsync(dto);
 
         var list = await query
-            .OrderBy(x => x.CreationTime)
+            .OrderByDescending(x => x.CreationTime)
             .PageBy(dto.AsAbpPagedRequestDto())
             .ToArrayAsync();
 

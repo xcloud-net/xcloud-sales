@@ -24,6 +24,7 @@ using XCloud.Core.Builder;
 using XCloud.Redis;
 using XCloud.Sales.Clients.Platform;
 using XCloud.Sales.Data.Database;
+using XCloud.Sales.ElasticSearch;
 using XCloud.Sales.Service.Authentication;
 using XCloud.Sales.Service.Stores;
 
@@ -31,6 +32,8 @@ namespace XCloud.Sales.Mall.Api;
 
 [DependsOn(
     typeof(SalesModule),
+    //optional services
+    //typeof(SalesElasticSearchModule),
     typeof(AspNetMvcModule)
 )]
 [SwaggerConfiguration(ServiceName, ServiceName)]

@@ -454,9 +454,7 @@ public class AfterSaleService : SalesAppService, IAfterSaleService
         if (dto.EndTime != null)
             query = query.Where(x => x.CreationTime <= dto.EndTime.Value);
 
-        var count = 0;
-        if (!dto.SkipCalculateTotalCount)
-            count = await query.CountAsync();
+        var count = await query.CountOrDefaultAsync(dto);
 
         if (dto.SortForAdmin ?? false)
         {
