@@ -12,18 +12,21 @@ public class AfterSaleController : ShopBaseController
 {
     private readonly IOrderService _orderService;
     private readonly IAfterSaleService _aftersaleService;
+    private readonly IAfterSaleProcessingService _afterSaleProcessingService;
     private readonly IAfterSaleCommentService _afterSaleCommentService;
     private readonly IGoodsService _goodsService;
 
     public AfterSaleController(IOrderService orderService,
         IAfterSaleService aftersaleService,
         IGoodsService goodsService,
-        IAfterSaleCommentService afterSaleCommentService)
+        IAfterSaleCommentService afterSaleCommentService, 
+        IAfterSaleProcessingService afterSaleProcessingService)
     {
         this._aftersaleService = aftersaleService;
         this._orderService = orderService;
         this._goodsService = goodsService;
         _afterSaleCommentService = afterSaleCommentService;
+        _afterSaleProcessingService = afterSaleProcessingService;
     }
 
     [HttpPost("add-comment")]
@@ -80,13 +83,13 @@ public class AfterSaleController : ShopBaseController
         if (aftersales == null || aftersales.UserId != loginUser.Id)
             throw new EntityNotFoundException();
 
-        await this._aftersaleService.CancelAsync(dto);
+        await this._afterSaleProcessingService.CancelAsync(dto);
 
         return new ApiResponse<object>();
     }
-
+    
     [HttpPost("create")]
-    public async Task<ApiResponse<AfterSalesDto>> CreateAftersalesAsync([FromBody] AfterSalesDto dto)
+    public async Task<ApiResponse<AfterSalesDto>> CreateAfterSalesAsync([FromBody] AfterSalesDto dto)
     {
         var loginUser = await this.StoreAuthService.GetRequiredStoreUserAsync();
 
@@ -97,7 +100,7 @@ public class AfterSaleController : ShopBaseController
 
         dto.UserId = loginUser.Id;
         
-        var response = await this._aftersaleService.InsertAsync(dto);
+        var response = await this._afterSaleProcessingService.CreateAsync(dto);
 
         return response;
     }

@@ -47,7 +47,7 @@ public class UserPointService : SalesAppService, IUserPointService
         if (!dto.SkipCalculateTotalCount)
             count = await query.CountAsync();
 
-        var list = await query.OrderByDescending(x => x.CreationTime).PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
+        var list = await query.OrderByDescending(x => x.CreationTime).PageBy(dto.ToAbpPagedRequest()).ToArrayAsync();
         var items = list.Select(x => this.ObjectMapper.Map<PointsHistory, PointsHistoryDto>(x)).ToArray();
 
         return new PagedResponse<PointsHistoryDto>(items, dto, count);

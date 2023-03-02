@@ -104,7 +104,7 @@ public class OrderBillService : SalesAppService, IOrderBillService
 
         var list = await query
             .OrderByDescending(x => x.bill.CreationTime)
-            .PageBy(dto.AsAbpPagedRequestDto())
+            .PageBy(dto.ToAbpPagedRequest())
             .ToArrayAsync();
 
         var items = new List<OrderBillDto>();

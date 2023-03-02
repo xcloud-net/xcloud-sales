@@ -1,9 +1,11 @@
-﻿using Elasticsearch.Net;
-using Nest;
-using System;
+﻿using System;
 using System.Linq;
+using Elasticsearch.Net;
+using Nest;
+using XCloud.Elasticsearch.Core;
+using XCloud.Elasticsearch.Exception;
 
-namespace XCloud.Elasticsearch;
+namespace XCloud.Elasticsearch.Extension;
 
 public static class ElasticsearchExtension
 {
@@ -81,7 +83,7 @@ public static class ElasticsearchExtension
     /// 唯一ID
     /// </summary>
     public static DocumentPath<T> ID<T>(this IElasticClient client, string indexName, string uid)
-        where T : class, IESIndex
+        where T : class, IEsIndex
         => DocumentPath<T>.Id(uid).Index(indexName);
 
 

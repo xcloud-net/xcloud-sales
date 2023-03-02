@@ -2,12 +2,13 @@ using System;
 using Nest;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Auditing;
+using XCloud.Elasticsearch.Core;
 using XCloud.Sales.ElasticSearch.Core;
 
 namespace XCloud.Sales.ElasticSearch.Service.Goods;
 
 [ElasticsearchType(RelationName = "goods_index", IdProperty = nameof(IEntityDto<string>.Id))]
-public class GoodsIndex : IEntityDto<string>, IHasModificationTime
+public class GoodsIndex : IEntityDto<string>, IHasModificationTime, IEsIndex
 {
     public GoodsIndex()
     {

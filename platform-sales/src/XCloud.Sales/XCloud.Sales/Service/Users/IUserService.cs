@@ -43,7 +43,7 @@ public class UserService : SalesAppService, IUserService
         var db = await this._userRepository.GetDbContextAsync();
         var query = db.Set<User>().AsNoTracking();
 
-        var data = await query.OrderBy(x => x.Id).PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
+        var data = await query.OrderBy(x => x.Id).PageBy(dto.ToAbpPagedRequest()).ToArrayAsync();
         return data;
     }
 
@@ -150,7 +150,7 @@ public class UserService : SalesAppService, IUserService
             .ThenByDescending(x => x.Active)
             .ThenByDescending(x => x.LastActivityTime)
             .ThenByDescending(x => x.CreationTime)
-            .PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
+            .PageBy(dto.ToAbpPagedRequest()).ToArrayAsync();
 
         var userDtos = items.Select(x => this.ObjectMapper.Map<User, StoreUserDto>(x)).ToArray();
 

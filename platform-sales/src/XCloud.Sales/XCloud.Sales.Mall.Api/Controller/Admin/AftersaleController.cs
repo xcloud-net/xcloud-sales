@@ -13,17 +13,20 @@ public class AfterSaleController : ShopBaseController
 {
     private readonly IOrderService _orderService;
     private readonly IAfterSaleService _aftersaleService;
+    private readonly IAfterSaleProcessingService _afterSaleProcessingService;
     private readonly IAfterSaleCommentService _afterSaleCommentService;
     private readonly IGoodsService _goodsService;
 
     public AfterSaleController(IOrderService orderService,
         IGoodsService goodsService,
         IAfterSaleService aftersaleService, 
-        IAfterSaleCommentService afterSaleCommentService)
+        IAfterSaleCommentService afterSaleCommentService, 
+        IAfterSaleProcessingService afterSaleProcessingService)
     {
         this._goodsService = goodsService;
         this._aftersaleService = aftersaleService;
         _afterSaleCommentService = afterSaleCommentService;
+        _afterSaleProcessingService = afterSaleProcessingService;
         this._orderService = orderService;
     }
     
@@ -78,7 +81,7 @@ public class AfterSaleController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageAfterSales);
 
-        await this._aftersaleService.DangerouslyUpdateStatusAsync(dto);
+        await this._afterSaleProcessingService.DangerouslyUpdateStatusAsync(dto);
 
         return new ApiResponse<object>();
     }
@@ -91,7 +94,7 @@ public class AfterSaleController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageAfterSales);
 
-        await this._aftersaleService.CancelAsync(dto);
+        await this._afterSaleProcessingService.CancelAsync(dto);
 
         return new ApiResponse<object>();
     }
@@ -104,7 +107,7 @@ public class AfterSaleController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageAfterSales);
 
-        await this._aftersaleService.CompleteAsync(dto);
+        await this._afterSaleProcessingService.CompleteAsync(dto);
 
         return new ApiResponse<object>();
     }
@@ -117,7 +120,7 @@ public class AfterSaleController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageAfterSales);
 
-        await this._aftersaleService.ApproveAsync(dto);
+        await this._afterSaleProcessingService.ApproveAsync(dto);
 
         return new ApiResponse<object>();
     }
@@ -130,7 +133,7 @@ public class AfterSaleController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageAfterSales);
 
-        await this._aftersaleService.RejectAsync(dto);
+        await this._afterSaleProcessingService.RejectAsync(dto);
 
         return new ApiResponse<object>();
     }

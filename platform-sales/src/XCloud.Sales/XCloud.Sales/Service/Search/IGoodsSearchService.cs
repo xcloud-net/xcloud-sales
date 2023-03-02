@@ -92,7 +92,7 @@ public class GoodsSearchService : SalesAppService, IGoodsSearchService
         var data = await joinQuery
             .OrderBy(x => x.combination.IsDeleted)
             .ThenByDescending(x => x.goods.LastModificationTime)
-            .PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
+            .PageBy(dto.ToAbpPagedRequest()).ToArrayAsync();
 
         GoodsSpecCombinationDto BuildResponse(GoodsSpecCombination combination, Goods goodsOrNull)
         {
@@ -230,7 +230,7 @@ public class GoodsSearchService : SalesAppService, IGoodsSearchService
 
         var count = await query.CountOrDefaultAsync(dto);
 
-        var items = await query.PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
+        var items = await query.PageBy(dto.ToAbpPagedRequest()).ToArrayAsync();
 
         var goodsDtos = items.Select(x => ObjectMapper.Map<Goods, GoodsDto>(x)).ToArray();
 

@@ -65,7 +65,7 @@ public class FavoritesService : SalesAppService, IFavoritesService
             count = await query.CountAsync();
 
         var items = await query.OrderByDescending(x => x.favorite.CreationTime)
-            .PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
+            .PageBy(dto.ToAbpPagedRequest()).ToArrayAsync();
 
         var list = new List<FavoritesDto>();
 

@@ -1,9 +1,10 @@
-﻿using FluentAssertions;
-using Nest;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
+using Nest;
+using XCloud.Elasticsearch.Core;
 
-namespace XCloud.Elasticsearch;
+namespace XCloud.Elasticsearch.Extension;
 
 public static class InsertExtension
 {
@@ -16,7 +17,7 @@ public static class InsertExtension
     /// <param name="data"></param>
     /// <returns></returns>
     public static async Task<BulkResponse> BulkIndexAsync_<T>(this IElasticClient client,
-        string indexName, T[] data, string routing = null) where T : class, IESIndex
+        string indexName, T[] data, string routing = null) where T : class, IEsIndex
     {
         data.Should().NotBeNullOrEmpty();
 
@@ -36,7 +37,7 @@ public static class InsertExtension
     /// 单个索引
     /// </summary>
     public static async Task<IndexResponse> AddIndexAsync_<T>(this IElasticClient client,
-        string indexName, T model, string routing = null) where T : class, IESIndex
+        string indexName, T model, string routing = null) where T : class, IEsIndex
     {
         IndexDescriptor<T> BuildIndex(IndexDescriptor<T> m)
         {

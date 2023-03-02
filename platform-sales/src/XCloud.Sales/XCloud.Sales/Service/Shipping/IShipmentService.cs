@@ -122,7 +122,7 @@ public class ShipmentService : SalesAppService, IShipmentService
             query = query.Where(x => x.OrderId == dto.OrderId);
 
         var count = await query.CountAsync();
-        var list = await query.OrderByDescending(x => x.CreationTime).PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
+        var list = await query.OrderByDescending(x => x.CreationTime).PageBy(dto.ToAbpPagedRequest()).ToArrayAsync();
 
         var response = list.Select(x => this.ObjectMapper.Map<Shipment, ShipmentDto>(x)).ToArray();
 

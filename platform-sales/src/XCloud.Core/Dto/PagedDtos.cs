@@ -19,7 +19,7 @@ public class PagedRequest : IEntityDto
 
     public int PageSize { get; set; }
 
-    public PagedResultRequestDto AsAbpPagedRequestDto()
+    public PagedResultRequestDto ToAbpPagedRequest()
     {
         this.ThrowIfException();
 
@@ -39,7 +39,7 @@ public class PagedRequest : IEntityDto
         PageHelper.EnsureMaxPageSize(this.PageSize, maxPageSize.Value);
     }
 
-    public static implicit operator PagedResultRequestDto(PagedRequest dto) => dto.AsAbpPagedRequestDto();
+    public static implicit operator PagedResultRequestDto(PagedRequest dto) => dto.ToAbpPagedRequest();
 }
 
 /// <summary>

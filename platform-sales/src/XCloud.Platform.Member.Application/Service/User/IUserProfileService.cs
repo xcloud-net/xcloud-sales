@@ -224,7 +224,7 @@ public class UserProfileService : PlatformApplicationService, IUserProfileServic
             .OrderBy(x=>x.user.IsDeleted)
             .ThenByDescending(x=>x.user.IsActive)
             .ThenByDescending(x => x.user.CreationTime)
-            .PageBy(dto.AsAbpPagedRequestDto())
+            .PageBy(dto.ToAbpPagedRequest())
             .ToArrayAsync();
 
         SysUserDto BuildResponse(SysUser user, SysAdmin adminOrNull)

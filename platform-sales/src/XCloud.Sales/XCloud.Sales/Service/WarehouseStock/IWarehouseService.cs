@@ -157,7 +157,7 @@ public class WarehouseService : SalesAppService, IWarehouseService
 
         var list = await query
             .OrderByDescending(x => x.CreationTime)
-            .PageBy(dto.AsAbpPagedRequestDto())
+            .PageBy(dto.ToAbpPagedRequest())
             .ToArrayAsync();
 
         var items = this.ObjectMapper.MapArray<Warehouse, WarehouseDto>(list);
