@@ -15,17 +15,19 @@ public class HomeController : ShopBaseController
 {
     private readonly IHomeViewService _homeViewService;
     private readonly IUserGradeService _userGradeService;
-    private readonly IGoodsPriceService _goodsPriceService;
+    private readonly ISpecCombinationPriceService _specCombinationPriceService;
     private readonly ICouponService _couponService;
+    private readonly IGradeGoodsPriceService _gradeGoodsPriceService;
 
     public HomeController(IHomeViewService homeViewService,
         IUserGradeService userGradeService,
         ICouponService couponService,
-        IGoodsPriceService goodsPriceService)
+        ISpecCombinationPriceService specCombinationPriceService, IGradeGoodsPriceService gradeGoodsPriceService)
     {
         this._couponService = couponService;
         this._userGradeService = userGradeService;
-        this._goodsPriceService = goodsPriceService;
+        this._specCombinationPriceService = specCombinationPriceService;
+        _gradeGoodsPriceService = gradeGoodsPriceService;
         this._homeViewService = homeViewService;
     }
 
@@ -52,7 +54,7 @@ public class HomeController : ShopBaseController
             if (grade != null)
             {
                 var combinations = allGoods.SelectMany(x => x.GoodsSpecCombinations).WhereNotNull().ToArray();
-                await this._goodsPriceService.AttachGradePriceAsync(combinations, grade.Id);
+                await this._gradeGoodsPriceService.AttachGradePriceAsync(combinations, grade.Id);
             }
         }
 

@@ -14,15 +14,15 @@ public class GoodsController : ShopBaseController
 {
     private readonly IGoodsService _goodsService;
     private readonly IGoodsSearchService _goodsSearchService;
-    private readonly IGoodsSpecCombinationService _goodsSpecCombinationService;
+    private readonly ISpecCombinationService _specCombinationService;
 
     public GoodsController(IGoodsService goodsService,
         IGoodsSearchService goodsSearchService, 
-        IGoodsSpecCombinationService goodsSpecCombinationService)
+        ISpecCombinationService specCombinationService)
     {
         this._goodsService = goodsService;
         this._goodsSearchService = goodsSearchService;
-        _goodsSpecCombinationService = goodsSpecCombinationService;
+        _specCombinationService = specCombinationService;
     }
 
     [HttpPost("multiple-by-ids")]
@@ -71,7 +71,7 @@ public class GoodsController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageCatalog);
 
-        var combinations = await this._goodsSpecCombinationService.QueryGoodsCombinationForSelectionAsync(dto);
+        var combinations = await this._specCombinationService.QueryGoodsCombinationForSelectionAsync(dto);
 
         return new ApiResponse<GoodsSpecCombinationDto[]>(combinations);
     }

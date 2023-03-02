@@ -12,24 +12,24 @@ public class GoodsConsumer : SalesAppService, ICapSubscribe
 {
     private readonly ISpecService _goodsSpecService;
     private readonly IGoodsSearchService _goodsSearchService;
-    private readonly IGoodsSpecCombinationService _goodsSpecCombinationService;
+    private readonly ISpecCombinationService _specCombinationService;
     private readonly IGoodsViewService _goodsViewService;
 
     public GoodsConsumer(ISpecService goodsSpecService,
         IGoodsSearchService goodsSearchService,
         IGoodsViewService goodsViewService,
-        IGoodsSpecCombinationService goodsSpecCombinationService)
+        ISpecCombinationService specCombinationService)
     {
         this._goodsViewService = goodsViewService;
         this._goodsSpecService = goodsSpecService;
         this._goodsSearchService = goodsSearchService;
-        this._goodsSpecCombinationService = goodsSpecCombinationService;
+        this._specCombinationService = specCombinationService;
     }
 
     [CapSubscribe(SalesMessageTopics.FormatCombinationSpecs)]
     public virtual async Task FormatGoodsSpecCombinationAsync(FormatGoodsSpecCombinationInput dto)
     {
-        await this._goodsSpecCombinationService.FormatSpecCombinationAsync(dto);
+        await this._specCombinationService.FormatSpecCombinationAsync(dto);
     }
 
     [CapSubscribe(SalesMessageTopics.RefreshGoodsInfo)]
@@ -38,7 +38,7 @@ public class GoodsConsumer : SalesAppService, ICapSubscribe
         if (dto == null || dto.Id <= 0)
             return;
 
-        await this._goodsSpecCombinationService.UpdateGoodsCombinationInfoAsync(dto.Id);
+        await this._specCombinationService.UpdateGoodsCombinationInfoAsync(dto.Id);
         await this._goodsSearchService.UpdateGoodsKeywordsAsync(dto.Id);
         await this._goodsViewService.QueryGoodsDetailByIdAsync(dto.Id, new CachePolicy() { Refresh = true });
     }

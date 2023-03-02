@@ -8,21 +8,21 @@ using XCloud.Sales.Service.Catalog;
 
 namespace XCloud.Sales.Service.Stores;
 
-public interface IStoreGoodsMappingService: IXCloudApplicationService
+public interface IStoreGoodsMappingService : IXCloudApplicationService
 {
     Task SaveGoodsStoreMappingAsync(SaveGoodsStoreMappingDto dto);
 }
 
-public class StoreGoodsMappingService: SalesAppService, IStoreGoodsMappingService
+public class StoreGoodsMappingService : SalesAppService, IStoreGoodsMappingService
 {
     private readonly ISalesRepository<Goods> _goodsRepository;
-    private readonly IGoodsSpecCombinationService _goodsSpecCombinationService;
+    private readonly ISpecCombinationService _specCombinationService;
 
-    public StoreGoodsMappingService(ISalesRepository<Goods> goodsRepository, 
-        IGoodsSpecCombinationService goodsSpecCombinationService)
+    public StoreGoodsMappingService(ISalesRepository<Goods> goodsRepository,
+        ISpecCombinationService specCombinationService)
     {
         _goodsRepository = goodsRepository;
-        _goodsSpecCombinationService = goodsSpecCombinationService;
+        _specCombinationService = specCombinationService;
     }
 
     public async Task SaveGoodsStoreMappingAsync(SaveGoodsStoreMappingDto dto)
@@ -36,7 +36,7 @@ public class StoreGoodsMappingService: SalesAppService, IStoreGoodsMappingServic
 
         var db = await _goodsRepository.GetDbContextAsync();
 
-        var combination = await this._goodsSpecCombinationService.QueryByIdAsync(dto.GoodsCombinationId);
+        var combination = await this._specCombinationService.QueryByIdAsync(dto.GoodsCombinationId);
         if (combination == null)
             throw new EntityNotFoundException(nameof(combination));
 
@@ -52,12 +52,14 @@ public class StoreGoodsMappingService: SalesAppService, IStoreGoodsMappingServic
 
         var toRemove = onSales.NotInBy(mappings, x => x.StoreId).ToArray();
         var toInsert = mappings.NotInBy(onSales, x => x.StoreId).ToArray();
-        
+
+        var now = this.Clock.Now;
         foreach (var m in toInsert)
         {
             m.Id = GuidGenerator.CreateGuidString();
+            m.CreationTime = now;
         }
-        
+
         if (toRemove.Any())
             set.RemoveRange(toRemove);
 

@@ -11,19 +11,21 @@ public class GoodsCollectionController : ShopBaseController
 {
     private readonly IGoodsCollectionService _collectionService;
     private readonly IGoodsService _goodsService;
-    private readonly IGoodsPriceService _goodsPriceService;
+    private readonly ISpecCombinationPriceService _specCombinationPriceService;
     private readonly IUserGradeService _userGradeService;
-    private readonly IGoodsSpecCombinationService _goodsSpecCombinationService;
+    private readonly ISpecCombinationService _specCombinationService;
+    private readonly IGradeGoodsPriceService _gradeGoodsPriceService;
 
     public GoodsCollectionController(IGoodsCollectionService collectionService, IGoodsService goodsService,
-        IGoodsPriceService goodsPriceService, IUserGradeService userGradeService,
-        IGoodsSpecCombinationService goodsSpecCombinationService)
+        ISpecCombinationPriceService specCombinationPriceService, IUserGradeService userGradeService,
+        ISpecCombinationService specCombinationService, IGradeGoodsPriceService gradeGoodsPriceService)
     {
         this._collectionService = collectionService;
         this._goodsService = goodsService;
-        this._goodsPriceService = goodsPriceService;
+        this._specCombinationPriceService = specCombinationPriceService;
         this._userGradeService = userGradeService;
-        _goodsSpecCombinationService = goodsSpecCombinationService;
+        _specCombinationService = specCombinationService;
+        _gradeGoodsPriceService = gradeGoodsPriceService;
     }
 
     [HttpPost("by-id")]
@@ -39,7 +41,7 @@ public class GoodsCollectionController : ShopBaseController
             .Select(x => x.GoodsSpecCombination)
             .WhereNotNull().ToArray();
 
-        await this._goodsSpecCombinationService.AttachDataAsync(combinations,
+        await this._specCombinationService.AttachDataAsync(combinations,
             new GoodsCombinationAttachDataInput() { Goods = true });
 
         var goods = combinations.Select(x => x.Goods)
@@ -53,7 +55,7 @@ public class GoodsCollectionController : ShopBaseController
             var grade = await this._userGradeService.GetGradeByUserIdAsync(storeUserOrNull.Id);
             if (grade != null)
             {
-                await this._goodsPriceService.AttachGradePriceAsync(combinations, grade.Id);
+                await this._gradeGoodsPriceService.AttachGradePriceAsync(combinations, grade.Id);
             }
         }
         else
@@ -91,7 +93,7 @@ public class GoodsCollectionController : ShopBaseController
             .Select(x => x.GoodsSpecCombination)
             .WhereNotNull().ToArray();
 
-        await this._goodsSpecCombinationService.AttachDataAsync(combinations,
+        await this._specCombinationService.AttachDataAsync(combinations,
             new GoodsCombinationAttachDataInput() { Goods = true });
 
         var goods = combinations.Select(x => x.Goods).WhereNotNull().ToArray();
@@ -104,7 +106,7 @@ public class GoodsCollectionController : ShopBaseController
             var grade = await this._userGradeService.GetGradeByUserIdAsync(storeUserOrNull.Id);
             if (grade != null)
             {
-                await this._goodsPriceService.AttachGradePriceAsync(combinations, grade.Id);
+                await this._gradeGoodsPriceService.AttachGradePriceAsync(combinations, grade.Id);
             }
         }
         else

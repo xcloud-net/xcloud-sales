@@ -10,6 +10,11 @@ public class StoreDto : Store, IEntityDto<string>
     public MallStorageMetaDto Picture { get; set; }
 }
 
+public class StoreGoodsMappingDto : StoreGoodsMapping, IEntityDto<string>
+{
+    public StoreDto Store { get; set; }
+}
+
 public class QueryStorePagingInput : PagedRequest
 {
     //
@@ -38,5 +43,5 @@ public class UpdateStoreManagerStatusInput : IEntityDto
 
 public class StoreManagerDto : StoreManager
 {
-    //
+    public StoreDto Store { get; set; }
 }

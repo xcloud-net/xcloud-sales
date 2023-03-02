@@ -4,6 +4,7 @@ using XCloud.Core.Dto;
 using XCloud.Sales.Data.Domain.Catalog;
 using XCloud.Sales.Service.Authentication;
 using XCloud.Sales.Service.Catalog;
+using XCloud.Sales.Service.Users;
 
 namespace XCloud.Sales.Mall.Api.Controller.Admin;
 
@@ -12,16 +13,18 @@ namespace XCloud.Sales.Mall.Api.Controller.Admin;
 public class GradePriceController : ShopBaseController
 {
     private readonly IGoodsService _goodsService;
-    private readonly IGoodsPriceService _goodsPriceService;
-    private readonly IGoodsSpecCombinationService _goodsSpecCombinationService;
+    private readonly ISpecCombinationPriceService _specCombinationPriceService;
+    private readonly ISpecCombinationService _specCombinationService;
+    private readonly IGradeGoodsPriceService _gradeGoodsPriceService;
 
     public GradePriceController(IGoodsService goodsService,
-        IGoodsPriceService goodsPriceService,
-        IGoodsSpecCombinationService goodsSpecCombinationService)
+        ISpecCombinationPriceService specCombinationPriceService,
+        ISpecCombinationService specCombinationService, IGradeGoodsPriceService gradeGoodsPriceService)
     {
         this._goodsService = goodsService;
-        this._goodsPriceService = goodsPriceService;
-        _goodsSpecCombinationService = goodsSpecCombinationService;
+        this._specCombinationPriceService = specCombinationPriceService;
+        _specCombinationService = specCombinationService;
+        _gradeGoodsPriceService = gradeGoodsPriceService;
     }
 
     [HttpPost("delete-grade-price")]
@@ -32,7 +35,7 @@ public class GradePriceController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageCatalog);
 
-        await this._goodsPriceService.DeleteGradePriceAsync(dto.Id);
+        await this._gradeGoodsPriceService.DeleteGradePriceAsync(dto.Id);
 
         return new ApiResponse<object>();
     }
@@ -45,7 +48,7 @@ public class GradePriceController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageCatalog);
 
-        await this._goodsPriceService.SetGradePriceAsync(offset);
+        await this._gradeGoodsPriceService.SetGradePriceAsync(offset);
 
         return new ApiResponse<object>();
     }
@@ -75,15 +78,15 @@ public class GradePriceController : ShopBaseController
         if (goods == null)
             throw new EntityNotFoundException(nameof(goods));
 
-        var combinations = await this._goodsSpecCombinationService.QueryByGoodsIdAsync(goods.Id);
+        var combinations = await this._specCombinationService.QueryByGoodsIdAsync(goods.Id);
         var allCombinations = this.ObjectMapper.MapArray<GoodsSpecCombination, GoodsSpecCombinationDto>(combinations);
 
-        await this._goodsSpecCombinationService.AttachDataAsync(allCombinations,
+        await this._specCombinationService.AttachDataAsync(allCombinations,
             new GoodsCombinationAttachDataInput() { GradePrices = true });
 
         var response = allCombinations.SelectMany(x => x.AllGradePrices).ToArray();
 
-        await this._goodsPriceService.AttachDataAsync(response,
+        await this._gradeGoodsPriceService.AttachDataAsync(response,
             new GoodsGradePriceAttachDataInput() { GoodsInfo = true });
 
         response = response

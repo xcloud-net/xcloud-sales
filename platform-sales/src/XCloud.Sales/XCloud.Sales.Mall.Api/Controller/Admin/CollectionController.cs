@@ -12,15 +12,15 @@ public class GoodsCollectionController : ShopBaseController
 {
     private readonly IGoodsCollectionService _collectionService;
     private readonly IGoodsService _goodsService;
-    private readonly IGoodsSpecCombinationService _goodsSpecCombinationService;
+    private readonly ISpecCombinationService _specCombinationService;
 
     public GoodsCollectionController(IGoodsCollectionService collectionService,
         IGoodsService goodsService,
-        IGoodsSpecCombinationService goodsSpecCombinationService)
+        ISpecCombinationService specCombinationService)
     {
         this._collectionService = collectionService;
         this._goodsService = goodsService;
-        _goodsSpecCombinationService = goodsSpecCombinationService;
+        _specCombinationService = specCombinationService;
     }
 
     [HttpPost("query-combination-for-selection")]
@@ -40,7 +40,7 @@ public class GoodsCollectionController : ShopBaseController
         var items = await this._collectionService.QueryItemsByCollectionIdAsync(dto.CollectionId);
         dto.ExcludedCombinationIds = items.Select(x => x.GoodsSpecCombinationId).ToArray();
 
-        var combinations = await this._goodsSpecCombinationService.QueryGoodsCombinationForSelectionAsync(dto);
+        var combinations = await this._specCombinationService.QueryGoodsCombinationForSelectionAsync(dto);
 
         return new ApiResponse<GoodsSpecCombinationDto[]>(combinations);
     }
@@ -65,7 +65,7 @@ public class GoodsCollectionController : ShopBaseController
             .Select(x => x.GoodsSpecCombination)
             .WhereNotNull().ToArray();
 
-        await this._goodsSpecCombinationService.AttachDataAsync(combinations,
+        await this._specCombinationService.AttachDataAsync(combinations,
             new GoodsCombinationAttachDataInput() { Goods = true });
 
         var goods = combinations.Select(x => x.Goods).WhereNotNull().ToArray();

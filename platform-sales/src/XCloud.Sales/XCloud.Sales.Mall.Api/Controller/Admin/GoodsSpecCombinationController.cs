@@ -14,29 +14,31 @@ namespace XCloud.Sales.Mall.Api.Controller.Admin;
 public class GoodsSpecCombinationController : ShopBaseController
 {
     private readonly IGoodsService _goodsService;
-    private readonly IGoodsSpecCombinationService _goodsSpecCombinationService;
-    private readonly IGoodsPriceService _goodsPriceService;
+    private readonly ISpecCombinationService _specCombinationService;
+    private readonly ISpecCombinationPriceService _specCombinationPriceService;
     private readonly IGoodsSearchService _goodsSearchService;
     private readonly IGoodsStockService _goodsStockService;
     private readonly IUserGradeService _userGradeService;
     private readonly IStoreGoodsMappingService _storeGoodsMappingService;
+    private readonly IGradeGoodsPriceService _gradeGoodsPriceService;
 
     public GoodsSpecCombinationController(
         IUserGradeService userGradeService,
         IGoodsStockService goodsStockService,
         IGoodsSearchService goodsSearchService,
-        IGoodsPriceService goodsPriceService,
+        ISpecCombinationPriceService specCombinationPriceService,
         IGoodsService goodsService,
-        IGoodsSpecCombinationService goodsSpecCombinationService,
-        IStoreGoodsMappingService storeGoodsMappingService)
+        ISpecCombinationService specCombinationService,
+        IStoreGoodsMappingService storeGoodsMappingService, IGradeGoodsPriceService gradeGoodsPriceService)
     {
         this._userGradeService = userGradeService;
         this._goodsStockService = goodsStockService;
         this._goodsSearchService = goodsSearchService;
-        this._goodsPriceService = goodsPriceService;
+        this._specCombinationPriceService = specCombinationPriceService;
         this._goodsService = goodsService;
-        this._goodsSpecCombinationService = goodsSpecCombinationService;
+        this._specCombinationService = specCombinationService;
         _storeGoodsMappingService = storeGoodsMappingService;
+        _gradeGoodsPriceService = gradeGoodsPriceService;
     }
 
     [HttpPost("query-combination-for-selection")]
@@ -50,7 +52,7 @@ public class GoodsSpecCombinationController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageCatalog);
 
-        var combinations = await this._goodsSpecCombinationService.QueryGoodsCombinationForSelectionAsync(dto);
+        var combinations = await this._specCombinationService.QueryGoodsCombinationForSelectionAsync(dto);
 
         return new ApiResponse<GoodsSpecCombinationDto[]>(combinations);
     }
@@ -72,7 +74,7 @@ public class GoodsSpecCombinationController : ShopBaseController
             return response;
 
         var combinations = response.Items.ToArray();
-        await this._goodsSpecCombinationService.AttachDataAsync(combinations,
+        await this._specCombinationService.AttachDataAsync(combinations,
             new GoodsCombinationAttachDataInput()
             {
                 DeserializeSpecCombinationJson = true,
@@ -98,7 +100,7 @@ public class GoodsSpecCombinationController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageCatalog);
 
-        await this._goodsSpecCombinationService.SetSpecCombinationAsync(dto);
+        await this._specCombinationService.SetSpecCombinationAsync(dto);
 
         return new ApiResponse<object>();
     }
@@ -111,7 +113,7 @@ public class GoodsSpecCombinationController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageCatalog);
 
-        var combination = await this._goodsSpecCombinationService.QueryByIdAsync(dto.Id);
+        var combination = await this._specCombinationService.QueryByIdAsync(dto.Id);
         if (combination == null)
             throw new EntityNotFoundException(nameof(combination));
 
@@ -130,20 +132,20 @@ public class GoodsSpecCombinationController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageCatalog);
 
-        var combination = await this._goodsSpecCombinationService.QueryByIdAsync(dto.Id);
+        var combination = await this._specCombinationService.QueryByIdAsync(dto.Id);
         if (combination == null)
             throw new EntityNotFoundException(nameof(combination));
 
         if (combination.CostPrice != dto.CostPrice)
-            await this._goodsPriceService.UpdateCombinationCostPriceAsync(new UpdateGoodsCostPriceDto()
+            await this._specCombinationPriceService.UpdateCombinationCostPriceAsync(new UpdateGoodsCostPriceDto()
                 { Id = combination.Id, CostPrice = dto.CostPrice });
 
         if (combination.Price != dto.Price)
-            await this._goodsPriceService.UpdateCombinationPriceAsync(new UpdateGoodsPriceDto()
+            await this._specCombinationPriceService.UpdateCombinationPriceAsync(new UpdateGoodsPriceDto()
                 { Id = combination.Id, Price = dto.Price });
 
         if (dto.GradePriceToSave != null)
-            await this._goodsPriceService.SaveGradePriceAsync(combination.Id, dto.GradePriceToSave);
+            await this._gradeGoodsPriceService.SaveGradePriceAsync(combination.Id, dto.GradePriceToSave);
 
         await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(combination.GoodsId));
 
@@ -159,11 +161,11 @@ public class GoodsSpecCombinationController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageCatalog);
 
-        var entity = await this._goodsSpecCombinationService.QueryByIdAsync(dto.Id);
+        var entity = await this._specCombinationService.QueryByIdAsync(dto.Id);
         if (entity == null)
             throw new EntityNotFoundException(nameof(UpdateGoodsSpecCombinationStatusAsync));
 
-        await this._goodsSpecCombinationService.UpdateStatusAsync(dto);
+        await this._specCombinationService.UpdateStatusAsync(dto);
 
         await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(entity.GoodsId));
 
@@ -182,13 +184,13 @@ public class GoodsSpecCombinationController : ShopBaseController
         if (goods == null)
             throw new EntityNotFoundException(nameof(goods));
 
-        var combinations = await this._goodsSpecCombinationService.QueryByGoodsIdAsync(dto.Id);
+        var combinations = await this._specCombinationService.QueryByGoodsIdAsync(dto.Id);
 
         var combinationDtos = combinations
             .Select(x => this.ObjectMapper.Map<GoodsSpecCombination, GoodsSpecCombinationDto>(x))
             .ToArray();
 
-        await this._goodsSpecCombinationService.AttachDataAsync(combinationDtos,
+        await this._specCombinationService.AttachDataAsync(combinationDtos,
             new GoodsCombinationAttachDataInput()
             {
                 DeserializeSpecCombinationJson = true,
@@ -211,7 +213,7 @@ public class GoodsSpecCombinationController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageCatalog);
 
-        var combination = await this._goodsSpecCombinationService.QueryBySkuAsync(dto.Sku);
+        var combination = await this._specCombinationService.QueryBySkuAsync(dto.Sku);
         if (combination == null)
             throw new EntityNotFoundException(nameof(BySkuAsync));
 
@@ -220,7 +222,7 @@ public class GoodsSpecCombinationController : ShopBaseController
             var grade = await this._userGradeService.GetGradeByUserIdAsync(dto.UserId.Value);
             if (grade != null)
             {
-                await this._goodsPriceService.AttachGradePriceAsync(new[] { combination }, grade.Id);
+                await this._gradeGoodsPriceService.AttachGradePriceAsync(new[] { combination }, grade.Id);
             }
         }
 
@@ -242,7 +244,7 @@ public class GoodsSpecCombinationController : ShopBaseController
 
         if (dto.Id > 0)
         {
-            var res = await this._goodsSpecCombinationService.UpdateAsync(dto);
+            var res = await this._specCombinationService.UpdateAsync(dto);
 
             await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(goods.Id));
 
@@ -250,7 +252,7 @@ public class GoodsSpecCombinationController : ShopBaseController
         }
         else
         {
-            var res = await this._goodsSpecCombinationService.InsertAsync(dto);
+            var res = await this._specCombinationService.InsertAsync(dto);
 
             await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(goods.Id));
 
@@ -266,13 +268,13 @@ public class GoodsSpecCombinationController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageCatalog);
 
-        var combination = await _goodsSpecCombinationService.QueryByIdAsync(dto.Id);
+        var combination = await _specCombinationService.QueryByIdAsync(dto.Id);
         if (combination == null)
             throw new EntityNotFoundException(nameof(StoreMappingList));
 
         var combinationDto = this.ObjectMapper.Map<GoodsSpecCombination, GoodsSpecCombinationDto>(combination);
 
-        await this._goodsSpecCombinationService.AttachDataAsync(new[] { combinationDto },
+        await this._specCombinationService.AttachDataAsync(new[] { combinationDto },
             new GoodsCombinationAttachDataInput() { Stores = true });
 
         return new ApiResponse<StoreDto[]>(combinationDto.Stores);
@@ -286,7 +288,7 @@ public class GoodsSpecCombinationController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageCatalog);
 
-        var combination = await _goodsSpecCombinationService.QueryByIdAsync(dto.GoodsCombinationId);
+        var combination = await _specCombinationService.QueryByIdAsync(dto.GoodsCombinationId);
 
         if (combination == null)
             throw new EntityNotFoundException(nameof(SaveStoreMapping));

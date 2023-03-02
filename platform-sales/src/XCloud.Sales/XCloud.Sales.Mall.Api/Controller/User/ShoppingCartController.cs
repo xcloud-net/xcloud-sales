@@ -20,22 +20,24 @@ public class ShoppingCartController : ShopBaseController
 {
     private readonly IGoodsService _goodsService;
     private readonly IShoppingCartService _shoppingCartService;
-    private readonly IGoodsPriceService _goodsPriceService;
+    private readonly ISpecCombinationPriceService _specCombinationPriceService;
     private readonly IUserGradeService _userGradeService;
+    private readonly IGradeGoodsPriceService _gradeGoodsPriceService;
 
     /// <summary>
     /// 构造器
     /// </summary>
     public ShoppingCartController(
         IGoodsService goodsService,
-        IGoodsPriceService goodsPriceService,
+        ISpecCombinationPriceService specCombinationPriceService,
         IShoppingCartService shoppingCartService,
-        IUserGradeService userGradeService)
+        IUserGradeService userGradeService, IGradeGoodsPriceService gradeGoodsPriceService)
     {
-        this._goodsPriceService = goodsPriceService;
+        this._specCombinationPriceService = specCombinationPriceService;
         this._goodsService = goodsService;
         this._shoppingCartService = shoppingCartService;
         this._userGradeService = userGradeService;
+        _gradeGoodsPriceService = gradeGoodsPriceService;
     }
 
     [HttpPost("count")]
@@ -68,7 +70,7 @@ public class ShoppingCartController : ShopBaseController
             {
                 var combinations = cart.Select(x => x.GoodsSpecCombination).WhereNotNull().ToArray();
 
-                await this._goodsPriceService.AttachGradePriceAsync(combinations, grade.Id);
+                await this._gradeGoodsPriceService.AttachGradePriceAsync(combinations, grade.Id);
             }
         }
 

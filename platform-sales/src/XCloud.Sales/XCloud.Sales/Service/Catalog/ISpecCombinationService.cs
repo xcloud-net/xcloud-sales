@@ -14,7 +14,7 @@ using XCloud.Sales.Service.Stores;
 
 namespace XCloud.Sales.Service.Catalog;
 
-public interface IGoodsSpecCombinationService : ISalesAppService
+public interface ISpecCombinationService : ISalesAppService
 {
     Task<GoodsSpecCombinationDto[]> QueryGoodsCombinationForSelectionAsync(
         QueryCombinationForSelectionInput dto);
@@ -42,14 +42,14 @@ public interface IGoodsSpecCombinationService : ISalesAppService
     Task<GoodsSpecCombinationDto> QueryBySkuAsync(string sku);
 }
 
-public class GoodsSpecCombinationService : SalesAppService, IGoodsSpecCombinationService
+public class SpecCombinationService : SalesAppService, ISpecCombinationService
 {
     private readonly ISalesRepository<Goods> _goodsRepository;
     private readonly ISpecCombinationParser _goodsSpecParser;
     private readonly ISpecService _goodsSpecService;
     private readonly IPictureService _pictureService;
 
-    public GoodsSpecCombinationService(ISalesRepository<Goods> goodsRepository,
+    public SpecCombinationService(ISalesRepository<Goods> goodsRepository,
         ISpecCombinationParser goodsSpecParser,
         ISpecService goodsSpecService,
         IPictureService pictureService)

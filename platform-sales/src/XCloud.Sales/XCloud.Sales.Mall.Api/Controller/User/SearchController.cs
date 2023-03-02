@@ -21,12 +21,13 @@ public class SearchController : ShopBaseController
     private readonly ITagService _tagService;
     private readonly IGoodsSearchService _goodsSearchService;
     private readonly IUserGradeService _userGradeService;
-    private readonly IGoodsPriceService _goodsPriceService;
+    private readonly ISpecCombinationPriceService _specCombinationPriceService;
+    private readonly IGradeGoodsPriceService _gradeGoodsPriceService;
     private readonly IGoodsService _goodsService;
 
     public SearchController(ISearchViewService searchViewService, IBrandService brandService,
         ICategoryService categoryService, ITagService tagService, IGoodsSearchService goodsSearchService,
-        IUserGradeService userGradeService, IGoodsPriceService goodsPriceService, IGoodsService goodsService)
+        IUserGradeService userGradeService, ISpecCombinationPriceService specCombinationPriceService, IGoodsService goodsService, IGradeGoodsPriceService gradeGoodsPriceService)
     {
         this._searchViewService = searchViewService;
         _brandService = brandService;
@@ -34,8 +35,9 @@ public class SearchController : ShopBaseController
         _tagService = tagService;
         _goodsSearchService = goodsSearchService;
         _userGradeService = userGradeService;
-        _goodsPriceService = goodsPriceService;
+        _specCombinationPriceService = specCombinationPriceService;
         _goodsService = goodsService;
+        _gradeGoodsPriceService = gradeGoodsPriceService;
     }
 
     [HttpPost("search-view")]
@@ -91,7 +93,7 @@ public class SearchController : ShopBaseController
             {
                 var combinations = response.Items.SelectMany(x => x.GoodsSpecCombinations).ToArray();
 
-                await this._goodsPriceService.AttachGradePriceAsync(combinations, grade.Id);
+                await this._gradeGoodsPriceService.AttachGradePriceAsync(combinations, grade.Id);
             }
         }
         else

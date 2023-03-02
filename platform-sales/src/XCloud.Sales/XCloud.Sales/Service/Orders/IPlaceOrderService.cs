@@ -1,3 +1,4 @@
+using XCloud.Core.Application;
 using XCloud.Core.Dto;
 using XCloud.Core.Helper;
 using XCloud.Platform.Common.Application.Service.Address;
@@ -18,6 +19,7 @@ using XCloud.Sales.Service.Coupons;
 using XCloud.Sales.Service.Orders.Validator;
 using XCloud.Sales.Service.Promotion;
 using XCloud.Sales.Service.ShoppingCart;
+using XCloud.Sales.Service.Stores;
 using XCloud.Sales.Service.Users;
 
 namespace XCloud.Sales.Service.Orders;
@@ -29,6 +31,9 @@ public interface IPlaceOrderService : ISalesAppService
     Task<PlaceOrderResult> PlaceOrderAsync(PlaceOrderRequestDto processRequest);
 }
 
+/// <summary>
+/// todo 单独一个方法用来计算商品价格
+/// </summary>
 public class PlaceOrderService : SalesAppService, IPlaceOrderService
 {
     private readonly OrderUtils _orderUtils;
@@ -39,7 +44,9 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
     private readonly IAddressService _addressService;
     private readonly ISalesRepository<Order> _orderRepository;
     private readonly IMallSettingService _mallSettingService;
-    private readonly IGoodsPriceService _goodsPriceService;
+    private readonly ISpecCombinationPriceService _specCombinationPriceService;
+    private readonly IGradeGoodsPriceService _gradeGoodsPriceService;
+    private readonly IStoreGoodsPriceService _storeGoodsPriceService;
     private readonly IUserGradeService _userGradeService;
     private readonly IGoodsStockService _goodsStockService;
     private readonly PromotionUtils _promotionUtils;
@@ -52,7 +59,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         IPromotionService promotionService,
         IGoodsStockService goodsStockService,
         IUserGradeService userGradeService,
-        IGoodsPriceService goodsPriceService,
+        ISpecCombinationPriceService specCombinationPriceService,
         IMallSettingService mallSettingService,
         OrderUtils orderUtils,
         PlatformInternalService internalCommonClientService,
@@ -61,18 +68,21 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         IUserService userService,
         IAddressService addressService,
         ICouponService couponService,
-        ISalesRepository<Order> orderRepository)
+        ISalesRepository<Order> orderRepository, IGradeGoodsPriceService gradeGoodsPriceService,
+        IStoreGoodsPriceService storeGoodsPriceService)
     {
         this._orderConditionUtils = orderConditionUtils;
         this._promotionService = promotionService;
         this._promotionUtils = promotionUtils;
         this._goodsStockService = goodsStockService;
         this._userGradeService = userGradeService;
-        this._goodsPriceService = goodsPriceService;
+        this._specCombinationPriceService = specCombinationPriceService;
         this._orderUtils = orderUtils;
         this._mallSettingService = mallSettingService;
         this._internalCommonClientService = internalCommonClientService;
         this._orderRepository = orderRepository;
+        _gradeGoodsPriceService = gradeGoodsPriceService;
+        _storeGoodsPriceService = storeGoodsPriceService;
         this._orderService = orderService;
         this._webHelper = webHelper;
         this._userService = userService;
@@ -153,6 +163,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
     }
 
     private string DateString() => this.Clock.Now.ToString("yyyyMMdd");
+
     private string MonthString() => this.Clock.Now.ToString("yyyyMM");
 
     private async Task<string> GenerateOrderSnAsync()
@@ -212,7 +223,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         if (!string.IsNullOrWhiteSpace(gradeId))
         {
             var combinations = arr.Select(x => x.Key).ToArray();
-            await this._goodsPriceService.AttachGradePriceAsync(combinations, gradeId);
+            await this._gradeGoodsPriceService.AttachGradePriceAsync(combinations, gradeId);
         }
 
         return arr;
@@ -241,7 +252,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
 
             if (goods.MaxAmountInOnePurchase > 0 && sc.Quantity > goods.MaxAmountInOnePurchase)
                 throw new UserFriendlyException(
-                    $"{goods.Name}-{combination.Name} you can only purhcase {goods.MaxAmountInOnePurchase} in one time");
+                    $"{goods.Name}-{combination.Name} you can only purchase {goods.MaxAmountInOnePurchase} in one time");
 
             var orderItem = new OrderItem()
             {
@@ -272,7 +283,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         return orderItems.ToArray();
     }
 
-    private async Task<Order> TryJoinPromotionAsync(Order order, OrderItem[] items)
+    private async Task<Order> TryApplyPromotionAsync(Order order, OrderItem[] items)
     {
         if (string.IsNullOrWhiteSpace(order.PromotionId))
             return order;
@@ -463,6 +474,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
 
     public async Task<KeyValuePair<Order, OrderItem[]>> BuildOrderEntitiesAsync(PlaceOrderRequestDto dto)
     {
+        // todo build order entities
         var db = await this._orderRepository.GetDbContextAsync();
         throw new NotImplementedException();
     }
@@ -481,6 +493,39 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         await Task.CompletedTask;
 
         return order;
+    }
+
+    private async Task<CombinationFinalPriceDto[]> CalculateFinalPriceAsync(DbContext db, PlaceOrderRequestDto dto)
+    {
+        //get store prices
+        //get grade price
+        //get combination price
+
+        //return price or fallback
+
+        var combinationIds = dto.Items.Select(x => x.GoodsSpecCombinationId).Distinct().ToArray();
+
+        var items = await db.Set<GoodsSpecCombination>().WhereIdIn(combinationIds).ToArrayAsync();
+        var combinations = this.ObjectMapper.MapArray<GoodsSpecCombination, GoodsSpecCombinationDto>(items);
+
+        var gradeId = dto.UserHolder.GradeId;
+        if (!string.IsNullOrWhiteSpace(gradeId))
+        {
+            await this._gradeGoodsPriceService.AttachGradePriceAsync(combinations, gradeId);
+        }
+
+        var storePrices = string.IsNullOrWhiteSpace(dto.StoreId)
+            ? Array.Empty<StoreGoodsMappingDto>()
+            : await this._storeGoodsPriceService.QueryManyByAsync(combinationIds, dto.StoreId);
+
+        var response = new List<CombinationFinalPriceDto>();
+
+        foreach (var id in combinationIds)
+        {
+            var storePrice = storePrices.FirstOrDefault(x => x.GoodsCombinationId == id);
+        }
+
+        throw new NotImplementedException();
     }
 
     private async Task<PlaceOrderRequestDto> PrepareCustomerInfoAsync(PlaceOrderRequestDto dto)
@@ -538,7 +583,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
             await this.TryUseCouponAsync(order, orderItems);
 
             //promotion
-            await this.TryJoinPromotionAsync(order, orderItems);
+            await this.TryApplyPromotionAsync(order, orderItems);
 
             //calculate total
             await this.CalculateOrderFinalPriceAsync(order, orderItems);
