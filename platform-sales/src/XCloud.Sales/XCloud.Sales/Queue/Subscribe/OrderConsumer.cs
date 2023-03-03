@@ -8,11 +8,11 @@ namespace XCloud.Sales.Queue.Subscribe;
 [UnitOfWork]
 public class OrderConsumer : SalesAppService, ICapSubscribe
 {
-    private readonly IOrderService orderService;
+    private readonly IOrderService _orderService;
     public OrderConsumer(
         IOrderService orderService)
     {
-        this.orderService = orderService;
+        this._orderService = orderService;
     }
 
     [CapSubscribe(SalesMessageTopics.InsertOrderNote)]
@@ -21,6 +21,6 @@ public class OrderConsumer : SalesAppService, ICapSubscribe
         if (message == null)
             return;
             
-        await this.orderService.InsertOrderNoteAsync(message);
+        await this._orderService.InsertOrderNoteAsync(message);
     }
 }

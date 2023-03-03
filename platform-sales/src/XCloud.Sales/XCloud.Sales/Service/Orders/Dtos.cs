@@ -79,18 +79,8 @@ public class CompleteOrderInput : IEntityDto
     public string Comment { get; set; }
 }
 
-public class CombinationFinalPriceDto : IEntityDto<int>
-{
-    public int Id { get; set; }
-    public string StoreId { get; set; }
-    public decimal FinalPrice { get; set; }
-    public string Description { get; set; }
-}
-
 public class PlaceOrderRequestDto : IEntityDto
 {
-    public StoreUserDto UserHolder { get; set; }
-
     public string StoreId { get; set; }
 
     public int UserId { get; set; }

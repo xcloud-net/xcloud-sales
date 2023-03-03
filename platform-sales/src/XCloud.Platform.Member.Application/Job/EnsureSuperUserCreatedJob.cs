@@ -18,6 +18,22 @@ public class EnsureSuperUserCreatedJob : PlatformApplicationService
 
     public virtual async Task EnsureSuperUserCreatedAsync()
     {
-        await this._ensureSuperUserCreatedService.EnsureSuperUserCreatedAsync();
+        using var uow = this.UnitOfWorkManager.Begin(requiresNew: true, isTransactional: true);
+        try
+        {
+            await this._ensureSuperUserCreatedService.EnsureSuperUserCreatedAsync();
+
+            await uow.CompleteAsync();
+        }
+        catch (UserFriendlyException e)
+        {
+            await uow.RollbackAsync();
+            this.Logger.LogWarning(message: e.Message, exception: e);
+        }
+        catch (Exception e)
+        {
+            await uow.RollbackAsync();
+            this.Logger.LogError(message: e.Message, exception: e);
+        }
     }
 }

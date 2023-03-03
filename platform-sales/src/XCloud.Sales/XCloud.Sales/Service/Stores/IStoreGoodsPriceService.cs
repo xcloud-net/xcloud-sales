@@ -2,11 +2,14 @@ using XCloud.Core.Application;
 using XCloud.Sales.Application;
 using XCloud.Sales.Data;
 using XCloud.Sales.Data.Domain.Stores;
+using XCloud.Sales.Service.Catalog;
 
 namespace XCloud.Sales.Service.Stores;
 
 public interface IStoreGoodsPriceService : ISalesAppService
 {
+    Task<GoodsSpecCombinationDto[]> AttachStorePriceAsync(GoodsSpecCombinationDto[] data, string storeId);
+    
     Task<StoreGoodsMappingDto[]> QueryManyByAsync(int[] combinationId, string storeId);
 }
 
@@ -20,6 +23,38 @@ public class StoreGoodsPriceService : SalesAppService, IStoreGoodsPriceService
     {
         _storeGoodsMappingService = storeGoodsMappingService;
         _repository = repository;
+    }
+
+    public async Task<GoodsSpecCombinationDto[]> AttachStorePriceAsync(GoodsSpecCombinationDto[] data, string storeId)
+    {
+        if (!data.Any())
+            return data;
+        if (string.IsNullOrWhiteSpace(storeId))
+            throw new ArgumentNullException(nameof(storeId));
+
+        var ids = data.Ids().ToArray();
+
+        var db = await this._repository.GetDbContextAsync();
+
+        var query = from storeMapping in db.Set<StoreGoodsMapping>().AsNoTracking()
+            select new
+            {
+                storeMapping
+            };
+
+        query = query.Where(x => x.storeMapping.StoreId == storeId);
+        query = query.Where(x => ids.Contains(x.storeMapping.GoodsCombinationId));
+
+        var mappings = await query.TakeUpTo5000().ToArrayAsync();
+
+        foreach (var m in data)
+        {
+            var items = mappings.Where(x => x.storeMapping.GoodsCombinationId == m.Id).Select(x => x.storeMapping)
+                .ToArray();
+            m.StoreGoodsMapping = this.ObjectMapper.MapArray<StoreGoodsMapping, StoreGoodsMappingDto>(items);
+        }
+
+        return data;
     }
 
     public async Task<StoreGoodsMappingDto[]> QueryManyByAsync(int[] combinationId, string storeId)

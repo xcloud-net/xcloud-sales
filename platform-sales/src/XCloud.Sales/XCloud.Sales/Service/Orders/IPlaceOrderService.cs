@@ -44,7 +44,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
     private readonly IAddressService _addressService;
     private readonly ISalesRepository<Order> _orderRepository;
     private readonly IMallSettingService _mallSettingService;
-    private readonly ISpecCombinationPriceService _specCombinationPriceService;
+    private readonly ISpecCombinationService _specCombinationService;
     private readonly IGradeGoodsPriceService _gradeGoodsPriceService;
     private readonly IStoreGoodsPriceService _storeGoodsPriceService;
     private readonly IUserGradeService _userGradeService;
@@ -59,7 +59,6 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         IPromotionService promotionService,
         IGoodsStockService goodsStockService,
         IUserGradeService userGradeService,
-        ISpecCombinationPriceService specCombinationPriceService,
         IMallSettingService mallSettingService,
         OrderUtils orderUtils,
         PlatformInternalService internalCommonClientService,
@@ -68,21 +67,23 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         IUserService userService,
         IAddressService addressService,
         ICouponService couponService,
-        ISalesRepository<Order> orderRepository, IGradeGoodsPriceService gradeGoodsPriceService,
-        IStoreGoodsPriceService storeGoodsPriceService)
+        ISalesRepository<Order> orderRepository,
+        IGradeGoodsPriceService gradeGoodsPriceService,
+        IStoreGoodsPriceService storeGoodsPriceService,
+        ISpecCombinationService specCombinationService)
     {
         this._orderConditionUtils = orderConditionUtils;
         this._promotionService = promotionService;
         this._promotionUtils = promotionUtils;
         this._goodsStockService = goodsStockService;
         this._userGradeService = userGradeService;
-        this._specCombinationPriceService = specCombinationPriceService;
         this._orderUtils = orderUtils;
         this._mallSettingService = mallSettingService;
         this._internalCommonClientService = internalCommonClientService;
         this._orderRepository = orderRepository;
         _gradeGoodsPriceService = gradeGoodsPriceService;
         _storeGoodsPriceService = storeGoodsPriceService;
+        _specCombinationService = specCombinationService;
         this._orderService = orderService;
         this._webHelper = webHelper;
         this._userService = userService;
@@ -92,8 +93,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
 
 
     [UnitOfWork(isTransactional: true)]
-    public virtual async Task<PlaceOrderResult> PlaceOrderAsync(
-        PlaceOrderRequestDto processRequest)
+    public virtual async Task<PlaceOrderResult> PlaceOrderAsync(PlaceOrderRequestDto processRequest)
     {
         var settings = await this._mallSettingService.GetCachedMallSettingsAsync();
         if (settings.PlaceOrderDisabled)
@@ -111,13 +111,20 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         }
         else
         {
-            throw new FailToGetRedLockException("稍后再试");
+            throw new FailToGetRedLockException("pls try later");
         }
     }
 
     private bool CheckFormOfPlaceOrderRequest(PlaceOrderRequestDto dto, out string errorMessage)
     {
         errorMessage = string.Empty;
+
+        if (dto.UserId <= 0)
+        {
+            errorMessage = "user not found";
+            return false;
+        }
+
         return true;
     }
 
@@ -143,7 +150,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
 
         if (dto.Items.GroupBy(x => x.FingerPrint()).Any(x => x.Count() > 1))
         {
-            errorMessage = "dumplicate input";
+            errorMessage = "duplicate input";
             return false;
         }
 
@@ -151,19 +158,25 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         return true;
     }
 
-    private async Task<UserAddressDto> GetUserAddressOrNullAsync(PlaceOrderRequestDto dto)
+    private async Task<UserAddressDto> GetUserAddressOrNullAsync(PlaceOrderRequestDto dto, StoreUserDto storeUser)
     {
         if (string.IsNullOrWhiteSpace(dto.AddressId))
             return null;
 
-        var user = dto.UserHolder;
-        var allAddress = await this._addressService.QueryByGlobalUserId(user.GlobalUserId);
+        var allAddress = await this._addressService.QueryByGlobalUserId(storeUser.GlobalUserId);
+
         var shippingAddress = allAddress.FirstOrDefault(x => x.Id == dto.AddressId);
+
+        if (shippingAddress == null)
+            throw new UserFriendlyException("the shipping address not found");
+
         return shippingAddress;
     }
 
-    private string DateString() => this.Clock.Now.ToString("yyyyMMdd");
-
+    /// <summary>
+    /// date format: yyyyMMdd
+    /// </summary>
+    /// <returns></returns>
     private string MonthString() => this.Clock.Now.ToString("yyyyMM");
 
     private async Task<string> GenerateOrderSnAsync()
@@ -173,6 +186,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         var noResponse =
             await this._internalCommonClientService.GenerateSerialNoAsync(
                 new CreateNoByCategoryDto($"order-sn-{month}"));
+
         if (!noResponse.IsSuccess())
             throw new AbpException("failed to generate order sn");
 
@@ -197,42 +211,61 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         }
     }
 
-    private async Task<KeyValueDto<GoodsSpecCombinationDto, Goods>[]> QueryGoodsAndSpecCombinationsAsync(
-        DbContext db, PlaceOrderRequestDto dto)
+    private async Task<GoodsSpecCombinationDto[]> QuerySpecCombinationInformationAsync(
+        DbContext db, PlaceOrderRequestDto dto, StoreUserDto storeUser)
     {
-        var gradeId = dto.UserHolder.GradeId;
+        var gradeId = storeUser.GradeId;
         var combinationIds = dto.Items.Select(x => x.GoodsSpecCombinationId).Distinct().ToArray();
 
-        var query = from combination in db.Set<GoodsSpecCombination>().AsNoTracking()
-            join goods in db.Set<Goods>().AsNoTracking()
-                on combination.GoodsId equals goods.Id
-            select new { combination, goods };
+        var datalist = await db.Set<GoodsSpecCombination>().AsNoTracking().WhereIdIn(combinationIds).ToArrayAsync();
 
-        query = query.Where(x => combinationIds.Contains(x.combination.Id));
+        var combinations = this.ObjectMapper.MapArray<GoodsSpecCombination, GoodsSpecCombinationDto>(datalist);
 
-        var data = await query.ToArrayAsync();
-
-        KeyValueDto<GoodsSpecCombinationDto, Goods> BuildResponse(GoodsSpecCombination combination, Goods goods)
+        await this._specCombinationService.AttachDataAsync(combinations, new GoodsCombinationAttachDataInput()
         {
-            var combinationDto = this.ObjectMapper.Map<GoodsSpecCombination, GoodsSpecCombinationDto>(combination);
-            return new KeyValueDto<GoodsSpecCombinationDto, Goods>(combinationDto, goods);
-        }
-
-        var arr = data.Select(x => BuildResponse(x.combination, x.goods)).ToArray();
+            Goods = true,
+        });
 
         if (!string.IsNullOrWhiteSpace(gradeId))
         {
-            var combinations = arr.Select(x => x.Key).ToArray();
             await this._gradeGoodsPriceService.AttachGradePriceAsync(combinations, gradeId);
         }
 
-        return arr;
+        if (!string.IsNullOrWhiteSpace(dto.StoreId))
+        {
+            await this._storeGoodsPriceService.AttachStorePriceAsync(combinations, dto.StoreId);
+        }
+
+        return combinations;
+    }
+
+    private async Task<decimal> SetOrderItemFinalUnitPriceAsync(OrderItem orderItem,
+        GoodsSpecCombinationDto combination,
+        PlaceOrderRequestDto dto)
+    {
+        await Task.CompletedTask;
+
+        var storePrice = combination.StoreGoodsMapping.FirstOrDefault(x => x.StoreId == dto.StoreId);
+        if (storePrice != null && storePrice.Price != null)
+        {
+            orderItem.UnitPrice = storePrice.Price.Value;
+        }
+        else if (combination.SelectedGradePrice != null)
+        {
+            orderItem.UnitPrice = combination.SelectedGradePrice.Price;
+        }
+        else
+        {
+            orderItem.UnitPrice = combination.Price;
+        }
+
+        return orderItem.UnitPrice;
     }
 
     private async Task<OrderItem[]> BuildOrderItemsAsync(
         PlaceOrderRequestDto dto,
         Order order,
-        KeyValueDto<GoodsSpecCombinationDto, Goods>[] allGoods)
+        GoodsSpecCombinationDto[] combinationList)
     {
         await Task.CompletedTask;
 
@@ -240,12 +273,13 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
 
         foreach (var sc in dto.Items)
         {
-            var goodsInformation = allGoods.FirstOrDefault(x => x.Key.Id == sc.GoodsSpecCombinationId);
-            if (goodsInformation == null)
-                throw new BusinessException("goods not exist");
+            var combination = combinationList.FirstOrDefault(x => x.Id == sc.GoodsSpecCombinationId);
+            if (combination == null)
+                throw new UserFriendlyException("goods not available");
 
-            var combination = goodsInformation.Key;
-            var goods = goodsInformation.Value;
+            var goods = combination.Goods;
+            if (goods == null)
+                throw new UserFriendlyException("goods not available");
 
             if (!combination.IsActive)
                 throw new UserFriendlyException("商品当前不可销售");
@@ -261,16 +295,18 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
                 GoodsId = combination.GoodsId,
                 GoodsName = goods.Name,
                 GoodsSpecCombinationId = combination.Id,
-                UnitPrice = combination.Price,
                 Quantity = sc.Quantity,
                 ItemWeight = default,
                 GradePriceOffset = decimal.Zero,
                 Price = decimal.Zero,
+                UnitPrice = decimal.Zero,
             };
+
             if (orderItem.Quantity > combination.StockQuantity)
                 throw new UserFriendlyException($"库存不足");
 
-            var finalUnitPrice = combination.GradePrice ?? orderItem.UnitPrice;
+            var finalUnitPrice = await this.SetOrderItemFinalUnitPriceAsync(orderItem, combination, dto);
+
             if (finalUnitPrice < 0)
                 throw new UserFriendlyException("结算单价不能小于0");
 
@@ -283,10 +319,10 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         return orderItems.ToArray();
     }
 
-    private async Task<Order> TryApplyPromotionAsync(Order order, OrderItem[] items)
+    private async Task TryApplyPromotionAsync(Order order, OrderItem[] items)
     {
         if (string.IsNullOrWhiteSpace(order.PromotionId))
-            return order;
+            return;
 
         var promotion = await this._promotionService.QueryByIdAsync(order.PromotionId);
         if (promotion == null)
@@ -310,14 +346,12 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
 
         var results = this._promotionUtils.DeserializeResults(promotion.Result, throwIfException: true);
         await this._promotionUtils.ApplyPromotionResultAsync(order, results);
-
-        return order;
     }
 
-    private async Task<Order> TryUseCouponAsync(Order order, OrderItem[] items)
+    private async Task TryUseCouponAsync(Order order, OrderItem[] items)
     {
         if (order.CouponId == null || order.CouponId.Value <= 0)
-            return order;
+            return;
 
         //before check
         if (!decimal.Equals(order.CouponDiscount, default))
@@ -348,8 +382,6 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
 
         //mark coupon as used
         await this._couponService.UseUserCouponAsync(userCoupon.Id);
-
-        return order;
     }
 
     private async Task FinalCheckOrderInformationAsync(Order order, OrderItem[] items)
@@ -367,7 +399,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         await Task.CompletedTask;
     }
 
-    private async Task<Order> BuildEmptyOrderEntityAsync(PlaceOrderRequestDto dto)
+    private async Task<Order> BuildEmptyOrderEntityAsync(PlaceOrderRequestDto dto, StoreUserDto storeUser)
     {
         var order = new Order()
         {
@@ -376,8 +408,8 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
 
             //associated
             StoreId = dto.StoreId,
-            UserId = dto.UserHolder.Id,
-            GradeId = dto.UserHolder.GradeId,
+            UserId = storeUser.Id,
+            GradeId = storeUser.GradeId,
             OrderIp = _webHelper.GetCurrentIpAddress(),
 
             //fee
@@ -424,9 +456,17 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         await this._orderUtils.GetOrderStateMachine(order).FireAsync(OrderProcessingAction.PlaceOrder);
 
         //try fill shipping address id
-        var shippingAddress = await this.GetUserAddressOrNullAsync(dto);
+        var shippingAddress = await this.GetUserAddressOrNullAsync(dto, storeUser);
         if (shippingAddress != null)
+        {
             order.ShippingAddressId = shippingAddress.Id;
+            order.ShippingAddressProvice = shippingAddress.Province;
+            order.ShippingAddressCity = shippingAddress.City;
+            order.ShippingAddressArea = shippingAddress.Area;
+            order.ShippingAddressDetail = shippingAddress.AddressDetail;
+            order.ShippingAddressContact = shippingAddress.Tel;
+            order.ShippingAddressContactName = shippingAddress.Name;
+        }
 
         return order;
     }
@@ -474,14 +514,56 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
 
     public async Task<KeyValuePair<Order, OrderItem[]>> BuildOrderEntitiesAsync(PlaceOrderRequestDto dto)
     {
-        // todo build order entities
+        if (dto == null)
+            throw new ArgumentNullException(nameof(dto));
+
+        //check form data
+        if (!this.CheckFormOfPlaceOrderRequest(dto, out var formErrorMessage))
+            throw new UserFriendlyException(formErrorMessage);
+
+        //check goods info
+        if (!this.CheckGoodsInfoOfPlaceOrderRequest(dto, out var goodsErrorMessage))
+            throw new UserFriendlyException(goodsErrorMessage);
+
+        //check goods info and stock quantity
+        await this.CheckGoodsStockStatusAsync(dto);
+
+        //prepare and check customer info
+        var storeUser = await this.GetRequiredCustomerInfoAsync(dto);
+
         var db = await this._orderRepository.GetDbContextAsync();
-        throw new NotImplementedException();
+
+        //load relative goods information into memory to optimise further query
+        var allGoods = await this.QuerySpecCombinationInformationAsync(db, dto, storeUser);
+
+        //build order entity
+        var order = await this.BuildEmptyOrderEntityAsync(dto, storeUser);
+
+        //build order items
+        var orderItems = await this.BuildOrderItemsAsync(dto, order, allGoods);
+
+        //coupon
+        await this.TryUseCouponAsync(order, orderItems);
+
+        //promotion
+        await this.TryApplyPromotionAsync(order, orderItems);
+
+        //calculate total
+        await this.CalculateOrderFinalPriceAsync(order, orderItems);
+
+        //generate sn
+        order.OrderSn = await this.GenerateOrderSnAsync();
+
+        //final check
+        await this.FinalCheckOrderInformationAsync(order, orderItems);
+
+        return new KeyValuePair<Order, OrderItem[]>(order, orderItems);
     }
 
-    private async Task<Order> CalculateOrderFinalPriceAsync(Order order, OrderItem[] orderItems)
+    private async Task CalculateOrderFinalPriceAsync(Order order, OrderItem[] orderItems)
     {
         //todo put into order utils
+        
         order.GradePriceOffsetTotal = orderItems.Sum(x => x.GradePriceOffset);
         order.OrderSubtotal = orderItems.Sum(x => x.Price);
         //total
@@ -491,54 +573,20 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         order.ExchangePointsAmount = order.OrderTotal;
 
         await Task.CompletedTask;
-
-        return order;
     }
 
-    private async Task<CombinationFinalPriceDto[]> CalculateFinalPriceAsync(DbContext db, PlaceOrderRequestDto dto)
-    {
-        //get store prices
-        //get grade price
-        //get combination price
-
-        //return price or fallback
-
-        var combinationIds = dto.Items.Select(x => x.GoodsSpecCombinationId).Distinct().ToArray();
-
-        var items = await db.Set<GoodsSpecCombination>().WhereIdIn(combinationIds).ToArrayAsync();
-        var combinations = this.ObjectMapper.MapArray<GoodsSpecCombination, GoodsSpecCombinationDto>(items);
-
-        var gradeId = dto.UserHolder.GradeId;
-        if (!string.IsNullOrWhiteSpace(gradeId))
-        {
-            await this._gradeGoodsPriceService.AttachGradePriceAsync(combinations, gradeId);
-        }
-
-        var storePrices = string.IsNullOrWhiteSpace(dto.StoreId)
-            ? Array.Empty<StoreGoodsMappingDto>()
-            : await this._storeGoodsPriceService.QueryManyByAsync(combinationIds, dto.StoreId);
-
-        var response = new List<CombinationFinalPriceDto>();
-
-        foreach (var id in combinationIds)
-        {
-            var storePrice = storePrices.FirstOrDefault(x => x.GoodsCombinationId == id);
-        }
-
-        throw new NotImplementedException();
-    }
-
-    private async Task<PlaceOrderRequestDto> PrepareCustomerInfoAsync(PlaceOrderRequestDto dto)
+    private async Task<StoreUserDto> GetRequiredCustomerInfoAsync(PlaceOrderRequestDto dto)
     {
         var user = await _userService.GetUserByIdAsync(dto.UserId);
         if (user == null || user.IsDeleted || !user.Active)
             throw new UserFriendlyException("user is not allow to place order");
-        dto.UserHolder = this.ObjectMapper.Map<User, StoreUserDto>(user);
+
+        var storeUserDto = this.ObjectMapper.Map<User, StoreUserDto>(user);
 
         //get grade id
-        dto.UserHolder.GradeId = await this.GetUserGradeIdOrNullAsync(dto);
+        storeUserDto.GradeId = await this.GetUserGradeIdOrNullAsync(dto);
 
-        return dto;
+        return storeUserDto;
     }
 
     private async Task<PlaceOrderResult> PlaceOrderImplAsync(PlaceOrderRequestDto dto)
@@ -548,51 +596,14 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
 
         var result = new PlaceOrderResult();
 
-        //check form data
-        if (!this.CheckFormOfPlaceOrderRequest(dto, out var formErrorMessage))
-            return result.SetError(formErrorMessage);
-
-        //check goods info
-        if (!this.CheckGoodsInfoOfPlaceOrderRequest(dto, out var goodsErrorMessage))
-            return result.SetError(goodsErrorMessage);
-
-        //check goods info and stock quantity
-        await this.CheckGoodsStockStatusAsync(dto);
-
-        //todo check coupon address ...
-
-        //prepare and check customer info
-        dto = await this.PrepareCustomerInfoAsync(dto);
-
-        //start new uow
-        using var uow = this.UnitOfWorkManager.Begin(requiresNew: true, isTransactional: true);
-
         try
         {
             var db = await this._orderRepository.GetDbContextAsync();
 
-            //load relative goods information into memory to optimise further query
-            var allGoods = await this.QueryGoodsAndSpecCombinationsAsync(db, dto);
+            var orderEntities = await this.BuildOrderEntitiesAsync(dto);
 
-            //build order entity
-            var order = await this.BuildEmptyOrderEntityAsync(dto);
-            //build order items
-            var orderItems = await this.BuildOrderItemsAsync(dto, order, allGoods);
-
-            //coupon
-            await this.TryUseCouponAsync(order, orderItems);
-
-            //promotion
-            await this.TryApplyPromotionAsync(order, orderItems);
-
-            //calculate total
-            await this.CalculateOrderFinalPriceAsync(order, orderItems);
-
-            //generate sn
-            order.OrderSn = await this.GenerateOrderSnAsync();
-
-            //final check
-            await this.FinalCheckOrderInformationAsync(order, orderItems);
+            var order = orderEntities.Key;
+            var orderItems = orderEntities.Value;
 
             //save to database
             db.Set<Order>().Add(order);
@@ -600,8 +611,6 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
 
             //flush to db
             await db.SaveChangesAsync();
-            //commit transaction
-            await uow.CompleteAsync();
 
             //trigger changes
             await this.AfterOrderCreatedAsync(dto, order);
@@ -611,13 +620,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         }
         catch (UserFriendlyException e)
         {
-            await uow.RollbackAsync();
             return result.SetError(e.Message);
-        }
-        catch
-        {
-            await uow.RollbackAsync();
-            throw;
         }
     }
 }
