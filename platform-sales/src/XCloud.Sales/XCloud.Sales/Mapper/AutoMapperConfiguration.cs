@@ -37,6 +37,7 @@ public class AutoMapperConfiguration : Profile
     public AutoMapperConfiguration()
     {
         this.CreateMap<Store,StoreDto>().ReverseMap();
+        this.CreateMap<StoreGoodsMapping, StoreGoodsMappingDto>().ReverseMap();
         this.CreateMap<Picture, PictureDto>().ReverseMap();
         this.CreateMap<StorageMetaDto, MallStorageMetaDto>().ReverseMap();
         

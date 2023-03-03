@@ -16,15 +16,15 @@ public class CombinationViewService : SalesAppService, ICombinationViewService
 {
     private readonly ISpecService _goodsSpecService;
     private readonly ISpecCombinationParser _goodsSpecParser;
-    private readonly IGoodsSpecCombinationService _goodsSpecCombinationService;
+    private readonly ISpecCombinationService _specCombinationService;
 
     public CombinationViewService(ISpecService goodsSpecService,
         ISpecCombinationParser goodsSpecParser,
-        IGoodsSpecCombinationService goodsSpecCombinationService)
+        ISpecCombinationService specCombinationService)
     {
         _goodsSpecService = goodsSpecService;
         _goodsSpecParser = goodsSpecParser;
-        _goodsSpecCombinationService = goodsSpecCombinationService;
+        _specCombinationService = specCombinationService;
         //
     }
 
@@ -83,7 +83,7 @@ public class CombinationViewService : SalesAppService, ICombinationViewService
 
     private async Task<GoodsSpecCombinationDto[]> GetGoodsActiveCombinationsAsync(int goodsId)
     {
-        var allCombinations = await this._goodsSpecCombinationService.QueryByGoodsIdAsync(goodsId);
+        var allCombinations = await this._specCombinationService.QueryByGoodsIdAsync(goodsId);
 
         var combinations = allCombinations
             .Where(x => x.IsActive)

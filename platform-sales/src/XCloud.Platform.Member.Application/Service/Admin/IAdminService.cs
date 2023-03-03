@@ -138,7 +138,7 @@ public class AdminService : PlatformApplicationService, IAdminService
         var items = await query
             .OrderByDescending(x => x.admin.IsActive)
             .ThenByDescending(x=>x.admin.CreationTime)
-            .PageBy(filter.AsAbpPagedRequestDto())
+            .PageBy(filter.ToAbpPagedRequest())
             .ToArrayAsync();
 
         var list = new List<SysAdminDto>();

@@ -75,7 +75,7 @@ public class StorageMetaService : PlatformApplicationService, IStorageMetaServic
 
         var data = await query
             .OrderByDescending(x => x.CreationTime)
-            .PageBy(dto.AsAbpPagedRequestDto())
+            .PageBy(dto.ToAbpPagedRequest())
             .ToArrayAsync();
 
         var items = data.Select(x => this.ObjectMapper.Map<StorageResourceMeta, StorageResourceMetaDto>(x)).ToArray();

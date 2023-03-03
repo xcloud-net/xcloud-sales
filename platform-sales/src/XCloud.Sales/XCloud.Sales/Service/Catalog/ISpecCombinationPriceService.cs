@@ -8,30 +8,18 @@ using XCloud.Sales.Data.Domain.Users;
 
 namespace XCloud.Sales.Service.Catalog;
 
-public interface IGoodsPriceService : ISalesAppService
+public interface ISpecCombinationPriceService : ISalesAppService
 {
-    Task<GoodsSpecCombinationDto[]> AttachGradePriceAsync(
-        GoodsSpecCombinationDto[] combinations, string gradeId);
-
-    Task<GoodsGradePriceDto[]> AttachDataAsync(GoodsGradePriceDto[] data,
-        GoodsGradePriceAttachDataInput dto);
-
-    Task DeleteGradePriceAsync(string gradePriceId);
-
-    Task SetGradePriceAsync(GoodsGradePriceDto dto);
-
-    Task SaveGradePriceAsync(int combinationId, GoodsGradePriceDto[] gradePrices);
-
     Task UpdateCombinationPriceAsync(UpdateGoodsPriceDto dto);
 
     Task UpdateCombinationCostPriceAsync(UpdateGoodsCostPriceDto dto);
 }
 
-public class GoodsPriceService : SalesAppService, IGoodsPriceService
+public class SpecCombinationPriceService : SalesAppService, ISpecCombinationPriceService
 {
     private readonly ISalesRepository<GoodsGradePrice> _gradePriceRepository;
 
-    public GoodsPriceService(ISalesRepository<GoodsGradePrice> gradePriceRepository)
+    public SpecCombinationPriceService(ISalesRepository<GoodsGradePrice> gradePriceRepository)
     {
         this._gradePriceRepository = gradePriceRepository;
     }

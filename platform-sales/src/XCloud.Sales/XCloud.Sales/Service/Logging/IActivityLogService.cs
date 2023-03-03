@@ -218,7 +218,7 @@ public class ActivityLogService : SalesAppService, IActivityLogService
         if (!dto.SkipCalculateTotalCount)
             count = await query.CountAsync();
 
-        var data = await query.OrderByDescending(x => x.log.CreationTime).PageBy(dto.AsAbpPagedRequestDto())
+        var data = await query.OrderByDescending(x => x.log.CreationTime).PageBy(dto.ToAbpPagedRequest())
             .ToArrayAsync();
 
         var adminIds = data.Select(x => x.log.AdministratorId).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct()

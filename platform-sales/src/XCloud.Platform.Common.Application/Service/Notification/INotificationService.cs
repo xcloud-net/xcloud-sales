@@ -112,7 +112,7 @@ public class NotificationService : PlatformApplicationService, INotificationServ
         if (!dto.SkipCalculateTotalCount)
             count = await query.CountAsync();
 
-        var data = await query.PageBy(dto.AsAbpPagedRequestDto())
+        var data = await query.PageBy(dto.ToAbpPagedRequest())
             .OrderByDescending(x => x.notice.CreationTime)
             .ToArrayAsync();
 

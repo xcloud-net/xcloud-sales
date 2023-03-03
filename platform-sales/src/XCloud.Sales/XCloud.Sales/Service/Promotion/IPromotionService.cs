@@ -242,7 +242,7 @@ public class PromotionService : SalesAppService, IPromotionService
             query = query.OrderBy(x => x.IsDeleted).ThenByDescending(x => x.CreationTime);
         }
 
-        var data = await query.PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
+        var data = await query.PageBy(dto.ToAbpPagedRequest()).ToArrayAsync();
 
         var response = data.Select(this.FromEntity).ToArray();
 

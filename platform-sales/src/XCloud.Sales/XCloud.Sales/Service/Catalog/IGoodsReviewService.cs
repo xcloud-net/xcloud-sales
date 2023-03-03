@@ -83,7 +83,7 @@ public class GoodsReviewService : SalesAppService, IGoodsReviewService
             total = await query.CountAsync();
             
         query = query.OrderByDescending(c => c.CreationTime);
-        var items = await query.PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
+        var items = await query.PageBy(dto.ToAbpPagedRequest()).ToArrayAsync();
 
         var reviews = new PagedResponse<GoodsReview>(items, dto, total);
 

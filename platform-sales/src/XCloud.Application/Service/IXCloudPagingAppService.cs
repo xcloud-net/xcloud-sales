@@ -106,7 +106,7 @@ public abstract class
 
         var orderedQuery = await this.GetPagingOrderedQueryableAsync(query, dto);
         
-        var datalist = await orderedQuery.PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
+        var datalist = await orderedQuery.PageBy(dto.ToAbpPagedRequest()).ToArrayAsync();
 
         var items = this.ObjectMapper.MapArray<TEntity, TEntityDto>(datalist);
 

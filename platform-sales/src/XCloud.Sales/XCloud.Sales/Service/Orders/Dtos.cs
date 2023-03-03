@@ -81,8 +81,6 @@ public class CompleteOrderInput : IEntityDto
 
 public class PlaceOrderRequestDto : IEntityDto
 {
-    public StoreUserDto UserHolder { get; set; }
-
     public string StoreId { get; set; }
 
     public int UserId { get; set; }

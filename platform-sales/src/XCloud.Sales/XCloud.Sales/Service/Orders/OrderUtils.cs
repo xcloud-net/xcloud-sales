@@ -10,7 +10,7 @@ public enum OrderProcessingAction : int
     Delivery,
     Close,
     Finish,
-    AfterSale
+    FinishWithAfterSale
 }
 
 [ExposeServices(typeof(OrderUtils))]
@@ -42,7 +42,7 @@ public class OrderUtils : ITransientDependency
         state.Configure(OrderStatus.Delivering)
             .Permit(OrderProcessingAction.Close, OrderStatus.Cancelled)
             .Permit(OrderProcessingAction.Finish, OrderStatus.Complete)
-            .Permit(OrderProcessingAction.AfterSale, OrderStatus.AfterSale);
+            .Permit(OrderProcessingAction.FinishWithAfterSale, OrderStatus.FinishWithAfterSale);
 
         //no further flows
         state.Configure(OrderStatus.Complete);
@@ -51,14 +51,14 @@ public class OrderUtils : ITransientDependency
         state.Configure(OrderStatus.Cancelled);
 
         //no further flows
-        state.Configure(OrderStatus.AfterSale);
+        state.Configure(OrderStatus.FinishWithAfterSale);
 
         return state;
     }
 
     public int[] DoneStatus()
     {
-        var status = new[] { OrderStatus.Cancelled, OrderStatus.Complete, OrderStatus.AfterSale };
+        var status = new[] { OrderStatus.Cancelled, OrderStatus.Complete, OrderStatus.FinishWithAfterSale };
         return status.Select(x => (int)x).ToArray();
     }
 

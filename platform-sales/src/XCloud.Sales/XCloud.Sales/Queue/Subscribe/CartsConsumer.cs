@@ -7,15 +7,15 @@ namespace XCloud.Sales.Queue.Subscribe;
 [UnitOfWork]
 public class CartsConsumer : SalesAppService, ICapSubscribe
 {
-    private readonly IShoppingCartService shoppingCartService;
+    private readonly IShoppingCartService _shoppingCartService;
     public CartsConsumer(IShoppingCartService shoppingCartService)
     {
-        this.shoppingCartService = shoppingCartService;
+        this._shoppingCartService = shoppingCartService;
     }
 
     [CapSubscribe(SalesMessageTopics.RemoveCartsAfterPlaceOrder)]
     public virtual async Task RemoveCartsAfterPlaceOrder(RemoveCartBySpecs dto)
     {
-        await this.shoppingCartService.DeleteByGoodsSpecCombinationIdsAsync(dto);
+        await this._shoppingCartService.DeleteByGoodsSpecCombinationIdsAsync(dto);
     }
 }

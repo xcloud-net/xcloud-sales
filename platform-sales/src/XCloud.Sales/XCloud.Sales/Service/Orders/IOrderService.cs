@@ -468,7 +468,7 @@ public class OrderService : SalesAppService, IOrderService
                 .ThenByDescending(x => x.CreationTime);
         }
 
-        var items = await query.PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
+        var items = await query.PageBy(dto.ToAbpPagedRequest()).ToArrayAsync();
 
         var orderDtos = items.Select(x => this.ObjectMapper.Map<Order, OrderDto>(x)).ToArray();
 

@@ -344,6 +344,8 @@ public class GoodsSpecCombinationDto : GoodsSpecCombination, IEntityDto
 {
     public StoreDto[] Stores { get; set; }
 
+    public StoreGoodsMappingDto[] StoreGoodsMapping { get; set; }
+
     public GoodsDto Goods { get; set; }
 
     public MallStorageMetaDto[] XPictures { get; set; }

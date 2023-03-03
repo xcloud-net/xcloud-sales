@@ -1,10 +1,11 @@
-﻿using Nest;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Nest;
+using XCloud.Elasticsearch.Core;
 
-namespace XCloud.Elasticsearch;
+namespace XCloud.Elasticsearch.Extension;
 
 public static class IndexExtension
 {
@@ -13,12 +14,12 @@ public static class IndexExtension
     /// https://www.elastic.co/guide/en/elasticsearch/client/net-api/current/writing-analyzers.html
     /// 创建自定义分词
     /// </summary>
-    public static CreateIndexDescriptor GetCreateIndexDescriptor<T>(this CreateIndexDescriptor create_index_descriptor,
+    public static CreateIndexDescriptor GetCreateIndexDescriptor<T>(this CreateIndexDescriptor createIndexDescriptor,
         int? shards = null, int? replicas = null, int deep = 5)
-        where T : class, IESIndex
+        where T : class, IEsIndex
     {
         //shards and replicas
-        var indexDescriptor = create_index_descriptor.Settings(s => s.NumberOfShards(shards).NumberOfReplicas(replicas));
+        var indexDescriptor = createIndexDescriptor.Settings(s => s.NumberOfShards(shards).NumberOfReplicas(replicas));
         //mapping option
         indexDescriptor = indexDescriptor.Map(x => x.AutoMap<T>(maxRecursion: deep));
 
@@ -47,10 +48,10 @@ public static class IndexExtension
     public static async Task CreateIndexIfNotExistsAsync_(this IElasticClient client, string indexName, Func<CreateIndexDescriptor, ICreateIndexRequest> selector = null)
     {
         indexName = indexName.ToLower();
-        var exist_response = await client.Indices.ExistsAsync(indexName);
-        exist_response.ThrowIfException();
+        var existResponse = await client.Indices.ExistsAsync(indexName);
+        existResponse.ThrowIfException();
 
-        if (exist_response.Exists)
+        if (existResponse.Exists)
             return;
 
         var response = await client.Indices.CreateAsync(indexName, selector);
@@ -66,10 +67,10 @@ public static class IndexExtension
     public static async Task DeleteIndexIfExistsAsync_(this IElasticClient client, string indexName)
     {
         indexName = indexName.ToLower();
-        var exist_response = await client.Indices.ExistsAsync(indexName);
-        exist_response.ThrowIfException();
+        var existResponse = await client.Indices.ExistsAsync(indexName);
+        existResponse.ThrowIfException();
 
-        if (!exist_response.Exists)
+        if (!existResponse.Exists)
             return;
 
         var response = await client.Indices.DeleteAsync(indexName);

@@ -120,7 +120,7 @@ public class PrepaidCardService : SalesAppService, IPrepaidCardService
 
         var items = await query
             .OrderBy(x => x.Used).ThenByDescending(x => x.CreationTime)
-            .PageBy(dto.AsAbpPagedRequestDto())
+            .PageBy(dto.ToAbpPagedRequest())
             .ToArrayAsync();
 
         var dtos = items.Select(x => this.ObjectMapper.Map<PrepaidCard, PrepaidCardDto>(x)).ToArray();

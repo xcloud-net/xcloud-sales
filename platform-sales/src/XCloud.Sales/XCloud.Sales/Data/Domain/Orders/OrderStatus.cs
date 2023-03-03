@@ -14,5 +14,5 @@ public enum OrderStatus : int
 
     Cancelled = 40,
 
-    AfterSale = 50,
+    FinishWithAfterSale = 50,
 }

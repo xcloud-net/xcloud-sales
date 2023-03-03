@@ -433,7 +433,7 @@ public class CouponService : SalesAppService, ICouponService
             query = query.OrderBy(x => x.IsDeleted).ThenByDescending(x => x.CreationTime);
         }
 
-        var data = await query.PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
+        var data = await query.PageBy(dto.ToAbpPagedRequest()).ToArrayAsync();
 
         var response = data.Select(x => this.ObjectMapper.Map<Coupon, CouponDto>(x)).ToArray();
 
@@ -461,7 +461,7 @@ public class CouponService : SalesAppService, ICouponService
 
         query = query.OrderBy(x => x.IsUsed).ThenByDescending(x => x.CreationTime);
 
-        var data = await query.PageBy(dto.AsAbpPagedRequestDto()).ToArrayAsync();
+        var data = await query.PageBy(dto.ToAbpPagedRequest()).ToArrayAsync();
 
         var response = data.Select(x => this.ObjectMapper.Map<CouponUserMapping, CouponUserMappingDto>(x)).ToArray();
 

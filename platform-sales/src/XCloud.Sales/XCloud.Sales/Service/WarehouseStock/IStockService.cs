@@ -249,7 +249,7 @@ public class StockService : SalesAppService, IStockService
         if (!dto.SkipCalculateTotalCount)
             count = await query.CountAsync();
 
-        var stocks = await query.OrderByDescending(x => x.CreationTime).PageBy(dto.AsAbpPagedRequestDto())
+        var stocks = await query.OrderByDescending(x => x.CreationTime).PageBy(dto.ToAbpPagedRequest())
             .ToArrayAsync();
 
         var stockDtos = stocks.Select(x => this.ObjectMapper.Map<Stock, StockDto>(x)).ToArray();
@@ -284,7 +284,7 @@ public class StockService : SalesAppService, IStockService
             return itemDto;
         }
 
-        var stocks = await query.OrderByDescending(x => x.stock.CreationTime).PageBy(dto.AsAbpPagedRequestDto())
+        var stocks = await query.OrderByDescending(x => x.stock.CreationTime).PageBy(dto.ToAbpPagedRequest())
             .ToArrayAsync();
 
         var stockItemDtos = stocks.Select(x => BuildResponse(x.item, x.stock)).ToArray();

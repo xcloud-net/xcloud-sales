@@ -1,11 +1,13 @@
-﻿using Elasticsearch.Net;
-using Nest;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Elasticsearch.Net;
+using Nest;
+using XCloud.Elasticsearch.Core;
+using XCloud.Elasticsearch.Extension;
 
-namespace XCloud.Elasticsearch;
+namespace XCloud.Elasticsearch.Test;
 
 static class ESTest
 {
@@ -34,7 +36,7 @@ static class ESTest
 
     static void GetCreateIndexDescriptor<T>(CreateIndexDescriptor create_index_descriptor,
         int? shards = null, int? replicas = null, int deep = 5)
-        where T : class, IESIndex
+        where T : class, IEsIndex
     {
         //shards and replicas
         var indexDescriptor = create_index_descriptor.Settings(s => s.NumberOfShards(shards).NumberOfReplicas(replicas));
@@ -89,7 +91,7 @@ static class ESTest
             .Scroll(new Time(TimeSpan.FromSeconds(4)))
         );
         res.ThrowIfException();
-        if (string.IsNullOrWhiteSpace(res.ScrollId)) { throw new Exception("未能拿到游标地址"); }
+        if (string.IsNullOrWhiteSpace(res.ScrollId)) { throw new System.Exception("未能拿到游标地址"); }
 
         while (true)
         {
@@ -237,7 +239,7 @@ static class ESTest
         //etc
     }
 
-    static void HowToSortWithScripts<T>(SortDescriptor<T> sort) where T : class, IESIndex
+    static void HowToSortWithScripts<T>(SortDescriptor<T> sort) where T : class, IEsIndex
     {
         var sd = new ScriptSortDescriptor<T>();
 
@@ -432,7 +434,7 @@ static class ESTest
         string index,
         Expression<Func<T, object>> targetField, string text, string analyzer = null,
         string highlight_pre = "<em>", string hightlight_post = "</em>", int size = 20)
-        where T : class, IESIndex
+        where T : class, IEsIndex
     {
         var sd = new TermSuggesterDescriptor<T>();
         sd = sd.Field(targetField).Text(text);
@@ -503,7 +505,7 @@ static class ESTest
 }
 
 [ElasticsearchType(IdProperty = "UKey", RelationName = "ProductList")]
-class EsIndexExample : IESIndex
+class EsIndexExample : IEsIndex
 {
     [Text(Name = "UKey", Index = false)]
     public string UKey { get; set; }

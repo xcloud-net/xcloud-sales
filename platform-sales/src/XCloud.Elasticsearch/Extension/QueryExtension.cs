@@ -1,18 +1,19 @@
-﻿using FluentAssertions;
-using Nest;
-using System;
+﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using FluentAssertions;
+using Nest;
 using XCloud.Core.Helper;
+using XCloud.Elasticsearch.Core;
 
-namespace XCloud.Elasticsearch;
+namespace XCloud.Elasticsearch.Extension;
 
 public static class QueryExtension
 {
     /// <summary>
     /// 判断文件是否存在
     /// </summary>
-    public static async Task<bool> DocExistAsync_<T>(this IElasticClient client, string indexName, string uid) where T : class, IESIndex
+    public static async Task<bool> DocExistAsync_<T>(this IElasticClient client, string indexName, string uid) where T : class, IEsIndex
     {
         var response = await client.DocumentExistsAsync(client.ID<T>(indexName, uid));
         return response.ThrowIfException().Exists;
@@ -22,7 +23,7 @@ public static class QueryExtension
     /// 分页
     /// </summary>
     public static SearchDescriptor<T> QueryPage_<T>(this SearchDescriptor<T> sd, int page, int pagesize)
-        where T : class, IESIndex
+        where T : class, IEsIndex
     {
         var skip = PageHelper.GetPagedSkip(page, pagesize);
         return sd.Skip(skip).Take(page);
@@ -33,7 +34,7 @@ public static class QueryExtension
     /// </summary>
     public static SearchDescriptor<T> AddHighlightWrapper<T>(this SearchDescriptor<T> sd,
         string preHtmlTag, string postHtmlTag, Func<HighlightFieldDescriptor<T>, IHighlightField>[] fieldHighlighters)
-        where T : class, IESIndex
+        where T : class, IEsIndex
     {
         fieldHighlighters.Should().NotBeNullOrEmpty();
 
@@ -55,7 +56,7 @@ public static class QueryExtension
     /// 根据距离排序
     /// </summary>
     public static SortDescriptor<T> SortByDistance<T>(this SortDescriptor<T> sort, Expression<Func<T, object>> field, GeoLocation point,
-        bool desc = false) where T : class, IESIndex
+        bool desc = false) where T : class, IEsIndex
     {
         GeoDistanceSortDescriptor<T> BuildSort(GeoDistanceSortDescriptor<T> s)
         {

@@ -17,18 +17,18 @@ public class FavoritesController : ShopBaseController
 {
     private readonly IFavoritesService _favoritesService;
     private readonly IGoodsService _goodsService;
-    private readonly IGoodsSpecCombinationService _goodsSpecCombinationService;
+    private readonly ISpecCombinationService _specCombinationService;
 
     /// <summary>
     /// 构造器
     /// </summary>
     public FavoritesController(IFavoritesService favoritesService,
         IGoodsService goodsService,
-        IGoodsSpecCombinationService goodsSpecCombinationService)
+        ISpecCombinationService specCombinationService)
     {
         this._favoritesService = favoritesService;
         this._goodsService = goodsService;
-        this._goodsSpecCombinationService = goodsSpecCombinationService;
+        this._specCombinationService = specCombinationService;
     }
 
     [HttpPost("pagingv1")]

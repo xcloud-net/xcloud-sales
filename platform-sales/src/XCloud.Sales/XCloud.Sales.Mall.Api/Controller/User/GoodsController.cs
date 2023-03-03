@@ -18,13 +18,14 @@ namespace XCloud.Sales.Mall.Api.Controller.User;
 public class GoodsController : ShopBaseController
 {
     private readonly IGoodsService _goodsService;
-    private readonly IGoodsPriceService _goodsPriceService;
+    private readonly ISpecCombinationPriceService _specCombinationPriceService;
     private readonly IUserGradeService _userGradeService;
     private readonly IGoodsReportService _goodsReportService;
     private readonly IGoodsViewService _goodsViewService;
     private readonly IFavoritesService _favoritesService;
     private readonly ICombinationViewService _combinationViewService;
-    private readonly IGoodsSpecCombinationService _goodsSpecCombinationService;
+    private readonly ISpecCombinationService _specCombinationService;
+    private readonly IGradeGoodsPriceService _gradeGoodsPriceService;
 
     /// <summary>
     /// 构造器
@@ -34,19 +35,20 @@ public class GoodsController : ShopBaseController
         IGoodsViewService goodsViewService,
         IGoodsReportService goodsReportService,
         IGoodsService goodsService,
-        IGoodsPriceService goodsPriceService,
+        ISpecCombinationPriceService specCombinationPriceService,
         IUserGradeService userGradeService,
         ICombinationViewService combinationViewService,
-        IGoodsSpecCombinationService goodsSpecCombinationService)
+        ISpecCombinationService specCombinationService, IGradeGoodsPriceService gradeGoodsPriceService)
     {
         this._favoritesService = favoritesService;
         this._goodsViewService = goodsViewService;
         this._goodsReportService = goodsReportService;
         this._goodsService = goodsService;
-        this._goodsPriceService = goodsPriceService;
+        this._specCombinationPriceService = specCombinationPriceService;
         this._userGradeService = userGradeService;
         _combinationViewService = combinationViewService;
-        _goodsSpecCombinationService = goodsSpecCombinationService;
+        _specCombinationService = specCombinationService;
+        _gradeGoodsPriceService = gradeGoodsPriceService;
     }
 
     [HttpPost("combination-price-history")]
@@ -114,7 +116,7 @@ public class GoodsController : ShopBaseController
     {
         var matchedCombinations = await this._combinationViewService.QueryAvailableCombinationsAsync(dto);
 
-        await this._goodsSpecCombinationService.AttachDataAsync(matchedCombinations,
+        await this._specCombinationService.AttachDataAsync(matchedCombinations,
             new GoodsCombinationAttachDataInput()
             {
                 DeserializeSpecCombinationJson = true,
@@ -129,7 +131,7 @@ public class GoodsController : ShopBaseController
             if (grade != null)
             {
                 matchedCombinations = (
-                    await this._goodsPriceService.AttachGradePriceAsync(
+                    await this._gradeGoodsPriceService.AttachGradePriceAsync(
                         matchedCombinations.ToArray(),
                         grade.Id)
                 ).ToArray();
@@ -172,7 +174,7 @@ public class GoodsController : ShopBaseController
             if (grade != null)
             {
                 var combinations = data.SelectMany(x => x.GoodsSpecCombinations).ToArray();
-                await this._goodsPriceService.AttachGradePriceAsync(combinations, grade.Id);
+                await this._gradeGoodsPriceService.AttachGradePriceAsync(combinations, grade.Id);
             }
         }
 
