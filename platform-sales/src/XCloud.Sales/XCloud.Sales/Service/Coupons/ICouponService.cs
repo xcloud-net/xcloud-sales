@@ -12,7 +12,7 @@ namespace XCloud.Sales.Service.Coupons;
 public interface ICouponService : ISalesAppService
 {
     Task<int> ActiveCouponCountAsync();
-    
+
     Task CreateUserCouponAsync(CouponUserMappingDto dto);
 
     Task<CouponDto[]> CheckCanIssueAsync(CouponDto[] data, int userId);
@@ -168,14 +168,18 @@ public class CouponService : SalesAppService, ICouponService
 
     public async Task<CouponUserMappingDto> GetUserCouponByIdAsync(int userCouponId)
     {
+        if (userCouponId <= 0)
+            throw new ArgumentNullException(nameof(userCouponId));
+
         var db = await this._couponRepository.GetDbContextAsync();
 
-        var userCoupon =
+        var entity =
             await db.Set<CouponUserMapping>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == userCouponId);
-        if (userCoupon == null)
+
+        if (entity == null)
             throw new EntityNotFoundException(nameof(GetUserCouponByIdAsync));
 
-        return this.ObjectMapper.Map<CouponUserMapping, CouponUserMappingDto>(userCoupon);
+        return this.ObjectMapper.Map<CouponUserMapping, CouponUserMappingDto>(entity);
     }
 
     public async Task UseUserCouponAsync(int userCouponId)

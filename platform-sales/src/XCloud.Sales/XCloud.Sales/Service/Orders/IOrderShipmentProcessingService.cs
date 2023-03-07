@@ -41,7 +41,7 @@ public class OrderShipmentProcessingService : SalesAppService, IOrderShipmentPro
     {
         var order = await db.Set<Order>().FirstOrDefaultAsync(x => x.Id == orderId);
 
-        await this._orderUtils.EnsureOrderCanBeTakeActionAsync(order);
+        await this._orderUtils.EnsureOrderProcessableAsync(order);
 
         return order;
     }

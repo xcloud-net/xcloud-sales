@@ -19,7 +19,7 @@ public enum PaymentStatus : int
 
     Paid = 3,
 
-    //PartiallyRefunded = 4,
+    PartiallyRefunded = 4,
 
-    //Refunded = 5,
+    Refunded = 5,
 }

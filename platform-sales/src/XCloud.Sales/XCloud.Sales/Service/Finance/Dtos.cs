@@ -10,19 +10,11 @@ public class OrderBillDto : OrderBill, IEntityDto
 {
     public OrderDto Order { get; set; }
 
-    public OrderRefundBillDto OrderRefundBill { get; set; }
-
     public PaymentMethod BillPaymentMethod
     {
         get => (PaymentMethod)this.PaymentMethod;
         set { this.PaymentMethod = (int)value; }
     }
-}
-
-public class OrderRefundBillDto : OrderRefundBill, IEntityDto
-{
-    public OrderDto Order { get; set; }
-    public OrderBillDto OrderBill { get; set; }
 }
 
 public class AttachOrderBillDataInput : IEntityDto

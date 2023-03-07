@@ -20,7 +20,9 @@ public class OrderBill : SalesBaseEntity<string>, ISoftDelete, IHasCreationTime
     public bool Paid { get; set; } = false;
     public DateTime? PayTime { get; set; }
     public string PaymentTransactionId { get; set; }
+
     public string NotifyData { get; set; }
+
     //refund
     public bool? Refunded { get; set; }
     public DateTime? RefundTime { get; set; }

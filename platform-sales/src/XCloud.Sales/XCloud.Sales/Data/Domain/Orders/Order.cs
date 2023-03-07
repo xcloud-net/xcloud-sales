@@ -33,6 +33,9 @@ public class Order : SalesBaseEntity<string>, ISoftDelete, IHasModificationTime
     public decimal OrderSubtotal { get; set; }
     public decimal OrderShippingFee { get; set; }
 
+    /// <summary>
+    /// user coupon id actually
+    /// </summary>
     public int? CouponId { get; set; }
     public decimal CouponDiscount { get; set; }
 
@@ -41,6 +44,7 @@ public class Order : SalesBaseEntity<string>, ISoftDelete, IHasModificationTime
 
     public decimal ExchangePointsAmount { get; set; }
     public decimal RefundedAmount { get; set; }
+    
     [Obsolete]
     public int? RewardPointsHistoryId { get; set; }
 
