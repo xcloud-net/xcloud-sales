@@ -78,6 +78,7 @@ public class AutoMapperConfiguration : Profile
 
         this.CreateMap<OrderNote, OrderNoteDto>().ReverseMap();
         this.CreateMap<OrderBill, OrderBillDto>().ReverseMap();
+        this.CreateMap<OrderRefundBill, OrderRefundBillDto>().ReverseMap();
 
         this.CreateMap<Shipment, ShipmentDto>().ReverseMap();
         this.CreateMap<ShipmentOrderItem, ShipmentOrderItemDto>().ReverseMap();

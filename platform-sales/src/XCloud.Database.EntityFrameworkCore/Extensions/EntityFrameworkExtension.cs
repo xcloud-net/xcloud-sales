@@ -22,7 +22,7 @@ public static class EntityFrameworkExtension
 {
     public static async Task UpdateDataCollectionAsync<T, TKey>(this DbContext db,
         T[] data, Func<T, TKey> keySelector, Expression<Func<T, bool>> where,
-        Func<T, Task<T>> entityInitionFunc = null)
+        Func<T, Task<T>> entityInitFunc = null)
         where T : class
     {
         var set = db.Set<T>();
@@ -39,7 +39,7 @@ public static class EntityFrameworkExtension
         var addedEntities = data.NotInBy(dataOrigin, keySelector).ToArray();
         if (addedEntities.Any())
         {
-            var initionFunc = entityInitionFunc ?? (x => Task.FromResult(x));
+            var initionFunc = entityInitFunc ?? (x => Task.FromResult(x));
 
             addedEntities = await Task.WhenAll(addedEntities.Select(x => initionFunc.Invoke(x)));
 

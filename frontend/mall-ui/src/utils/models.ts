@@ -717,3 +717,16 @@ export interface AfterSalesCommentDto {
   AfterSales?: AfterSaleDto;
   Pictures?: MallStorageMetaDto[];
 }
+
+export interface ShoppingCartItemDto {
+  Id?: number;
+  UserId?: number;
+  GoodsId?: number;
+  GoodsSpecCombinationId?: number;
+  Quantity?: number;
+  CreationTime?: string;
+  LastModificationTime?: string;
+  Goods?: GoodsDto;
+  GoodsSpecCombination?: GoodsCombinationDto;
+  Waring?: string[];
+}

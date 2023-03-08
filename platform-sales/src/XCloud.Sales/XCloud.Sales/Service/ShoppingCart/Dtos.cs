@@ -35,11 +35,6 @@ public class UpdateCartModel : IEntityDto
 
 public class ShoppingCartItemDto : ShoppingCartItem, IEntityDto
 {
-    public string GradeName => this.GoodsSpecCombination?.GradeName;
-
-    [Obsolete]
-    public decimal? GradePriceOffset => this.GoodsSpecCombination?.Price;
-
     public GoodsDto Goods { get; set; }
 
     public GoodsSpecCombinationDto GoodsSpecCombination { get; set; }

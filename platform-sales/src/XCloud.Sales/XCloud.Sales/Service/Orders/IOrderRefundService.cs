@@ -14,6 +14,8 @@ namespace XCloud.Sales.Service.Orders
         Task<OrderCanBeRefundResponse> OrderCanBeRefundAsync(string orderId);
 
         Task RefundUserBalancePaidBillAsync(string billId);
+
+        Task RefundToWechatAsync(string billId);
     }
 
     public class OrderRefundService : SalesAppService, IOrderRefundService
@@ -23,15 +25,17 @@ namespace XCloud.Sales.Service.Orders
         private readonly IOrderBillService _orderBillService;
         private readonly IOrderService _orderService;
         private readonly OrderUtils _orderUtils;
+        private readonly IOrderRefundBillService _orderRefundBillService;
 
         public OrderRefundService(IOrderService orderService, ICouponService couponService,
             IOrderBillService orderBillService, IUserBalanceService userBalanceService,
-            OrderUtils orderUtils)
+            OrderUtils orderUtils, IOrderRefundBillService orderRefundBillService)
         {
             this._orderService = orderService;
             this._orderBillService = orderBillService;
             this._userBalanceService = userBalanceService;
             _orderUtils = orderUtils;
+            _orderRefundBillService = orderRefundBillService;
             this._couponService = couponService;
         }
 
@@ -71,8 +75,16 @@ namespace XCloud.Sales.Service.Orders
             await this._couponService.ReturnBackUserCouponAsync(coupon.Id);
         }
 
+        public async Task RefundToWechatAsync(string billId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task RefundUserBalancePaidBillAsync(string billId)
         {
+            if (string.IsNullOrWhiteSpace(billId))
+                throw new ArgumentNullException(nameof(billId));
+            
             var bill = await this._orderBillService.QueryByIdAsync(billId);
 
             if (bill == null)

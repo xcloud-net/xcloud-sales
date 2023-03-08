@@ -23,10 +23,13 @@ public class OrderBill : SalesBaseEntity<string>, ISoftDelete, IHasCreationTime
 
     public string NotifyData { get; set; }
 
-    //refund
+    [Obsolete]
     public bool? Refunded { get; set; }
+    [Obsolete]
     public DateTime? RefundTime { get; set; }
+    [Obsolete]
     public string RefundTransactionId { get; set; }
+    [Obsolete]
     public string RefundNotifyData { get; set; }
 
     public bool IsDeleted { get; set; }
