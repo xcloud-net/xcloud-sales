@@ -15,5 +15,6 @@ public class PlatformSharedModule : AbpModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.ConfigPlatformLocalization();
+        context.ConfigPlatformSharedOptions();
     }
 }

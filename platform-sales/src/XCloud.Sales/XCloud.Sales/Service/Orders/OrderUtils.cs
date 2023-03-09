@@ -104,7 +104,7 @@ public class OrderUtils : ITransientDependency
         return status.Select(x => (int)x).ToArray();
     }
 
-    public bool IsInAfterSalePending(Order order)
+    public bool IsAfterSalePending(Order order)
     {
         return order.IsAftersales;
     }
@@ -117,13 +117,15 @@ public class OrderUtils : ITransientDependency
         if (order.IsDeleted)
             throw new UserFriendlyException("order is deleted");
 
-        if (IsInAfterSalePending(order))
+        if (IsAfterSalePending(order))
             throw new UserFriendlyException("order is in after sale");
 
         await Task.CompletedTask;
     }
 
-    public bool IsMoneyEqual(decimal price1, decimal price2) => (int)(price1 * 100) == (int)(price2 * 100);
+    public int CastMoneyToCent(decimal price) => (int)(price * 100);
+
+    public bool IsMoneyEqual(decimal price1, decimal price2) => CastMoneyToCent(price1) == CastMoneyToCent(price2);
 
     public bool IsOrderRefundable(Order order)
     {
@@ -136,7 +138,7 @@ public class OrderUtils : ITransientDependency
 
         return status.Contains(order.GetOrderStatus());
     }
-    
+
     public async Task CalculateOrderFinalPriceAsync(Order order, OrderItem[] orderItems)
     {
         //todo put into order utils

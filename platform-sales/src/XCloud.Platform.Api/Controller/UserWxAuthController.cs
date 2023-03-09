@@ -71,7 +71,7 @@ public class UserWxAuthController : PlatformBaseController, IUserController
         var config = this._configuration.GetWxMpConfig();
 
         var entity = await this._externalConnectService.FindByOpenIdAsync(
-            ThirdPartyPlatforms.WxMp, config.AppID, wxToken.OpenId);
+            ThirdPartyPlatforms.WxMp, config.AppId, wxToken.OpenId);
 
         if (entity == null)
         {
@@ -83,7 +83,7 @@ public class UserWxAuthController : PlatformBaseController, IUserController
             entity = new SysExternalConnect
             {
                 Platform = ThirdPartyPlatforms.WxMp,
-                AppId = config.AppID,
+                AppId = config.AppId,
                 UserId = createUserResponse.Data.Id,
                 OpenId = wxToken.OpenId
             };

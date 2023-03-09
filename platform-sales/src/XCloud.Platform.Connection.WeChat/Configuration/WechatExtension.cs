@@ -1,13 +1,29 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp.Modularity;
 using XCloud.Core;
 
 namespace XCloud.Platform.Connection.WeChat.Configuration;
 
 public static class WechatExtension
 {
-    public static IConfigurationSection GetWxSection(this IConfiguration configuration)
+    public static void ConfigWechat(this ServiceConfigurationContext context)
     {
-        var section = configuration.GetSection("Wx"); ;
+        var configuration = context.Services.GetConfiguration();
+
+        var wx = configuration.GetWxSection();
+
+        if (!wx.Exists())
+            throw new ConfigException("wx config is required");
+
+        context.Services.Configure<WechatMpOption>(wx.GetSection("Mp"));
+        context.Services.Configure<WechatOpenOption>(wx.GetSection("Open"));
+    }
+
+    private static IConfigurationSection GetWxSection(this IConfiguration configuration)
+    {
+        var section = configuration.GetSection("Wechat"); ;
 
         if (!section.Exists())
         {
@@ -17,9 +33,10 @@ public static class WechatExtension
         return section;
     }
 
-    public static WxMpConfig GetWxMpConfig(this IConfiguration configuration)
+    [Obsolete]
+    public static WechatMpOption GetWxMpConfig(this IConfiguration configuration)
     {
-        var config = new WxMpConfig();
+        var config = new WechatMpOption();
 
         var section = GetWxSection(configuration).GetSection("MP");
 

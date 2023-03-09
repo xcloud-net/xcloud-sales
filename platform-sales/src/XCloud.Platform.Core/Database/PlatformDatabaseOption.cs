@@ -1,8 +1,9 @@
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.DependencyInjection;
 
 namespace XCloud.Platform.Core.Database;
 
-public class PlatformDatabaseOption : ISingletonDependency
+public class PlatformDatabaseOption : IEntityDto, ISingletonDependency
 {
     public PlatformDatabaseOption()
     {
