@@ -4,6 +4,7 @@ using SKIT.FlurlHttpClient.Wechat.TenpayV3.Models;
 using XCloud.Core;
 using XCloud.Core.Helper;
 using XCloud.Platform.Connection.WeChat;
+using XCloud.Platform.Connection.WeChat.Settings;
 using XCloud.Platform.Shared.Settings;
 using XCloud.Sales.Application;
 using XCloud.Sales.Data.Domain.Finance;

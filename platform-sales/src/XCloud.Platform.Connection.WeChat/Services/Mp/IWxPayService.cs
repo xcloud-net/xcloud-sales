@@ -6,9 +6,9 @@ using SKIT.FlurlHttpClient.Wechat.TenpayV3;
 using SKIT.FlurlHttpClient.Wechat.TenpayV3.Models;
 using SKIT.FlurlHttpClient.Wechat.TenpayV3.Settings;
 using Volo.Abp.Application.Services;
-using XCloud.Platform.Connection.WeChat.Configuration;
+using XCloud.Platform.Connection.WeChat.Exceptions;
 
-namespace XCloud.Platform.Connection.WeChat.Services;
+namespace XCloud.Platform.Connection.WeChat.Services.Mp;
 
 public interface IWxPayService : IApplicationService
 {
@@ -28,8 +28,6 @@ public class WxPayService : ApplicationService, IWxPayService
 
     public async Task<CreatePayTransactionJsapiResponse> CreateJsPayAsync()
     {
-        var config = _configuration.GetWxMpConfig();
-
         var wechatOption = new WechatTenpayClientOptions()
         {
             //
@@ -57,8 +55,6 @@ public class WxPayService : ApplicationService, IWxPayService
 
     public async Task RefundAsync()
     {
-        var config = _configuration.GetWxMpConfig();
-
         var wechatOption = new WechatTenpayClientOptions()
         {
             MerchantId = default,

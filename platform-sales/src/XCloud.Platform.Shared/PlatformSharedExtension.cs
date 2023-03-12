@@ -1,10 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-using System.Threading.Tasks;
-
-using Volo.Abp.Http.Client;
-using XCloud.Core;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using XCloud.Platform.Shared.Dto;
 
 namespace XCloud.Platform.Shared;
@@ -43,15 +37,5 @@ public static class PlatformSharedExtension
         builder.HasIndex(x => x.IdentityName).IsUnique();
 
         return builder;
-    }
-
-    public static async Task<string> ResolveGatewayBaseAddressAsync(this IRemoteServiceConfigurationProvider remoteServiceConfigurationProvider)
-    {
-        var config = await remoteServiceConfigurationProvider.GetConfigurationOrDefaultAsync("Gateway");
-
-        if (config == null)
-            throw new ConfigException(nameof(ResolveGatewayBaseAddressAsync));
-        
-        return config.BaseUrl;
     }
 }

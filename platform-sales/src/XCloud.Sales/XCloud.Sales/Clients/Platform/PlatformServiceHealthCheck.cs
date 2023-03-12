@@ -24,7 +24,7 @@ public class PlatformServiceHealthCheck : IHealthCheck, ITransientDependency
         try
         {
             var clock = s.ServiceProvider.GetRequiredService<IClock>();
-            var client = s.ServiceProvider.GetRequiredService<IPlatformClient>();
+            var client = s.ServiceProvider.GetRequiredService<IPlatformClientFactory>();
             var httpClient = await client.CreateClientAsync();
 
             using var res = await httpClient.GetAsync($"/notfound-url-{clock.Now.Ticks}",

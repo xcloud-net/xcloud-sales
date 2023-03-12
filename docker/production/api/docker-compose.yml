@@ -28,13 +28,17 @@ x-env:
   app:mysql:password: 1q2w3e4r5t+
   app:redis:host: redis-5
   app:config:audit: 'false'
-  RemoteServices:Gateway:BaseUrl: http://api-gateway:8888
   #skywalking settings
   app:config:apm: 'false'
   ASPNETCORE_HOSTINGSTARTUPASSEMBLIES: SkyAPM.Agent.AspNetCore
   SkyWalking:Logging:FilePath: 'logs/skyapm/skyapm-{Date}.log'
   SkyWalking:Transport:gRPC:Servers: skywalking-oap:11800
   SkyWalking:Sampling:SamplePer3Secs: 30
+  # address
+  PlatformServiceAddress:InternalGateway: http://api-gateway:8888
+  PlatformServiceAddress:PublicGateway: https://your-domain.com:8888
+  PlatformServiceAddress:FrontEnd: https://your-domain.com/store/manage
+  SalesServiceAddress:FrontEnd: https://your-domain.com/store
 
 #default java env
 x-java-env:
@@ -72,7 +76,7 @@ services:
     volumes:
       - /var/logs/platform-api/:/app/logs/
       # file storage path
-      - ./static_files/:/app/static_files/
+      - ./upload/:/app/upload/
   # mall
   mall-api:
     <<: *x-deft

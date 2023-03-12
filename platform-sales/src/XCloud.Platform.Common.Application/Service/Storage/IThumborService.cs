@@ -2,11 +2,11 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
-using Volo.Abp.Http.Client;
 using XCloud.Core.Application;
 using XCloud.Platform.Core.Application;
-using XCloud.Platform.Shared;
+using XCloud.Platform.Shared.Settings;
 
 namespace XCloud.Platform.Common.Application.Service.Storage;
 
@@ -46,13 +46,12 @@ public interface IThumborService : IXCloudApplicationService
 public class ThumborService : PlatformApplicationService, IThumborService, IScopedDependency
 {
     private readonly HttpClient _httpClient;
-    private readonly IRemoteServiceConfigurationProvider _remoteServiceConfigurationProvider;
+    private readonly IOptions<PlatformServiceAddressOption> _platformServiceAddressOption;
 
-    public ThumborService(IHttpClientFactory httpClientFactory,
-        IRemoteServiceConfigurationProvider remoteServiceConfigurationProvider)
+    public ThumborService(IHttpClientFactory httpClientFactory, IOptions<PlatformServiceAddressOption> platformServiceAddressOption)
     {
         this._httpClient = httpClientFactory.CreateClient(nameof(ThumborService));
-        this._remoteServiceConfigurationProvider = remoteServiceConfigurationProvider;
+        _platformServiceAddressOption = platformServiceAddressOption;
     }
 
     /// <summary>
@@ -78,7 +77,7 @@ public class ThumborService : PlatformApplicationService, IThumborService, IScop
 
     public async Task<Stream> GetResizedStreamOrNullAsync(string url, int height, int width)
     {
-        var gateway = await this._remoteServiceConfigurationProvider.ResolveGatewayBaseAddressAsync();
+        var gateway = this._platformServiceAddressOption.Value.InternalGateway;
         url = HttpUtility.UrlEncode(url);
 
         //http://localhost:7070/unsafe/900x200/https://t7.baidu.com/it/u=2621658848,3952322712&fm=193&f=GIF
@@ -103,7 +102,7 @@ public class ThumborService : PlatformApplicationService, IThumborService, IScop
     
     public async Task<bool> ResizeAndWriteToStreamAsync(string url, int height, int width,Stream outputStream)
     {
-        var gateway = await this._remoteServiceConfigurationProvider.ResolveGatewayBaseAddressAsync();
+        var gateway = this._platformServiceAddressOption.Value.InternalGateway;
         url = HttpUtility.UrlEncode(url);
 
         //http://localhost:7070/unsafe/900x200/https://t7.baidu.com/it/u=2621658848,3952322712&fm=193&f=GIF

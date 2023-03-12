@@ -16,6 +16,7 @@ using XCloud.Platform.Auth.IdentityServer;
 using XCloud.Platform.Common.Application.Service.Token;
 using XCloud.Platform.Connection.WeChat.Configuration;
 using XCloud.Platform.Connection.WeChat.Services;
+using XCloud.Platform.Connection.WeChat.Services.Mp;
 using XCloud.Platform.Core.Domain.User;
 using XCloud.Platform.Framework.Controller;
 using XCloud.Platform.Member.Application.Service.User;

@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
 using Volo.Abp.Application.Dtos;
 
-namespace XCloud.Platform.Connection.WeChat;
+namespace XCloud.Platform.Connection.WeChat.Settings;
 
 public abstract class WechatOptionBase
 {

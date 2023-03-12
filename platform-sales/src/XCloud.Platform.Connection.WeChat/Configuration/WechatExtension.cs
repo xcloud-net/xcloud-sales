@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Modularity;
 using XCloud.Core;
+using XCloud.Platform.Connection.WeChat.Settings;
 
 namespace XCloud.Platform.Connection.WeChat.Configuration;
 
@@ -38,7 +39,7 @@ public static class WechatExtension
     {
         var config = new WechatMpOption();
 
-        var section = GetWxSection(configuration).GetSection("MP");
+        var section = GetWxSection(configuration).GetSection("Mp");
 
         if (!section.Exists())
         {

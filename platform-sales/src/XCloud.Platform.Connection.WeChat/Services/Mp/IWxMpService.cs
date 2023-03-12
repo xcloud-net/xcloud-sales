@@ -9,11 +9,13 @@ using XCloud.Core.Application;
 using XCloud.Platform.Common.Application.Extension;
 using XCloud.Platform.Common.Application.Service.Storage;
 using XCloud.Platform.Connection.WeChat.Configuration;
+using XCloud.Platform.Connection.WeChat.Exceptions;
+using XCloud.Platform.Connection.WeChat.Settings;
 using XCloud.Platform.Member.Application.Service.User;
 using XCloud.Redis;
 using XCloud.Redis.DistributedLock;
 
-namespace XCloud.Platform.Connection.WeChat.Services;
+namespace XCloud.Platform.Connection.WeChat.Services.Mp;
 
 public interface IWxMpService : IApplicationService
 {

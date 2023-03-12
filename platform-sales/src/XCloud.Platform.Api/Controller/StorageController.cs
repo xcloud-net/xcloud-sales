@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Volo.Abp.Http.Client;
+using Microsoft.Extensions.Options;
 using XCloud.Application.Images;
 using XCloud.Application.Storage;
 using XCloud.Core.Dto;
@@ -15,6 +15,7 @@ using XCloud.Platform.Common.Application.Service.Storage;
 using XCloud.Platform.Framework.Controller;
 using XCloud.Platform.Shared;
 using XCloud.Platform.Shared.Dto;
+using XCloud.Platform.Shared.Settings;
 using XCloud.Platform.Shared.Storage;
 
 namespace XCloud.Platform.Api.Controller;
@@ -22,7 +23,7 @@ namespace XCloud.Platform.Api.Controller;
 [Route("/api/platform/storage")]
 public class StorageController : PlatformBaseController, IUserController
 {
-    private readonly IRemoteServiceConfigurationProvider _remoteServiceConfigurationProvider;
+    private readonly IOptions<PlatformServiceAddressOption> _platformServiceAddressOption;
     private readonly IStorageService _fileUploadService;
     private readonly IStorageMetaService _storageMetaService;
     private readonly IImageProcessingService _imageProcessingService;
@@ -35,15 +36,14 @@ public class StorageController : PlatformBaseController, IUserController
         IStorageUrlResolver storageUrlResolver,
         IImageProcessingService imageProcessingService,
         IThumborService thumborService,
-        IRemoteServiceConfigurationProvider remoteServiceConfigurationProvider,
-        StorageHelper storageHelper)
+        StorageHelper storageHelper, IOptions<PlatformServiceAddressOption> platformServiceAddressOption)
     {
-        this._remoteServiceConfigurationProvider = remoteServiceConfigurationProvider;
         this._storageUrlResolver = storageUrlResolver;
         this._storageMetaService = storageMetaService;
         this._imageProcessingService = imageProcessingService;
         this._thumborService = thumborService;
         this._storageHelper = storageHelper;
+        _platformServiceAddressOption = platformServiceAddressOption;
 
         this._fileUploadService = fileUploadService;
     }
@@ -115,7 +115,7 @@ public class StorageController : PlatformBaseController, IUserController
         var thumborEnabled = this.Configuration.IsThumborEnabled();
         if (thumborEnabled)
         {
-            var gatewayAddress = await this._remoteServiceConfigurationProvider.ResolveGatewayBaseAddressAsync();
+            var gatewayAddress = this._platformServiceAddressOption.Value.InternalGateway;
 
             var thumborInputUrl = Com.ConcatUrl(gatewayAddress, "/api/platform/storage/file/origin/", key);
 
@@ -181,9 +181,9 @@ public class StorageController : PlatformBaseController, IUserController
             w ??= 0;
             if ((h > 0 || w > 0) && this._storageHelper.IsImage(key))
             {
-                var gatewayAddress = await this._remoteServiceConfigurationProvider.ResolveGatewayBaseAddressAsync();
+                var gatewayAddress = this._platformServiceAddressOption.Value.InternalGateway;
 
-                var thumborInputUrl = Com.ConcatUrl(gatewayAddress, "/api/platform/qcloud-fs/file/origin/", key);
+                var thumborInputUrl = Com.ConcatUrl(gatewayAddress, "/api/platform/storage/file/origin/", key);
 
                 using var outputStream = this.Response.BodyWriter.AsStream();
                 if (await this._thumborService.ResizeAndWriteToStreamAsync(

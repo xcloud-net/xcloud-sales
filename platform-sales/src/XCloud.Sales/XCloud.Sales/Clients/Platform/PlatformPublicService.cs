@@ -9,15 +9,15 @@ namespace XCloud.Sales.Clients.Platform;
 [ExposeServices(typeof(PlatformPublicService))]
 public class PlatformPublicService : SalesAppService
 {
-    private readonly IPlatformClient _platformClient;
-    public PlatformPublicService(IPlatformClient platformClient)
+    private readonly IPlatformClientFactory _platformClientFactory;
+    public PlatformPublicService(IPlatformClientFactory platformClientFactory)
     {
-        this._platformClient = platformClient;
+        this._platformClientFactory = platformClientFactory;
     }
 
     public async Task<ApiResponse<SysUserDto>> GetCurrentLoginUserAsync(string token)
     {
-        var client = await _platformClient.CreateClientAsync();
+        var client = await _platformClientFactory.CreateClientAsync();
 
         using var message = new HttpRequestMessage(HttpMethod.Post, $"api/platform/user/auth/login-info");
         message.Content = null;

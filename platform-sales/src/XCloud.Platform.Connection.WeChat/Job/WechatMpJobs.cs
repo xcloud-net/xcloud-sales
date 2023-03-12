@@ -4,6 +4,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
 using XCloud.Platform.Connection.WeChat.Services;
+using XCloud.Platform.Connection.WeChat.Services.Mp;
+using XCloud.Platform.Connection.WeChat.Settings;
 using XCloud.Platform.Core.Application;
 
 namespace XCloud.Platform.Connection.WeChat.Job;
