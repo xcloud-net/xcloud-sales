@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Volo.Abp.AspNetCore.Mvc;
-using XCloud.Core.DataSerializer;
+using XCloud.Core.Json;
 
 namespace XCloud.AspNetMvc.Controller;
 

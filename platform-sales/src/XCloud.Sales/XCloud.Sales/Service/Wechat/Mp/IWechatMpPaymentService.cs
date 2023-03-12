@@ -14,7 +14,9 @@ namespace XCloud.Sales.Service.Wechat.Mp;
 
 public interface IWechatMpPaymentService : ISalesAppService
 {
-    //
+    Task<CreatePayTransactionJsapiResponse> CreatePaymentOrderAsync(string billId);
+
+    Task<CreateRefundDomesticRefundResponse> CreateRefundOrderAsync(string refundBillId);
 }
 
 public class WechatMpPaymentService : SalesAppService, IWechatMpPaymentService
@@ -24,6 +26,7 @@ public class WechatMpPaymentService : SalesAppService, IWechatMpPaymentService
     private readonly IOrderService _orderService;
     private readonly OrderUtils _orderUtils;
     private readonly IOrderBillService _orderBillService;
+    private readonly IOrderRefundBillService _orderRefundBillService;
     private readonly IUserWechatMpConnectionService _wechatMpConnectionService;
 
     private WeChatPayOption WechatPaymentOption => this._wechatMpOption.Value.Payment;
@@ -32,7 +35,8 @@ public class WechatMpPaymentService : SalesAppService, IWechatMpPaymentService
         OrderUtils orderUtils,
         IOrderBillService orderBillService,
         IOptions<PlatformServiceAddressOption> platformServiceAddressOption,
-        IUserWechatMpConnectionService wechatMpConnectionService)
+        IUserWechatMpConnectionService wechatMpConnectionService,
+        IOrderRefundBillService orderRefundBillService)
     {
         _wechatMpOption = wechatMpOption;
         _orderService = orderService;
@@ -40,6 +44,7 @@ public class WechatMpPaymentService : SalesAppService, IWechatMpPaymentService
         _orderBillService = orderBillService;
         _platformServiceAddressOption = platformServiceAddressOption;
         _wechatMpConnectionService = wechatMpConnectionService;
+        _orderRefundBillService = orderRefundBillService;
     }
 
     private WechatTenpayClient GetRequiredPaymentClient()
@@ -78,7 +83,52 @@ public class WechatMpPaymentService : SalesAppService, IWechatMpPaymentService
         return connection.OpenId;
     }
 
-    public async Task CreatePaymentOrderAsync(string billId)
+    private async Task<OrderRefundBillDto> GetRequiredOrderRefundBillAsync(string refundBillId)
+    {
+        var bill = await this._orderRefundBillService.QueryByIdAsync(refundBillId);
+
+        if (bill == null)
+            throw new EntityNotFoundException(nameof(bill));
+
+        if (bill.Refunded)
+            throw new UserFriendlyException("bill is refunded");
+
+        return bill;
+    }
+
+    public async Task<CreateRefundDomesticRefundResponse> CreateRefundOrderAsync(string refundBillId)
+    {
+        var refundBill = await this.GetRequiredOrderRefundBillAsync(refundBillId);
+        var bill = await this._orderBillService.QueryByIdAsync(refundBill.BillId);
+        if (bill == null)
+            throw new EntityNotFoundException(nameof(bill));
+
+        var wechatPaymentClient = this.GetRequiredPaymentClient();
+
+        var request = new CreateRefundDomesticRefundRequest()
+        {
+            OutRefundNumber = refundBill.Id,
+            OutTradeNumber = bill.Id,
+            Reason = default,
+            NotifyUrl = Com.ConcatUrl(this._platformServiceAddressOption.Value.PublicGateway,
+                this._wechatMpOption.Value.Payment.RefundNotifyUrl),
+            Amount = new CreateRefundDomesticRefundRequest.Types.Amount()
+            {
+                Total = default,
+                Refund = _orderUtils.CastMoneyToCent(refundBill.Price)
+            },
+        };
+
+        var response = await wechatPaymentClient.ExecuteCreateRefundDomesticRefundAsync(request);
+
+        if (!response.IsSuccessful())
+            throw new UserFriendlyException("failed to create refund order").WithData("wechat-response",
+                this.JsonDataSerializer.SerializeToString(response));
+
+        throw new NotImplementedException();
+    }
+
+    public async Task<CreatePayTransactionJsapiResponse> CreatePaymentOrderAsync(string billId)
     {
         var bill = await this.GetRequiredOrderBillAsync(billId);
 
@@ -122,6 +172,6 @@ public class WechatMpPaymentService : SalesAppService, IWechatMpPaymentService
             throw new UserFriendlyException("failed to create payment order").WithData("wechat-response",
                 this.JsonDataSerializer.SerializeToString(response));
 
-        throw new NotImplementedException();
+        return response;
     }
 }

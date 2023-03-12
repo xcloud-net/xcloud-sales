@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
-
 using Newtonsoft.Json.Linq;
 
-namespace XCloud.Core.DataSerializer;
+namespace XCloud.Core.Json;
 
 public static class SerializerExtension
 {
@@ -22,7 +21,7 @@ public static class SerializerExtension
         {
             logger.LogWarning(message: e.Message, exception: e);
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             logger.LogWarning(message: e.Message, exception: e);
         }

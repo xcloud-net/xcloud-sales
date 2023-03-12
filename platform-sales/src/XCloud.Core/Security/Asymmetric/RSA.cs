@@ -1,10 +1,10 @@
-﻿using FluentAssertions;
-using System.IO;
+﻿using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using FluentAssertions;
 
-namespace XCloud.Core.Encryption.Asymmetric;
+namespace XCloud.Core.Security.Asymmetric;
 
 /// <summary>
 /// Asymmetric/RSA encryption.

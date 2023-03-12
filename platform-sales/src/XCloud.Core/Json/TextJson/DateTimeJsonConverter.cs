@@ -1,11 +1,10 @@
-﻿using FluentAssertions;
-
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using FluentAssertions;
 using XCloud.Core.Helper;
 
-namespace XCloud.Core.DataSerializer.TextJson;
+namespace XCloud.Core.Json.TextJson;
 
 public class DateTimeJsonConverter : JsonConverter<DateTime>
 {

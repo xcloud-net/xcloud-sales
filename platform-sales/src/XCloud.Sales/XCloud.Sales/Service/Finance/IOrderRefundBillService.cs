@@ -9,6 +9,8 @@ namespace XCloud.Sales.Service.Finance;
 
 public interface IOrderRefundBillService : ISalesAppService
 {
+    Task<OrderRefundBillDto> QueryByIdAsync(string refundBillId);
+    
     Task<OrderRefundBillDto[]> AttachDataAsync(OrderRefundBillDto[] data, AttachRefundBillDataInput dto);
 
     Task<PagedResponse<OrderRefundBillDto>> QueryPagingAsync(QueryRefundBillPagingInput dto);
@@ -31,6 +33,19 @@ public class OrderRefundBillService : SalesAppService, IOrderRefundBillService
     {
         _salesRepository = salesRepository;
         _orderBillService = orderBillService;
+    }
+
+    public async Task<OrderRefundBillDto> QueryByIdAsync(string refundBillId)
+    {
+        if (string.IsNullOrWhiteSpace(refundBillId))
+            throw new ArgumentNullException(nameof(refundBillId));
+
+        var bill = await this._salesRepository.QueryOneAsync(x => x.Id == refundBillId);
+
+        if (bill == null)
+            return null;
+
+        return this.ObjectMapper.Map<OrderRefundBill, OrderRefundBillDto>(bill);
     }
 
     public async Task<OrderRefundBillDto[]> AttachDataAsync(OrderRefundBillDto[] data, AttachRefundBillDataInput dto)

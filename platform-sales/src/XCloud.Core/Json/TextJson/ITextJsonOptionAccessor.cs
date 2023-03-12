@@ -1,10 +1,8 @@
-﻿
-using System.Text.Json;
-
+﻿using System.Text.Json;
 using Volo.Abp.DependencyInjection;
 using XCloud.Core.DependencyInjection.ServiceWrapper;
 
-namespace XCloud.Core.DataSerializer.TextJson;
+namespace XCloud.Core.Json.TextJson;
 
 public interface ITextJsonOptionAccessor
 {

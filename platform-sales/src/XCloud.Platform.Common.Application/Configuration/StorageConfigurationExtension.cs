@@ -28,12 +28,12 @@ public static class StorageConfigurationExtension
     {
         var configuration = context.Services.GetConfiguration();
 
-        var savePath = configuration["app:config:static_save_path"];
+        var savePath = configuration["app:config:upload_path"];
 
         if (string.IsNullOrWhiteSpace(savePath))
         {
             var env = context.Services.GetHostingEnvironment();
-            savePath = Path.Combine(env.ContentRootPath, "static_files");
+            savePath = Path.Combine(env.ContentRootPath, "upload");
         }
 
         new DirectoryInfo(savePath).CreateIfNotExist();

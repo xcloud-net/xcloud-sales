@@ -1,4 +1,5 @@
-﻿using XCloud.Sales.Data.Domain.Orders;
+﻿using XCloud.Core.Json;
+using XCloud.Sales.Data.Domain.Orders;
 using XCloud.Sales.Service.Orders.Validator;
 
 namespace XCloud.Sales.Service.Promotion;

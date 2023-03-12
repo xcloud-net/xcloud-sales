@@ -6,8 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Volo.Abp.DependencyInjection;
-
-using XCloud.Core.ExceptionHandler;
+using XCloud.Core.Exceptions;
 
 namespace XCloud.Database.EntityFrameworkCore;
 

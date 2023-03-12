@@ -1,16 +1,16 @@
 ﻿using System.Text;
 using Volo.Abp.Validation;
 
-namespace XCloud.Core.ExceptionHandler;
+namespace XCloud.Core.Exceptions;
 
 public interface IExceptionDetailContributor
 {
-    void Contibute(Exception e, ref StringBuilder sb);
+    void Contibute(System.Exception e, ref StringBuilder sb);
 }
 
-public abstract class ExceptionContributorBase<E> : IExceptionDetailContributor where E : Exception
+public abstract class ExceptionContributorBase<E> : IExceptionDetailContributor where E : System.Exception
 {
-    public void Contibute(Exception e, ref StringBuilder sb)
+    public void Contibute(System.Exception e, ref StringBuilder sb)
     {
         if (e is E err && err != null)
         {

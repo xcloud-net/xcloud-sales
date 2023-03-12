@@ -1,11 +1,9 @@
-﻿
+﻿using System.Text;
 using Newtonsoft.Json;
-
-using System.Text;
 using XCloud.Core.Application.WorkContext;
 using XCloud.Core.Helper;
 
-namespace XCloud.Core.DataSerializer.NewtonsoftJson;
+namespace XCloud.Core.Json.NewtonsoftJson;
 
 public class NewtonsoftJsonDataSerializer : IJsonDataSerializer
 {
@@ -30,7 +28,7 @@ public class NewtonsoftJsonDataSerializer : IJsonDataSerializer
 
             return res;
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             throw new SerializeException(nameof(SerializeToBytes), e);
         }
@@ -49,7 +47,7 @@ public class NewtonsoftJsonDataSerializer : IJsonDataSerializer
 
             return res;
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             throw new SerializeException(nameof(DeserializeFromBytes), e);
         }
@@ -68,7 +66,7 @@ public class NewtonsoftJsonDataSerializer : IJsonDataSerializer
 
             return obj;
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             throw new SerializeException(nameof(DeserializeFromBytes), e);
         }
@@ -85,7 +83,7 @@ public class NewtonsoftJsonDataSerializer : IJsonDataSerializer
                 settings: this._jsonSerializerSettings);
             return res;
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             throw new SerializeException(nameof(SerializeToString), e);
         }
@@ -102,7 +100,7 @@ public class NewtonsoftJsonDataSerializer : IJsonDataSerializer
                 settings: this._jsonSerializerSettings);
             return res;
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             throw new SerializeException(nameof(DeserializeFromString), e);
         }
@@ -119,7 +117,7 @@ public class NewtonsoftJsonDataSerializer : IJsonDataSerializer
                 settings: this._jsonSerializerSettings);
             return res;
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             throw new SerializeException(nameof(DeserializeFromString), e);
         }

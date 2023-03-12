@@ -2,7 +2,7 @@
 using System.Text.Json;
 using XCloud.Core.Application.WorkContext;
 
-namespace XCloud.Core.DataSerializer.TextJson;
+namespace XCloud.Core.Json.TextJson;
 
 public class TextJsonDataSerializer : IJsonDataSerializer
 {
@@ -25,7 +25,7 @@ public class TextJsonDataSerializer : IJsonDataSerializer
 
             return obj;
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             throw new SerializeException(nameof(DeserializeFromBytes), e);
         }
@@ -39,7 +39,7 @@ public class TextJsonDataSerializer : IJsonDataSerializer
 
             return obj;
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             throw new SerializeException(nameof(DeserializeFromBytes), e);
         }
@@ -53,7 +53,7 @@ public class TextJsonDataSerializer : IJsonDataSerializer
 
             return this.DeserializeFromBytes<T>(bs);
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             throw new SerializeException(nameof(DeserializeFromString), e);
         }
@@ -67,7 +67,7 @@ public class TextJsonDataSerializer : IJsonDataSerializer
 
             return this.DeserializeFromBytes(bs, target);
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             throw new SerializeException(nameof(DeserializeFromString), e);
         }
@@ -83,7 +83,7 @@ public class TextJsonDataSerializer : IJsonDataSerializer
 
             return bs;
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             throw new SerializeException(nameof(SerializeToBytes), e);
         }
@@ -99,7 +99,7 @@ public class TextJsonDataSerializer : IJsonDataSerializer
 
             return jsonString;
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             throw new SerializeException(nameof(SerializeToString), e);
         }

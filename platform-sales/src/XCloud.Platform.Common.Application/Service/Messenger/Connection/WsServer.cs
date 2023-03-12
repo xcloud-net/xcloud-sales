@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
-using XCloud.Core.DataSerializer;
+using XCloud.Core.Json;
 using XCloud.Platform.Common.Application.Service.Messenger.Handler;
 using XCloud.Platform.Common.Application.Service.Messenger.Persistence;
 using XCloud.Platform.Common.Application.Service.Messenger.RegistrationCenter;

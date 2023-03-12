@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Text;
+﻿using System.Text;
+using Microsoft.AspNetCore.Http;
 
-namespace XCloud.Core.ExceptionHandler;
+namespace XCloud.Core.Exceptions;
 
 public interface IExceptionLogger<T>
 {
-    void LogError(Exception e, string message = null);
+    void LogError(System.Exception e, string message = null);
 }
 
 public class DefaultExceptionLogger<T> : IExceptionLogger<T>//, IScopedDependency
@@ -19,7 +19,7 @@ public class DefaultExceptionLogger<T> : IExceptionLogger<T>//, IScopedDependenc
         this.logger = logger;
     }
 
-    public void LogError(Exception e, string message)
+    public void LogError(System.Exception e, string message)
     {
         using var s = this.serviceProvider.CreateScope();
 

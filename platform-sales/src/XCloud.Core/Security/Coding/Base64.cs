@@ -1,4 +1,4 @@
-﻿namespace XCloud.Core.Encryption.Coding;
+﻿namespace XCloud.Core.Security.Coding;
 
 /// <summary>
 /// Hash/Base64 encryption.

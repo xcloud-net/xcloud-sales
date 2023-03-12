@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
-using XCloud.Core.DataSerializer;
 using XCloud.Core.Dto;
+using XCloud.Core.Json;
+using System;
 
 namespace XCloud.Core.Cache;
 

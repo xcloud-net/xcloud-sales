@@ -1,4 +1,6 @@
-﻿namespace XCloud.Core.Attributes;
+﻿using System;
+
+namespace XCloud.Logging.Apm;
 
 /// <summary>
 /// 标记开启apm

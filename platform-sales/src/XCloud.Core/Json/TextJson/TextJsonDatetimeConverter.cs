@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace XCloud.Core.DataSerializer.TextJson;
+namespace XCloud.Core.Json.TextJson;
 
 public class TextJsonDatetimeConverter : JsonConverter<DateTime>
 {

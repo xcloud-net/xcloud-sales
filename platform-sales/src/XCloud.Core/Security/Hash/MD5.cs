@@ -1,7 +1,7 @@
-﻿using FluentAssertions;
-using System.Text;
+﻿using System.Text;
+using FluentAssertions;
 
-namespace XCloud.Core.Encryption.Hash;
+namespace XCloud.Core.Security.Hash;
 
 /// <summary>
 /// MD5 encryption.

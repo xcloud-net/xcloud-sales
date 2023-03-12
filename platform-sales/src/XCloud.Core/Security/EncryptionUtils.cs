@@ -1,4 +1,4 @@
-﻿namespace XCloud.Core.Encryption;
+﻿namespace XCloud.Core.Security;
 
 public static class EncryptionUtils
 {

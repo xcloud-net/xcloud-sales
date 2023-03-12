@@ -12,7 +12,6 @@ global using Volo.Abp.Domain.Entities;
 global using Volo.Abp.Domain.Repositories;
 global using Volo.Abp.Uow;
 global using XCloud.Core.Cache;
-global using XCloud.Core.DataSerializer;
 global using XCloud.Core.Extension;
 global using XCloud.Core.IdGenerator;
 global using XCloud.Sales.Service;

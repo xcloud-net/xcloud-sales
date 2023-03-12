@@ -2,7 +2,7 @@ using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Volo.Abp.DynamicProxy;
 
-namespace XCloud.Core.DataSerializer;
+namespace XCloud.Core.Json;
 
 public class SerializerExceptionInterceptor : IAbpInterceptor
 {
@@ -21,7 +21,7 @@ public class SerializerExceptionInterceptor : IAbpInterceptor
         {
             throw;
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             throw new SerializationException(e.Message, e);
         }

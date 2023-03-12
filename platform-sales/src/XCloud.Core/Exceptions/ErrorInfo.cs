@@ -2,7 +2,7 @@
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Http;
 
-namespace XCloud.Core.ExceptionHandler;
+namespace XCloud.Core.Exceptions;
 
 public class ErrorInfo : RemoteServiceErrorInfo, IEntityDto
 {

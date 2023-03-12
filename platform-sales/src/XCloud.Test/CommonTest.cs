@@ -12,9 +12,9 @@ using System.Reflection.Emit;
 using System.Text.Json;
 using System.Threading;
 using Volo.Abp;
-using XCloud.Core.DataSerializer.TextJson;
 using XCloud.Core.Dto;
 using XCloud.Core.Extension;
+using XCloud.Core.Json.TextJson;
 using XCloud.Platform.Core.Domain.User;
 
 namespace XCloud.Test;

@@ -12,12 +12,12 @@ public static class TaskExtension
     /// AutoResetEvent
     /// ManualResetEventSlim
     /// </summary>
-    /// <param name="reset_event"></param>
+    /// <param name="resetEvent"></param>
     /// <param name="span"></param>
     /// <param name="msg"></param>
-    public static void WaitOneOrThrow(this ManualResetEvent reset_event, TimeSpan span, string msg = null)
+    public static void WaitOneOrThrow(this ManualResetEvent resetEvent, TimeSpan span, string msg = null)
     {
-        if (!reset_event.WaitOne(span))
+        if (!resetEvent.WaitOne(span))
             throw new TimeoutException(msg ?? "等待信号量超时");
     }
 

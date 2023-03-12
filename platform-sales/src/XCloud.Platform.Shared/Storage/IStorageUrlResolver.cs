@@ -8,9 +8,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Volo.Abp.DependencyInjection;
-
-using XCloud.Core.DataSerializer;
 using XCloud.Core.Dto;
+using XCloud.Core.Json;
 using XCloud.Platform.Shared.Dto;
 
 namespace XCloud.Platform.Shared.Storage;

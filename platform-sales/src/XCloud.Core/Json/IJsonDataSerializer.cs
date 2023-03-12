@@ -1,4 +1,4 @@
-﻿namespace XCloud.Core.DataSerializer;
+﻿namespace XCloud.Core.Json;
 
 public interface IJsonDataSerializer
 {

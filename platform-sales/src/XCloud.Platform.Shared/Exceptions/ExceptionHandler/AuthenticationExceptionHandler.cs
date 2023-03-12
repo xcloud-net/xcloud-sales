@@ -4,7 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Volo.Abp.Authorization;
 using Volo.Abp.DependencyInjection;
-using XCloud.Core.ExceptionHandler;
+using XCloud.Core.Exceptions;
 
 namespace XCloud.Platform.Shared.Exceptions.ExceptionHandler;
 

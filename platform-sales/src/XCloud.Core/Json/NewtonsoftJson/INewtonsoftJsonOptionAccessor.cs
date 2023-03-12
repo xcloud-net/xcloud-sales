@@ -1,9 +1,8 @@
 ﻿using Newtonsoft.Json;
-
 using Volo.Abp.DependencyInjection;
 using XCloud.Core.DependencyInjection.ServiceWrapper;
 
-namespace XCloud.Core.DataSerializer.NewtonsoftJson;
+namespace XCloud.Core.Json.NewtonsoftJson;
 
 public interface INewtonsoftJsonOptionAccessor
 {

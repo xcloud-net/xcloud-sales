@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using XCloud.Core.Encryption.Hash;
+using XCloud.Core.Security.Hash;
 
 namespace XCloud.Core.Helper;
 

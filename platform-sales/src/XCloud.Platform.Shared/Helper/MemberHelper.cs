@@ -5,6 +5,7 @@ using XCloud.Core.Application;
 using XCloud.Core.Application.WorkContext;
 using XCloud.Core.Extension;
 using XCloud.Core.Helper;
+using XCloud.Core.Security.Hash;
 
 namespace XCloud.Platform.Shared.Helper;
 
@@ -25,7 +26,7 @@ public class MemberHelper : IScopedDependency
         raw.Should().NotBeNullOrEmpty();
         salt ??= string.Empty;
 
-        var data = XCloud.Core.Encryption.Hash.MD5.Encrypt($"{raw}.{salt}", _appConfig.Encoding);
+        var data = MD5.Encrypt($"{raw}.{salt}", _appConfig.Encoding);
 
         data = data.Replace("-", string.Empty).Trim().ToUpper();
 

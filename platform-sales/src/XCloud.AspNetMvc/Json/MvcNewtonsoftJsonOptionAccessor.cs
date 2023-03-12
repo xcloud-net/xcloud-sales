@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using XCloud.Core.DataSerializer.NewtonsoftJson;
+using XCloud.Core.Json.NewtonsoftJson;
 
 namespace XCloud.AspNetMvc.Json;
 

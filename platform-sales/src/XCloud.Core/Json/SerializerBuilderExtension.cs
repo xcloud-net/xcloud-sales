@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using XCloud.Core.DataSerializer.NewtonsoftJson;
 using XCloud.Core.DependencyInjection.ServiceWrapper;
+using XCloud.Core.Json.NewtonsoftJson;
 
-namespace XCloud.Core.DataSerializer;
+namespace XCloud.Core.Json;
 
 public static class SerializerBuilderExtension
 {

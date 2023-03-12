@@ -1,4 +1,4 @@
-﻿namespace XCloud.Core.ExceptionHandler;
+﻿namespace XCloud.Core.Exceptions;
 
 public static class ExceptionHandlerExtension
 {
