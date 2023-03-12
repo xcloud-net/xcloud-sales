@@ -6,11 +6,22 @@ using XCloud.Sales.Service.Orders;
 
 namespace XCloud.Sales.Service.Finance;
 
+public class UpdateRefundBillStatus : IEntityDto<string>
+{
+    public string Id { get; set; }
+    public bool? IsDeleted { get; set; }
+}
+
+public class ApproveRefundBillInput : IEntityDto<string>
+{
+    public string Id { get; set; }
+    public string StoreManagerId { get; set; }
+    public string Comment { get; set; }
+}
+
 public class OrderBillDto : OrderBill, IEntityDto
 {
     public OrderDto Order { get; set; }
-
-    public OrderRefundBillDto OrderRefundBill { get; set; }
 
     public PaymentMethod BillPaymentMethod
     {
@@ -19,10 +30,11 @@ public class OrderBillDto : OrderBill, IEntityDto
     }
 }
 
-public class OrderRefundBillDto : OrderRefundBill, IEntityDto
+public class OrderRefundBillDto : OrderRefundBill, IEntityDto<string>
 {
-    public OrderDto Order { get; set; }
     public OrderBillDto OrderBill { get; set; }
+
+    public OrderDto Order { get; set; }
 }
 
 public class AttachOrderBillDataInput : IEntityDto
@@ -33,7 +45,7 @@ public class AttachOrderBillDataInput : IEntityDto
 public class QueryOrderBillPagingInput : PagedRequest, IEntityDto
 {
     public string OrderId { get; set; }
-    
+
     public string OrderNo { get; set; }
 
     public int? PaymentMethod { get; set; }
@@ -65,6 +77,24 @@ public class MarkBillAsPayedInput : IEntityDto<string>
     public string NotifyData { get; set; }
 }
 
+public class AttachRefundBillDataInput : IEntityDto
+{
+    public bool OrderBill { get; set; } = false;
+}
+
+public class QueryRefundBillPagingInput : PagedRequest, IEntityDto
+{
+    //
+}
+
+public class MarkRefundBillAsRefundInput : IEntityDto<string>
+{
+    public string Id { get; set; }
+    public string TransactionId { get; set; }
+    public string NotifyData { get; set; }
+}
+
+[Obsolete]
 public class MarkBillAsRefundInput : IEntityDto<string>
 {
     public string Id { get; set; }

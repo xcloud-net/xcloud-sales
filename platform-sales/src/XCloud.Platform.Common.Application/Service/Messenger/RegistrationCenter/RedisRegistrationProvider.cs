@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Timing;
-using XCloud.Core.DataSerializer;
+using XCloud.Core.Json;
 
 namespace XCloud.Platform.Common.Application.Service.Messenger.RegistrationCenter;
 

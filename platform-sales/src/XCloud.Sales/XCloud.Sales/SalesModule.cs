@@ -12,7 +12,6 @@ global using Volo.Abp.Domain.Entities;
 global using Volo.Abp.Domain.Repositories;
 global using Volo.Abp.Uow;
 global using XCloud.Core.Cache;
-global using XCloud.Core.DataSerializer;
 global using XCloud.Core.Extension;
 global using XCloud.Core.IdGenerator;
 global using XCloud.Sales.Service;
@@ -38,6 +37,7 @@ using XCloud.Platform.Core.Job;
 using XCloud.Platform.Framework;
 using XCloud.Sales.Configuration;
 using XCloud.Sales.Core;
+using XCloud.Sales.Core.Settings;
 using XCloud.Sales.Data.Database;
 using XCloud.Sales.Data.DataSeeder;
 using XCloud.Sales.Service.Catalog;
@@ -78,20 +78,7 @@ public class SalesModule : AbpModule
         context.Services.RemoveAll<IRequestCacheProvider>();
         context.Services.AddScoped<IRequestCacheProvider, HttpContextItemRequestCache>();
 
-        this.Configure<SalesJobOption>(option => { option.AutoStartJob = true; });
-        this.Configure<PlatformJobOption>(option =>
-        {
-            //close platform jobs manually
-            option.AutoStartJob = false;
-        });
-        this.Configure<PlatformDatabaseOption>(option =>
-        {
-            option.AutoCreateDatabase = false;
-        });
-        this.Configure<SalesDatabaseOption>(option =>
-        {
-            option.AutoCreateDatabase = false;
-        });
+        context.ConfigSalesOptions();
     }
 
     public override void OnPreApplicationInitialization(ApplicationInitializationContext context)

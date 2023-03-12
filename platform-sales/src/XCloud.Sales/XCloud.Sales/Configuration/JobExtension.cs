@@ -1,7 +1,7 @@
 using Hangfire;
 using Microsoft.Extensions.Options;
 using XCloud.Core;
-using XCloud.Sales.Core;
+using XCloud.Sales.Core.Settings;
 using XCloud.Sales.Job;
 
 namespace XCloud.Sales.Configuration;

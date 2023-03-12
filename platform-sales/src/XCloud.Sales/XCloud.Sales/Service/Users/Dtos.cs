@@ -60,12 +60,26 @@ public class PointsHistoryDto : PointsHistory, IEntityDto
 
 public class BalanceHistoryDto : BalanceHistory, IEntityDto
 {
-    //
+    public BalanceHistoryDto()
+    {
+        //
+    }
+
+    public BalanceHistoryDto(int userId, decimal amount, BalanceActionType actionType, string comment) : this()
+    {
+        UserId = userId;
+        Balance = amount;
+        ActionType = (int)actionType;
+        Message = comment ?? string.Empty;
+    }
 }
 
 public class UserBalanceAndPoints : IEntityDto<int>
 {
-    public UserBalanceAndPoints() { }
+    public UserBalanceAndPoints()
+    {
+        //
+    }
 
     public UserBalanceAndPoints(User user) : this()
     {
@@ -104,7 +118,7 @@ public class UpdateUserGradeStatusInput : IEntityDto<string>
     public string Id { get; set; }
     public bool? IsDeleted { get; set; }
 }
-    
+
 public class UpdateUserStatusInput : IEntityDto<int>
 {
     public int Id { get; set; }

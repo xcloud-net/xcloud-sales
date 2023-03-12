@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using Volo.Abp.Auditing;
-using XCloud.Core.DataSerializer;
+using XCloud.Core.Json;
 
 namespace XCloud.Logging.AbpAuditing;
 

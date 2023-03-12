@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using SKIT.FlurlHttpClient.Wechat.TenpayV3;
 using SKIT.FlurlHttpClient.Wechat.TenpayV3.Models;
+using SKIT.FlurlHttpClient.Wechat.TenpayV3.Settings;
 using Volo.Abp.Application.Services;
 using XCloud.Platform.Connection.WeChat.Configuration;
 
@@ -52,5 +53,41 @@ public class WxPayService : ApplicationService, IWxPayService
             throw new WechatPaymentException(nameof(CreateJsPayAsync)) { };
 
         return response;
+    }
+
+    public async Task RefundAsync()
+    {
+        var config = _configuration.GetWxMpConfig();
+
+        var wechatOption = new WechatTenpayClientOptions()
+        {
+            MerchantId = default,
+            MerchantV3Secret = default,
+            MerchantCertificateSerialNumber = default,
+            MerchantCertificatePrivateKey = default,
+            PlatformCertificateManager = new InMemoryCertificateManager() { },
+        };
+
+        var client = new WechatTenpayClient(wechatOption);
+
+        var response = await client.ExecuteCreateRefundDomesticRefundAsync(new CreateRefundDomesticRefundRequest()
+        {
+            SubMerchantId = default,
+            OutTradeNumber = default,
+            TransactionId = default,
+            OutRefundNumber = default,
+            Reason = default,
+            Amount = new CreateRefundDomesticRefundRequest.Types.Amount()
+            {
+                Total = default,
+                Refund = default,
+                Currency = default
+            },
+            NotifyUrl = default,
+            FundsAccount = default,
+        });
+
+        if (!response.IsSuccessful())
+            throw new WechatPaymentException(nameof(CreateJsPayAsync)) { };
     }
 }

@@ -6,7 +6,7 @@ using System;
 using System.Threading.Tasks;
 
 using Volo.Abp.AspNetCore.ExceptionHandling;
-using XCloud.Core.ExceptionHandler;
+using XCloud.Core.Exceptions;
 
 namespace XCloud.AspNetMvc.ExceptionHandling;
 

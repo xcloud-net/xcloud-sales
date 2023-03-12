@@ -1,4 +1,5 @@
-﻿using XCloud.Sales.Application;
+﻿using XCloud.Core.Dto;
+using XCloud.Sales.Application;
 using XCloud.Sales.Data.Domain.Orders;
 using XCloud.Sales.Service.Coupons;
 using XCloud.Sales.Service.Finance;
@@ -8,9 +9,13 @@ namespace XCloud.Sales.Service.Orders
 {
     public interface IOrderRefundService : ISalesAppService
     {
+        Task RefundUserCouponAsync(string orderId);
+
         Task<OrderCanBeRefundResponse> OrderCanBeRefundAsync(string orderId);
 
         Task RefundUserBalancePaidBillAsync(string billId);
+
+        Task RefundToWechatAsync(string billId);
     }
 
     public class OrderRefundService : SalesAppService, IOrderRefundService
@@ -19,13 +24,18 @@ namespace XCloud.Sales.Service.Orders
         private readonly IUserBalanceService _userBalanceService;
         private readonly IOrderBillService _orderBillService;
         private readonly IOrderService _orderService;
+        private readonly OrderUtils _orderUtils;
+        private readonly IOrderRefundBillService _orderRefundBillService;
 
         public OrderRefundService(IOrderService orderService, ICouponService couponService,
-            IOrderBillService orderBillService, IUserBalanceService userBalanceService)
+            IOrderBillService orderBillService, IUserBalanceService userBalanceService,
+            OrderUtils orderUtils, IOrderRefundBillService orderRefundBillService)
         {
             this._orderService = orderService;
             this._orderBillService = orderBillService;
             this._userBalanceService = userBalanceService;
+            _orderUtils = orderUtils;
+            _orderRefundBillService = orderRefundBillService;
             this._couponService = couponService;
         }
 
@@ -35,22 +45,46 @@ namespace XCloud.Sales.Service.Orders
             if (order == null)
                 throw new EntityNotFoundException(nameof(order));
 
-            throw new NotImplementedException();
+            if (this._orderUtils.IsOrderRefundable(order))
+            {
+                return new OrderCanBeRefundResponse();
+            }
+            else
+            {
+                return new OrderCanBeRefundResponse().SetError("status error");
+            }
         }
 
-        private async Task<OrderDto> GetRequiredOrderToRefundAsync(string orderId)
+        public async Task RefundUserCouponAsync(string orderId)
         {
+            if (string.IsNullOrWhiteSpace(orderId))
+                throw new ArgumentNullException(nameof(orderId));
+
             var order = await this._orderService.QueryByIdAsync(orderId);
+
             if (order == null)
                 throw new EntityNotFoundException(nameof(order));
 
-            var dto = this.ObjectMapper.Map<Order, OrderDto>(order);
+            if (order.CouponId == null || order.CouponId <= 0)
+                throw new BusinessException(message: "order coupon is empty");
 
-            return dto;
+            var coupon = await this._couponService.GetUserCouponByIdAsync(order.CouponId.Value);
+            if (coupon == null)
+                throw new EntityNotFoundException(nameof(coupon));
+
+            await this._couponService.ReturnBackUserCouponAsync(coupon.Id);
+        }
+
+        public async Task RefundToWechatAsync(string billId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task RefundUserBalancePaidBillAsync(string billId)
         {
+            if (string.IsNullOrWhiteSpace(billId))
+                throw new ArgumentNullException(nameof(billId));
+            
             var bill = await this._orderBillService.QueryByIdAsync(billId);
 
             if (bill == null)
@@ -79,4 +113,3 @@ namespace XCloud.Sales.Service.Orders
         }
     }
 }
-

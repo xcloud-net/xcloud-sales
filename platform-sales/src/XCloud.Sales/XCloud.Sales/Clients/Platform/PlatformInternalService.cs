@@ -113,17 +113,13 @@ public class PlatformInternalService : SalesAppService
         return response;
     }
 
-    [Obsolete("xxdd")]
-    public async Task<ApiResponse<SysExternalConnect>> QueryUserConnectionAsync(
+    public async Task<SysExternalConnect> QueryUserConnectionAsync(
         QueryUserConnectionRequest dto)
     {
         var data = await this._externalConnectService.FindByUserIdAsync(dto.Platform, dto.AppId,
             dto.UserId);
 
-        if (data == null)
-            return new ApiResponse<SysExternalConnect>().SetError("no connection found");
-
-        return new ApiResponse<SysExternalConnect>(data);
+        return data;
     }
 
     public async Task<ApiResponse<int>> GenerateSerialNoAsync(CreateNoByCategoryDto dto)

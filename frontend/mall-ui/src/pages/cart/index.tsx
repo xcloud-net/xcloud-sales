@@ -4,31 +4,24 @@ import XEmpty from '@/components/empty';
 import XLoading from '@/components/loading/dots';
 import u from '@/utils';
 import http from '@/utils/http';
-import {
-  Box,
-  Checkbox,
-  Container,
-  FormControlLabel,
-  Paper,
-  Typography,
-  Stack,
-} from '@mui/material';
+import { Box, Checkbox, Container, FormControlLabel, Paper, Stack, Typography } from '@mui/material';
 import { useModel } from 'umi';
 import XCheckout from './checkout';
 import XItem from './item';
 import { RadioButtonUncheckedOutlined } from '@mui/icons-material';
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
 import { useLocalStorageState } from 'ahooks';
+import { ShoppingCartItemDto } from '@/utils/models';
 
 const index = (props: any) => {
   const shoppingcartModel = useModel('storeAppShoppingcart');
   const appSettings = useModel('storeAppSetting');
 
   const [loading, _loading] = React.useState(false);
-  const [data, _data] = React.useState<any[]>([]);
+  const [data, _data] = React.useState<ShoppingCartItemDto[]>([]);
   const [selected, _selected] = React.useState<number[]>([]);
 
-  const selectedItems = u.filter(data, (x) => selected.indexOf(x.Id) >= 0);
+  const selectedItems = u.filter(data, (x) => selected.indexOf(x.Id || 0) >= 0);
 
   const [selectedCache, _selectedCache] = useLocalStorageState<string>(
     'shoppingcart.selected.cached',
@@ -86,7 +79,7 @@ const index = (props: any) => {
       return null;
     }
 
-    var selectAll = u.every(data, (x) => selected.indexOf(x.Id) >= 0);
+    var selectAll = u.every(data, (x) => selected.indexOf(x.Id || 0) >= 0);
 
     return (
       <FormControlLabel
@@ -94,10 +87,10 @@ const index = (props: any) => {
           <Checkbox
             checked={selectAll}
             onChange={(e) => {
-              _selected(e.target.checked ? u.map(data, (x) => x.Id) : []);
+              _selected(e.target.checked ? u.map(data, (x) => x.Id || 0) : []);
             }}
             icon={<RadioButtonUncheckedOutlined />}
-            checkedIcon={<TaskAltOutlinedIcon color="success" />}
+            checkedIcon={<TaskAltOutlinedIcon color='success' />}
           />
         }
         label={'全选'}
@@ -112,7 +105,7 @@ const index = (props: any) => {
 
     var originPrice = u.sumBy(
       selectedItems,
-      (x) => (x.GoodsSpecCombination?.Price || 0) * x.Quantity,
+      (x) => (x.GoodsSpecCombination?.Price || 0) * (x.Quantity || 0),
     );
 
     var finalPrice = u.sumBy(
@@ -120,7 +113,7 @@ const index = (props: any) => {
       (x) =>
         (x.GoodsSpecCombination?.GradePrice ||
           x.GoodsSpecCombination?.Price ||
-          0) * x.Quantity,
+          0) * (x.Quantity || 0),
     );
 
     var offset = originPrice - finalPrice;
@@ -148,7 +141,7 @@ const index = (props: any) => {
 
   return (
     <>
-      <Container maxWidth="sm" disableGutters>
+      <Container maxWidth='sm' disableGutters>
         <Box sx={{ px: 1, py: 2 }}>
           <Box
             sx={{
@@ -167,13 +160,13 @@ const index = (props: any) => {
             >
               <Stack
                 direction={'row'}
-                alignItems="flex-end"
+                alignItems='flex-end'
                 justifyContent={'flex-start'}
                 spacing={1}
               >
-                <Typography variant="h2">购物车</Typography>
+                <Typography variant='h2'>购物车</Typography>
                 {data.length > 0 && (
-                  <Typography variant="h3">({data.length})</Typography>
+                  <Typography variant='h3'>({data.length})</Typography>
                 )}
               </Stack>
               <Box sx={{}}>{renderSelectAll()}</Box>
@@ -182,7 +175,7 @@ const index = (props: any) => {
               <Box key={index}>
                 <XItem
                   model={x}
-                  checked={selected.indexOf(x.Id) >= 0}
+                  checked={selected.indexOf(x.Id || 0) >= 0}
                   onUpdate={() => {
                     queryShoppingcarts();
                   }}
@@ -211,7 +204,7 @@ const index = (props: any) => {
               zIndex: 10,
             }}
           >
-            <Container disableGutters maxWidth="sm">
+            <Container disableGutters maxWidth='sm'>
               <Paper
                 sx={{
                   px: 1,

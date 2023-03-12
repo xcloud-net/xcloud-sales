@@ -1,5 +1,7 @@
 using Volo.Abp.ObjectMapping;
+using XCloud.Core.Application;
 using XCloud.Core.Helper;
+using XCloud.Core.Json;
 using XCloud.Sales.Data.Domain.Orders;
 using XCloud.Sales.Service.Promotion;
 
@@ -45,6 +47,8 @@ public class OrderConditionUtils : IScopedDependency
         return serviceProvider.GetServices<IOrderConditionValidator>()
             .OrderByDescending(x => x.Order).ToArray();
     }
+
+    public string EmptyConditionJson => "[]";
 
     public OrderCondition[] DeserializeConditions(string conditionJson, bool throwIfException = false)
     {
@@ -101,7 +105,7 @@ public class OrderConditionUtils : IScopedDependency
     {
         var dto = this._objectMapper.Map<Order, OrderDto>(order);
 
-        dto.Items = items.Select(x => this._objectMapper.Map<OrderItem, OrderItemDto>(x)).ToArray();
+        dto.Items = this._objectMapper.MapArray<OrderItem, OrderItemDto>(items);
 
         return new OrderConditionCheckInput(dto);
     }

@@ -17,7 +17,7 @@ public interface IUserBalanceService : ISalesAppService
 {
     Task<decimal> CountAllBalanceAsync();
 
-    Task InsertBalanceHistoryAsync(BalanceHistoryDto dto);
+    Task UpdateUserBalanceAsync(BalanceHistoryDto dto);
 
     Task<PagedResponse<BalanceHistoryDto>> QueryPagingAsync(QueryBalanceInput dto);
 }
@@ -61,10 +61,10 @@ public class UserBalanceService : SalesAppService, IUserBalanceService
         return new PagedResponse<BalanceHistoryDto>(items, dto, count);
     }
 
-    public async Task InsertBalanceHistoryAsync(BalanceHistoryDto dto)
+    public async Task UpdateUserBalanceAsync(BalanceHistoryDto dto)
     {
         if (dto == null)
-            throw new ArgumentNullException(nameof(InsertBalanceHistoryAsync));
+            throw new ArgumentNullException(nameof(dto));
         if (dto.UserId <= 0)
             throw new ArgumentNullException(nameof(dto.UserId));
 
@@ -72,11 +72,11 @@ public class UserBalanceService : SalesAppService, IUserBalanceService
         if (dto.Balance == decimal.Zero)
             return;
 
-        using var dlock = await this.RedLockClient.RedLockFactory.CreateLockAsync(
-            resource: $"{nameof(UserPointService)}.{nameof(InsertBalanceHistoryAsync)}.{dto.UserId}",
+        using var dLock = await this.RedLockClient.RedLockFactory.CreateLockAsync(
+            resource: $"{nameof(UserPointService)}.{nameof(UpdateUserBalanceAsync)}.{dto.UserId}",
             expiryTime: TimeSpan.FromSeconds(3));
 
-        if (dlock.IsAcquired)
+        if (dLock.IsAcquired)
         {
             var db = await this._salesRepository.GetDbContextAsync();
 
@@ -90,7 +90,7 @@ public class UserBalanceService : SalesAppService, IUserBalanceService
 
             var user = await db.Set<User>().FirstOrDefaultAsync(x => x.Id == dto.UserId);
             if (user == null)
-                throw new EntityNotFoundException(nameof(InsertBalanceHistoryAsync));
+                throw new EntityNotFoundException(nameof(UpdateUserBalanceAsync));
 
             user.Balance += offset;
             if (user.Balance < 0)

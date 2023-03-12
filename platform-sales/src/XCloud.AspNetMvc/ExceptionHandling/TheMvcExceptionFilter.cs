@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Data;
 using XCloud.Core.DependencyInjection;
 using XCloud.Core.Dto;
-using XCloud.Core.ExceptionHandler;
+using XCloud.Core.Exceptions;
 using XCloud.Logging;
 
 namespace XCloud.AspNetMvc.ExceptionHandling;

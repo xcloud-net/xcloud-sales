@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Volo.Abp.Application.Services;
 using Volo.Abp.DependencyInjection;
-using XCloud.Core.Attributes;
 using XCloud.Core.Extension;
 
 namespace XCloud.Logging.Apm;

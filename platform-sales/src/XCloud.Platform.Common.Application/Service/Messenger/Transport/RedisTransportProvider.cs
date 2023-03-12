@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using StackExchange.Redis;
 using Volo.Abp.DependencyInjection;
-using XCloud.Core.DataSerializer;
 using XCloud.Core.Extension;
+using XCloud.Core.Json;
 using XCloud.Platform.Common.Application.Service.Messenger.Connection;
 
 namespace XCloud.Platform.Common.Application.Service.Messenger.Transport;

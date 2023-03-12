@@ -19,9 +19,9 @@ public interface IWxMpService : IApplicationService
 {
     string PlatformName { get; }
 
-    Task TryUpdateUserProfileFromWechat(string userId, WxMpConfig config, string accessToken, string openId);
+    Task TryUpdateUserProfileFromWechat(string userId, WechatMpOption config, string accessToken, string openId);
 
-    Task<SnsUserInfoResponse> GetUserWechatProfileAsync(WxMpConfig config, string accessToken, string openId);
+    Task<SnsUserInfoResponse> GetUserWechatProfileAsync(WechatMpOption config, string accessToken, string openId);
 
     Task<string> GetOrRefreshClientAccessTokenAsync();
 
@@ -59,7 +59,7 @@ public class WxMpService : XCloudApplicationService, IWxMpService
 
         var token = await _externalAccessTokenService.GetValidClientAccessTokenAsync(new GetValidClientAccessTokenInput()
         {
-            AppId = config.AppID,
+            AppId = config.AppId,
             Platform = PlatformName
         });
         var now = Clock.Now;
@@ -76,7 +76,7 @@ public class WxMpService : XCloudApplicationService, IWxMpService
             {
                 var accessToken = new SysUserExternalAccessTokenDto()
                 {
-                    AppId = config.AppID,
+                    AppId = config.AppId,
                     Platform = PlatformName,
                     GrantType = "client",
                     AccessTokenType = (int)AccessTokenTypeEnum.Client
@@ -105,7 +105,7 @@ public class WxMpService : XCloudApplicationService, IWxMpService
 
         var wechatOption = new WechatApiClientOptions()
         {
-            AppId = config.AppID,
+            AppId = config.AppId,
             AppSecret = config.AppSecret
         };
 
@@ -128,7 +128,7 @@ public class WxMpService : XCloudApplicationService, IWxMpService
 
         var wechatOption = new WechatApiClientOptions()
         {
-            AppId = config.AppID,
+            AppId = config.AppId,
             AppSecret = config.AppSecret
         };
 
@@ -145,7 +145,7 @@ public class WxMpService : XCloudApplicationService, IWxMpService
         return response;
     }
 
-    public async Task<SnsUserInfoResponse> GetUserWechatProfileAsync(WxMpConfig config, string accessToken, string openId)
+    public async Task<SnsUserInfoResponse> GetUserWechatProfileAsync(WechatMpOption config, string accessToken, string openId)
     {
         if (config == null)
             throw new ArgumentNullException(nameof(config));
@@ -155,7 +155,7 @@ public class WxMpService : XCloudApplicationService, IWxMpService
 
         var wechatOption = new WechatApiClientOptions()
         {
-            AppId = config.AppID,
+            AppId = config.AppId,
             AppSecret = config.AppSecret
         };
 
@@ -173,7 +173,7 @@ public class WxMpService : XCloudApplicationService, IWxMpService
         return response;
     }
 
-    public async Task TryUpdateUserProfileFromWechat(string userId, WxMpConfig config, string accessToken, string openId)
+    public async Task TryUpdateUserProfileFromWechat(string userId, WechatMpOption config, string accessToken, string openId)
     {
         var response = await this.GetUserWechatProfileAsync(config, accessToken, openId);
 

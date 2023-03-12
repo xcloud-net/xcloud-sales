@@ -7,25 +7,19 @@ import http from '@/utils/http';
 import { RadioButtonUncheckedOutlined } from '@mui/icons-material';
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import {
-  Box,
-  Checkbox,
-  Chip,
-  FormControlLabel,
-  Paper,
-  Stack,
-} from '@mui/material';
+import { Box, Checkbox, Chip, FormControlLabel, Paper, Stack } from '@mui/material';
 import { Stepper, SwipeAction } from 'antd-mobile';
 import { useState } from 'react';
-import { GoodsDto } from '@/utils/models';
+import { ShoppingCartItemDto } from '@/utils/models';
 
-export default function MiddleDividers(props: any) {
+export default function MiddleDividers(props: {
+  model: ShoppingCartItemDto, onSelect: any, checked: boolean, onDelete: any, onUpdate: any
+}) {
   const { model, onSelect, checked, onDelete, onUpdate } = props;
 
   const [loading, _loading] = useState(false);
 
-  const goods: GoodsDto = model.Goods;
-  const pic = u.first(goods?.XPictures || []);
+  const pic = u.first(model.Goods?.XPictures || []);
 
   const goodsImageUrl = u.resolveUrlv2(pic, {
     width: 100,
@@ -76,15 +70,15 @@ export default function MiddleDividers(props: any) {
     }
     return (
       <>
-        <Stack direction="row" spacing={1}>
+        <Stack direction='row' spacing={1}>
           {u.map(model.Waring, (x, index) => (
             <Chip
               key={index}
-              size="small"
-              color="error"
+              size='small'
+              color='error'
               icon={<WarningAmberIcon />}
               label={x}
-              variant="outlined"
+              variant='outlined'
             />
           ))}
         </Stack>
@@ -115,7 +109,7 @@ export default function MiddleDividers(props: any) {
         {loading && <LinearProgress />}
         <Stack
           direction={'row'}
-          alignItems="center"
+          alignItems='center'
           justifyContent={'space-between'}
         >
           <FormControlLabel
@@ -126,7 +120,7 @@ export default function MiddleDividers(props: any) {
                   onSelect && onSelect(model.Id, e.target.checked);
                 }}
                 icon={<RadioButtonUncheckedOutlined />}
-                checkedIcon={<TaskAltOutlinedIcon color="success" />}
+                checkedIcon={<TaskAltOutlinedIcon color='success' />}
               />
             }
             label={`${model.Goods?.Name}`}
@@ -141,13 +135,13 @@ export default function MiddleDividers(props: any) {
           }}
         >
           <Box sx={{ width: '70px' }}>
-            <XImage alt="" src={goodsImageUrl || XDefaultImage} />
+            <XImage alt='' src={goodsImageUrl || XDefaultImage} />
           </Box>
           <Box sx={{ ml: 1, width: '100%' }}>
             <Stack
               direction={'row'}
-              alignItems="center"
-              justifyContent="space-between"
+              alignItems='center'
+              justifyContent='space-between'
               spacing={1}
             >
               <Box flexGrow={1} sx={{ mr: 1 }}>

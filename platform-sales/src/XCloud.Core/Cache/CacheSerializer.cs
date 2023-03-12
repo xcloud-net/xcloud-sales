@@ -1,6 +1,6 @@
 ﻿using Volo.Abp.DependencyInjection;
-using XCloud.Core.DataSerializer;
 using XCloud.Core.Dto;
+using XCloud.Core.Json;
 
 namespace XCloud.Core.Cache;
 

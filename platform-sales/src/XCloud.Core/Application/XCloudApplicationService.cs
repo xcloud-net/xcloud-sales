@@ -2,7 +2,7 @@
 using Volo.Abp.Application.Services;
 using Volo.Abp.Validation;
 using XCloud.Core.Cache;
-using XCloud.Core.DataSerializer;
+using XCloud.Core.Json;
 
 namespace XCloud.Core.Application;
 

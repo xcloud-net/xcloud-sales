@@ -14,6 +14,7 @@ public interface IOrderBillService : ISalesAppService
 
     Task MarkBillAsPayedAsync(MarkBillAsPayedInput dto);
 
+    [Obsolete]
     Task MarkBillAsRefundAsync(MarkBillAsRefundInput dto);
 
     Task<OrderBillDto[]> QueryByOrderIdAsync(ListOrderBillInput dto);
@@ -98,9 +99,7 @@ public class OrderBillService : SalesAppService, IOrderBillService
         if (!string.IsNullOrWhiteSpace(dto.RefundTransactionId))
             query = query.Where(x => x.bill.RefundTransactionId == dto.RefundTransactionId);
 
-        var count = 0;
-        if (!dto.SkipCalculateTotalCount)
-            count = await query.CountAsync();
+        var count = await query.CountOrDefaultAsync(dto);
 
         var list = await query
             .OrderByDescending(x => x.bill.CreationTime)

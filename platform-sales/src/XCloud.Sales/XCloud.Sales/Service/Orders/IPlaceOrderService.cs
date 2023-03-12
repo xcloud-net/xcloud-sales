@@ -2,10 +2,8 @@ using XCloud.Core.Application;
 using XCloud.Core.Dto;
 using XCloud.Core.Helper;
 using XCloud.Platform.Common.Application.Service.Address;
-using XCloud.Platform.Shared.Dto;
 using XCloud.Redis;
 using XCloud.Sales.Application;
-using XCloud.Sales.Clients.Platform;
 using XCloud.Sales.Core;
 using XCloud.Sales.Data;
 using XCloud.Sales.Data.Domain.Catalog;
@@ -37,7 +35,7 @@ public interface IPlaceOrderService : ISalesAppService
 public class PlaceOrderService : SalesAppService, IPlaceOrderService
 {
     private readonly OrderUtils _orderUtils;
-    private readonly PlatformInternalService _internalCommonClientService;
+    private readonly CouponUtils _couponUtils;
     private readonly IOrderService _orderService;
     private readonly IWebHelper _webHelper;
     private readonly IUserService _userService;
@@ -61,7 +59,6 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         IUserGradeService userGradeService,
         IMallSettingService mallSettingService,
         OrderUtils orderUtils,
-        PlatformInternalService internalCommonClientService,
         IOrderService orderService,
         IWebHelper webHelper,
         IUserService userService,
@@ -70,7 +67,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         ISalesRepository<Order> orderRepository,
         IGradeGoodsPriceService gradeGoodsPriceService,
         IStoreGoodsPriceService storeGoodsPriceService,
-        ISpecCombinationService specCombinationService)
+        ISpecCombinationService specCombinationService, CouponUtils couponUtils)
     {
         this._orderConditionUtils = orderConditionUtils;
         this._promotionService = promotionService;
@@ -79,11 +76,11 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         this._userGradeService = userGradeService;
         this._orderUtils = orderUtils;
         this._mallSettingService = mallSettingService;
-        this._internalCommonClientService = internalCommonClientService;
         this._orderRepository = orderRepository;
         _gradeGoodsPriceService = gradeGoodsPriceService;
         _storeGoodsPriceService = storeGoodsPriceService;
         _specCombinationService = specCombinationService;
+        _couponUtils = couponUtils;
         this._orderService = orderService;
         this._webHelper = webHelper;
         this._userService = userService;
@@ -171,31 +168,6 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
             throw new UserFriendlyException("the shipping address not found");
 
         return shippingAddress;
-    }
-
-    /// <summary>
-    /// date format: yyyyMMdd
-    /// </summary>
-    /// <returns></returns>
-    private string MonthString() => this.Clock.Now.ToString("yyyyMM");
-
-    private async Task<string> GenerateOrderSnAsync()
-    {
-        var month = this.MonthString();
-
-        var noResponse =
-            await this._internalCommonClientService.GenerateSerialNoAsync(
-                new CreateNoByCategoryDto($"order-sn-{month}"));
-
-        if (!noResponse.IsSuccess())
-            throw new AbpException("failed to generate order sn");
-
-        if (noResponse.Data > 1_0000_0000)
-            this.Logger.LogWarning("order code is too large,in this month");
-
-        var code = noResponse.Data.ToString().PadLeft(10, '0');
-
-        return $"{month}-{code}";
     }
 
     private IEnumerable<PlaceOrderCheckInput> BuildPlaceOrderCheckInputs(PlaceOrderRequestDto dto)
@@ -366,19 +338,12 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         if (userCoupon.MinimumConsumption > order.OrderTotal)
             throw new UserFriendlyException("coupon can't be use for this order");
 
-        //condition validator
-        var input = this._orderConditionUtils.BuildPromotionCheckInput(order, items);
-        var conditions = this._orderConditionUtils.DeserializeConditions("[]", throwIfException: true);
-        var checkResponse = this._orderConditionUtils.ValidateOrderConditionsAsync(input, conditions);
-
-        await foreach (var res in checkResponse)
-        {
-            if (!res.IsMatch)
-                throw new UserFriendlyException(res.Message);
-        }
+        var coupon = await this._couponService.QueryByIdAsync(userCoupon.CouponId);
+        if (coupon == null)
+            throw new BusinessException(message: "coupon not valid");
 
         //set coupon discount
-        order.CouponDiscount = userCoupon.Value;
+        await this._couponUtils.ApplyToOrderAsync(order, userCoupon);
 
         //mark coupon as used
         await this._couponService.UseUserCouponAsync(userCoupon.Id);
@@ -549,30 +514,15 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
         await this.TryApplyPromotionAsync(order, orderItems);
 
         //calculate total
-        await this.CalculateOrderFinalPriceAsync(order, orderItems);
+        await this._orderUtils.CalculateOrderFinalPriceAsync(order, orderItems);
 
         //generate sn
-        order.OrderSn = await this.GenerateOrderSnAsync();
+        order.OrderSn = await this._orderUtils.GenerateOrderSnAsync();
 
         //final check
         await this.FinalCheckOrderInformationAsync(order, orderItems);
 
         return new KeyValuePair<Order, OrderItem[]>(order, orderItems);
-    }
-
-    private async Task CalculateOrderFinalPriceAsync(Order order, OrderItem[] orderItems)
-    {
-        //todo put into order utils
-        
-        order.GradePriceOffsetTotal = orderItems.Sum(x => x.GradePriceOffset);
-        order.OrderSubtotal = orderItems.Sum(x => x.Price);
-        //total
-        order.OrderTotal = order.OrderSubtotal + order.OrderShippingFee;
-        order.OrderTotal -= order.CouponDiscount;
-        order.OrderTotal -= order.PromotionDiscount;
-        order.ExchangePointsAmount = order.OrderTotal;
-
-        await Task.CompletedTask;
     }
 
     private async Task<StoreUserDto> GetRequiredCustomerInfoAsync(PlaceOrderRequestDto dto)

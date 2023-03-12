@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Routing;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.DynamicProxy;
+using XCloud.Core.Json;
 using XCloud.Sales.Data.Domain.Logging;
 using XCloud.Sales.Queue;
 using XCloud.Sales.Service.Logging;

@@ -46,7 +46,7 @@ public class BalanceController : ShopBaseController
 
         var bill = await this._orderPaymentProcessingService.CreateOrderPayBillAsync(new CreateOrderPayBillInput() { Id = order.Id });
 
-        await this._userBalanceService.InsertBalanceHistoryAsync(new BalanceHistoryDto()
+        await this._userBalanceService.UpdateUserBalanceAsync(new BalanceHistoryDto()
         {
             UserId = loginUser.Id,
             Balance = bill.Price,

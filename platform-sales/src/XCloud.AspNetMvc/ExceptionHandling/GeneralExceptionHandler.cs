@@ -7,7 +7,7 @@ using Volo.Abp;
 using Volo.Abp.Domain.Entities;
 using XCloud.Core;
 using XCloud.Core.DependencyInjection;
-using XCloud.Core.ExceptionHandler;
+using XCloud.Core.Exceptions;
 
 namespace XCloud.AspNetMvc.ExceptionHandling;
 

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Volo.Abp.DependencyInjection;
-using XCloud.Core.DataSerializer;
+using XCloud.Core.Json;
 using XCloud.Platform.Common.Application.Service.Messenger.Connection;
 
 namespace XCloud.Platform.Common.Application.Service.Messenger.Transport;

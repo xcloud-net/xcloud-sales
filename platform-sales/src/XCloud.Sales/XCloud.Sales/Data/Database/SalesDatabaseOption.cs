@@ -1,6 +1,8 @@
+using Volo.Abp.Application.Dtos;
+
 namespace XCloud.Sales.Data.Database;
 
-public class SalesDatabaseOption : ISingletonDependency
+public class SalesDatabaseOption : IEntityDto, ISingletonDependency
 {
     public SalesDatabaseOption()
     {

@@ -25,7 +25,7 @@ public class BalanceController : ShopBaseController
         await this.SalesPermissionService.CheckRequiredPermissionAsync(storeAdministrator,
             SalesPermissions.ManageFinance);
 
-        await this._userBalanceService.InsertBalanceHistoryAsync(dto);
+        await this._userBalanceService.UpdateUserBalanceAsync(dto);
 
         return new ApiResponse<object>();
     }

@@ -7,8 +7,8 @@ using Volo.Abp.Json.Newtonsoft;
 using Volo.Abp.Json.SystemTextJson;
 using Volo.Abp.Modularity;
 using XCloud.AspNetMvc.Json;
-using XCloud.Core.DataSerializer;
-using XCloud.Core.DataSerializer.NewtonsoftJson;
+using XCloud.Core.Json;
+using XCloud.Core.Json.NewtonsoftJson;
 
 namespace XCloud.AspNetMvc.Configuration;
 
