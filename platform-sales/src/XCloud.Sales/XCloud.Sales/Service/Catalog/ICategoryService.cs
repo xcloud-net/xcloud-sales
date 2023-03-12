@@ -1,3 +1,4 @@
+using XCloud.Application.Extension;
 using XCloud.Core.Application;
 using XCloud.Database.EntityFrameworkCore.Extensions;
 using XCloud.Platform.Shared;

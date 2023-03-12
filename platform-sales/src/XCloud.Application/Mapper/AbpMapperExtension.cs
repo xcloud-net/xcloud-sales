@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Volo.Abp.ObjectMapping;
 
-namespace XCloud.Core.Application;
+namespace XCloud.Application.Mapper;
 
 public static class AbpMapperExtension
 {

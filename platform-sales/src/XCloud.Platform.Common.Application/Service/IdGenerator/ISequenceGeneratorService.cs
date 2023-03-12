@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Polly;
 using Volo.Abp.Data;
 using Volo.Abp.Uow;
+using XCloud.Application.Service;
 using XCloud.Core.Application;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Core.Domain.IdGenerator;

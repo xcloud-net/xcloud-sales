@@ -2,7 +2,7 @@
 using System.Threading;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using XCloud.Core.Builder;
+using XCloud.Core.Configuration.Builder;
 using XCloud.Core.Extension;
 using XCloud.Core.Helper;
 using XCloud.Platform.Common.Application.Service.Messenger.Connection;

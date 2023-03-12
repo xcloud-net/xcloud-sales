@@ -1,6 +1,7 @@
 ﻿using Volo.Abp.Application.Dtos;
 using Volo.Abp.ObjectExtending;
 using XCloud.Core.Application;
+using XCloud.Core.Application.Entity;
 
 namespace XCloud.Platform.Common.Application.Service.App.Models;
 

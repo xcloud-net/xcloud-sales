@@ -4,7 +4,7 @@ using FluentAssertions;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities;
 
-namespace XCloud.Core.Application;
+namespace XCloud.Core.Application.Entity;
 
 public static class EntityExtension
 {

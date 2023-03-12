@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities;
+using XCloud.Application.Service;
 using XCloud.Core.Application;
 using XCloud.Core.Cache;
 using XCloud.Core.Dto;

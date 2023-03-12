@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
-using Volo.Abp.Modularity;
 using FluentAssertions;
+using Volo.Abp.Modularity;
 
-namespace XCloud.Core.Builder;
+namespace XCloud.Core.Configuration.Builder;
 
 public class EntryModuleWrapper
 {

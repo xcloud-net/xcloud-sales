@@ -1,4 +1,6 @@
-﻿namespace XCloud.Core.Application;
+﻿using System.Linq;
+
+namespace XCloud.Application.Extension;
 
 public static class QueryableExtension
 {

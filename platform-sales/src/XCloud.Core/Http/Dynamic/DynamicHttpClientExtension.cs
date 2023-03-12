@@ -2,7 +2,7 @@
 using Castle.DynamicProxy;
 using FluentAssertions;
 using Volo.Abp.Application.Services;
-using XCloud.Core.Builder;
+using XCloud.Core.Configuration.Builder;
 using XCloud.Core.DependencyInjection.ServiceWrapper;
 using XCloud.Core.Http.Dynamic.Proxy;
 

@@ -3,6 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using Volo.Abp.DependencyInjection;
 using XCloud.Core.Application.WorkContext;
+using XCloud.Core.Configuration;
 
 namespace XCloud.Application.Storage;
 

@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Validation;
+using XCloud.Application.ServiceDiscovery;
 using XCloud.Core.Cache;
 using XCloud.Core.Json;
 
-namespace XCloud.Core.Application;
+namespace XCloud.Application.Service;
 
 public interface IXCloudApplicationService : IApplicationService
 {
@@ -22,4 +23,7 @@ public abstract class XCloudApplicationService : ApplicationService
 
     protected IObjectValidator ObjectValidator =>
         this.LazyServiceProvider.LazyGetRequiredService<IObjectValidator>();
+
+    protected IServiceDiscoveryService ServiceDiscoveryService =>
+        this.LazyServiceProvider.LazyGetRequiredService<IServiceDiscoveryService>();
 }

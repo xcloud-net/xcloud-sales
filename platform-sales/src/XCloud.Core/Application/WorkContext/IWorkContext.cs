@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Volo.Abp.DependencyInjection;
+using XCloud.Core.Configuration;
 using XCloud.Core.Json;
 
 namespace XCloud.Core.Application.WorkContext;

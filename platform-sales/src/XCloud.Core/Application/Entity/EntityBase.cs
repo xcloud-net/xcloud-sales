@@ -2,7 +2,7 @@
 using Volo.Abp.Domain.Entities;
 using XCloud.Core.Helper;
 
-namespace XCloud.Core.Application;
+namespace XCloud.Core.Application.Entity;
 
 public interface IEntityBase : IEntity<string>, IDbTableFinder
 {

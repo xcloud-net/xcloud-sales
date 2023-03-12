@@ -3,7 +3,7 @@ using Volo.Abp;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 using XCloud.AspNetMvc;
-using XCloud.Core.Builder;
+using XCloud.Core.Configuration.Builder;
 using XCloud.Job;
 using XCloud.MessageBus;
 using XCloud.Platform.Connection.WeChat;

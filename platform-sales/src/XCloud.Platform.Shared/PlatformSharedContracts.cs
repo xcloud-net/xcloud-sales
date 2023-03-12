@@ -3,6 +3,7 @@
 using Volo.Abp;
 using Volo.Abp.Auditing;
 using XCloud.Core.Application;
+using XCloud.Core.Application.Entity;
 
 namespace XCloud.Platform.Shared;
 

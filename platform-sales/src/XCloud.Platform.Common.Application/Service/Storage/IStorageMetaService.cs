@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
+using XCloud.Application.Service;
 using XCloud.Application.Storage;
 using XCloud.Core.Application;
 using XCloud.Core.Cache;

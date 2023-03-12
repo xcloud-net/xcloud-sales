@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
+using XCloud.Application.Service;
+using XCloud.Application.ServiceDiscovery;
 using XCloud.Core.Application;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Shared.Settings;
@@ -77,6 +79,8 @@ public class ThumborService : PlatformApplicationService, IThumborService, IScop
 
     public async Task<Stream> GetResizedStreamOrNullAsync(string url, int height, int width)
     {
+        await this.ServiceDiscoveryService.ResolveRequiredServiceAsync("InternalGateway");
+        
         var gateway = this._platformServiceAddressOption.Value.InternalGateway;
         url = HttpUtility.UrlEncode(url);
 

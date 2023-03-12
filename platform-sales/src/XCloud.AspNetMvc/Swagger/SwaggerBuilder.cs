@@ -14,7 +14,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using XCloud.AspNetMvc.Builder;
-using XCloud.Core.Builder;
+using XCloud.Core.Configuration.Builder;
 using XCloud.Core.DependencyInjection.Extension;
 using XCloud.Core.Extension;
 using XCloud.Core.Helper;

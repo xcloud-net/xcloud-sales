@@ -4,6 +4,7 @@ using FluentAssertions;
 using Masuit.Tools;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.Domain.Entities;
+using XCloud.Application.Service;
 using XCloud.Core.Application;
 using XCloud.Core.Dto;
 using XCloud.Core.IdGenerator;

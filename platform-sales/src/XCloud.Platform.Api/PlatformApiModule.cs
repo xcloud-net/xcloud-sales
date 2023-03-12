@@ -6,7 +6,7 @@ using Volo.Abp.Modularity;
 using XCloud.AspNetMvc.Builder;
 using XCloud.AspNetMvc.Configuration;
 using XCloud.AspNetMvc.Swagger;
-using XCloud.Core.Builder;
+using XCloud.Core.Configuration.Builder;
 using XCloud.Core.Extension;
 using XCloud.Platform.Auth.IdentityServer;
 using XCloud.Platform.Auth.IdentityServer.Configuration;

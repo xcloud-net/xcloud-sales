@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Newtonsoft.Json;
 using XCloud.Core.Application.WorkContext;
+using XCloud.Core.Configuration;
 using XCloud.Core.Helper;
 
 namespace XCloud.Core.Json.NewtonsoftJson;

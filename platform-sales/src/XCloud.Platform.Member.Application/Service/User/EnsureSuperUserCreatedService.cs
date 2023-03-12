@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.DependencyInjection;
 using XCloud.Core.Application;
+using XCloud.Core.Application.Entity;
 using XCloud.Core.Dto;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Core.Domain.Admin;

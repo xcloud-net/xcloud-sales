@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Volo.Abp;
+using XCloud.Application.Service;
 using XCloud.Core.Application;
 using XCloud.Core.Dto;
 using XCloud.Platform.Auth.Authentication;

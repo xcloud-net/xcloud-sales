@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Volo.Abp.Application.Services;
 using XCloud.Core.Application;
+using XCloud.Core.Application.Entity;
 using XCloud.Core.Dto;
 using XCloud.Database.EntityFrameworkCore.Extensions;
 using XCloud.Platform.Core.Application;

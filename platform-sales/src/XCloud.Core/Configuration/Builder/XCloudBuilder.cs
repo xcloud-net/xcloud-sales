@@ -5,7 +5,7 @@ using Volo.Abp.Data;
 using Volo.Abp.Modularity;
 using Volo.Abp.ObjectExtending;
 
-namespace XCloud.Core.Builder;
+namespace XCloud.Core.Configuration.Builder;
 
 public interface IXCloudBuilder : IHasExtraProperties
 {

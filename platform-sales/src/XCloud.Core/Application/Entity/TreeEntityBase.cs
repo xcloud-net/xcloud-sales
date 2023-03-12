@@ -1,4 +1,4 @@
-﻿namespace XCloud.Core.Application;
+﻿namespace XCloud.Core.Application.Entity;
 
 public interface ITreeEntityBase
 {

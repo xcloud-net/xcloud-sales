@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.WebSockets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Volo.Abp.Modularity;
-using XCloud.Core.Builder;
+using XCloud.Core.Configuration.Builder;
 using XCloud.Platform.Common.Application.Service.Messenger;
 using XCloud.Platform.Common.Application.Service.Messenger.Transport;
 

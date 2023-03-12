@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using XCloud.Core.Application;
+using XCloud.Core.Application.Entity;
 using XCloud.Core.IdGenerator;
 using XCloud.Database.EntityFrameworkCore.Extensions;
 using XCloud.Platform.Core.Application;

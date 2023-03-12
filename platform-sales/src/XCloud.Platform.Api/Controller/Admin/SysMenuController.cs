@@ -4,6 +4,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp;
 using XCloud.Core.Application;
+using XCloud.Core.Application.Entity;
 using XCloud.Core.Dto;
 using XCloud.Platform.Auth.Application.Admin;
 using XCloud.Platform.Common.Application.Service.Menu;

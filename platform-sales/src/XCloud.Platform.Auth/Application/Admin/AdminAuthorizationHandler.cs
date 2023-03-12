@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using XCloud.Core.Application;
+using XCloud.Core.Application.Entity;
 using XCloud.Core.Cache;
 using XCloud.Core.Helper;
 using XCloud.Platform.Member.Application.Service.Admin;

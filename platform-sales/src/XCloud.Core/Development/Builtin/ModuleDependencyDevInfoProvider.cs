@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Volo.Abp.Modularity;
 using FluentAssertions;
-using XCloud.Core.Builder;
+using XCloud.Core.Configuration.Builder;
 using XCloud.Core.DependencyInjection;
 using XCloud.Core.Dto;
 

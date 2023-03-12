@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
 using Volo.Abp.Domain.Repositories;
+using XCloud.Application.Service;
 using XCloud.Core.Application;
 using XCloud.Core.Cache;
 using XCloud.Core.Dto;

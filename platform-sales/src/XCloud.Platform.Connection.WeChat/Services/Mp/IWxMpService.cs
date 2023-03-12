@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using SKIT.FlurlHttpClient.Wechat.Api;
 using SKIT.FlurlHttpClient.Wechat.Api.Models;
 using Volo.Abp.Application.Services;
+using XCloud.Application.Service;
 using XCloud.Core.Application;
 using XCloud.Platform.Common.Application.Extension;
 using XCloud.Platform.Common.Application.Service.Storage;

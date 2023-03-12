@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Volo.Abp.DependencyInjection;
+using XCloud.Application.Service;
 using XCloud.Core.Application;
 using XCloud.Core.Helper;
 using XCloud.Core.IdGenerator;

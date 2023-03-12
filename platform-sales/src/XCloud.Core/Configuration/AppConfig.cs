@@ -2,23 +2,23 @@
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Volo.Abp.DependencyInjection;
+using XCloud.Core.Configuration.Builder;
 using XCloud.Core.DependencyInjection.Extension;
-using XCloud.Core.Builder;
 
-namespace XCloud.Core.Application.WorkContext;
+namespace XCloud.Core.Configuration;
 
 [ExposeServices(typeof(AppConfig))]
 public class AppConfig : ISingletonDependency
 {
-    private readonly IServiceProvider serviceProvider;
-    private readonly EntryModuleWrapper entryModuleWrapper;
-    private readonly IConfiguration configuration;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly EntryModuleWrapper _entryModuleWrapper;
+    private readonly IConfiguration _configuration;
 
     public AppConfig(IServiceProvider serviceProvider)
     {
-        this.serviceProvider = serviceProvider;
-        this.entryModuleWrapper = serviceProvider.GetRequiredService<EntryModuleWrapper>();
-        this.configuration = serviceProvider.ResolveConfiguration();
+        this._serviceProvider = serviceProvider;
+        this._entryModuleWrapper = serviceProvider.GetRequiredService<EntryModuleWrapper>();
+        this._configuration = serviceProvider.ResolveConfiguration();
     }
 
     public static string GetAppName(IConfiguration configuration, Assembly entryAssembly)
@@ -42,7 +42,7 @@ public class AppConfig : ISingletonDependency
         return "unknowApp";
     }
 
-    public string AppName() => GetAppName(this.configuration, this.entryModuleWrapper.EntryAssembly);
+    public string AppName() => GetAppName(this._configuration, this._entryModuleWrapper.EntryAssembly);
 
     public Encoding Encoding => Encoding.UTF8;
 }

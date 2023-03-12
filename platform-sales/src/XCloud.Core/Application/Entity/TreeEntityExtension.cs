@@ -1,6 +1,6 @@
 ﻿using XCloud.Core.Dto;
 
-namespace XCloud.Core.Application;
+namespace XCloud.Core.Application.Entity;
 
 public static class TreeEntityExtension
 {
@@ -15,11 +15,11 @@ public static class TreeEntityExtension
         return res;
     }
 
-    public static List<T> FindNodeChildrenRecursively<T>(this IEnumerable<T> data_source, T first_node)
+    public static List<T> FindNodeChildrenRecursively<T>(this IEnumerable<T> dataSource, T firstNode)
         where T : TreeEntityBase
     {
         var list = new List<T>();
-        data_source.WalkTreeNodes(x => x.Id, x => x.ParentId, (node, level, children) => list.Add(node), first_node.Id);
+        dataSource.WalkTreeNodes(x => x.Id, x => x.ParentId, (node, level, children) => list.Add(node), firstNode.Id);
         return list;
     }
 

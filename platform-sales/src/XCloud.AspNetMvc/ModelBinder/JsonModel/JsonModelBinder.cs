@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Volo.Abp;
 using XCloud.Core;
 using XCloud.Core.Application.WorkContext;
+using XCloud.Core.Configuration;
 using XCloud.Core.Extension;
 using XCloud.Core.Json;
 

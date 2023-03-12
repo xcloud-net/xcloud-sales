@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
+using XCloud.Application.Extension;
+using XCloud.Application.Service;
 using XCloud.Core.Application;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Core.Domain.Region;

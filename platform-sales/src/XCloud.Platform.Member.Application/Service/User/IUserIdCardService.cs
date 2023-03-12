@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Masuit.Tools;
 using Microsoft.EntityFrameworkCore;
+using XCloud.Application.Service;
 using XCloud.Core.Application;
 using XCloud.Core.Dto;
 using XCloud.Core.IdGenerator;

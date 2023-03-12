@@ -90,8 +90,6 @@ public class IdDto : IEntityDto<string>
 
     public string Id { get; set; }
 
-    public static implicit operator IdDto(EntityBase entity) => new IdDto(entity?.Id);
-
     public static implicit operator IdDto(string id) => new IdDto(id);
 
     public static implicit operator string(IdDto dto) => dto?.Id;

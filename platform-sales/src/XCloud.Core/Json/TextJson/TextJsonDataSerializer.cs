@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using XCloud.Core.Application.WorkContext;
+using XCloud.Core.Configuration;
 
 namespace XCloud.Core.Json.TextJson;
 

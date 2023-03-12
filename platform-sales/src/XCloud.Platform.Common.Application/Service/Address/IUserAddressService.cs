@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using XCloud.Application.Service;
 using XCloud.Core.Application;
 using XCloud.Core.Helper;
 using XCloud.Database.EntityFrameworkCore.Extensions;
