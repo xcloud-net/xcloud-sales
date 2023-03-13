@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using XCloud.Database.EntityFrameworkCore.Mapping;
 using XCloud.Platform.Core.Domain.Admin;
-using XCloud.Platform.Shared;
+using XCloud.Platform.Shared.Extension;
 
 namespace XCloud.Platform.Data.EntityFrameworkCore.Mapping.Admin;
 

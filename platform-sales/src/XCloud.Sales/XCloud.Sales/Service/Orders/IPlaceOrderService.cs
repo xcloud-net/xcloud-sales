@@ -1,8 +1,7 @@
 using XCloud.Application.Mapper;
-using XCloud.Core.Application;
 using XCloud.Core.Dto;
 using XCloud.Core.Helper;
-using XCloud.Platform.Common.Application.Service.Address;
+using XCloud.Platform.Application.Common.Service.Address;
 using XCloud.Redis;
 using XCloud.Sales.Application;
 using XCloud.Sales.Core;

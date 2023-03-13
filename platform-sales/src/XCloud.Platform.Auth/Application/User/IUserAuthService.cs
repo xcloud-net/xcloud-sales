@@ -3,11 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Volo.Abp;
 using XCloud.Application.Service;
-using XCloud.Core.Application;
 using XCloud.Core.Dto;
 using XCloud.Platform.Auth.Authentication;
 using XCloud.Platform.Core.Application;
-using XCloud.Platform.Member.Application.Service.User;
+using XCloud.Platform.Application.Member.Service.User;
 
 namespace XCloud.Platform.Auth.Application.User;
 

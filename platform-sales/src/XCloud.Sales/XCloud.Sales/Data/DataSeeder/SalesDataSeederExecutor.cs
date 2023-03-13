@@ -1,7 +1,6 @@
 ﻿using Volo.Abp.Data;
 using XCloud.Application.Service;
 using XCloud.Core;
-using XCloud.Core.Application;
 
 namespace XCloud.Sales.Data.DataSeeder;
 

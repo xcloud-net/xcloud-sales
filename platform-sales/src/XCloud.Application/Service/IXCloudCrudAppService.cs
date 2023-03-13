@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
-using XCloud.Core.Application;
 using XCloud.Core.Application.Entity;
 using XCloud.Core.Helper;
 using XCloud.Core.IdGenerator;

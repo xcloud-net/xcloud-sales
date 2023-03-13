@@ -27,10 +27,8 @@ x-env:
   app:redis:host: redis-5
   app:config:audit: 'false'
   # address
-  PlatformServiceAddress:InternalGateway: http://api-gateway:8888
-  PlatformServiceAddress:PublicGateway: http://localhost:8888
-  PlatformServiceAddress:FrontEnd: http://localhost:9999/store/manage
-  SalesServiceAddress:FrontEnd: http://localhost:9999/store
+  RemoteServices:InternalGateway:BaseUrl: http://api-gateway:8888
+  RemoteServices:PublicGateway:BaseUrl: http://localhost:8888
 
 #default java env
 x-java-env:

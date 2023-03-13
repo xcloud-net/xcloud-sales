@@ -35,10 +35,8 @@ x-env:
   SkyWalking:Transport:gRPC:Servers: skywalking-oap:11800
   SkyWalking:Sampling:SamplePer3Secs: 30
   # address
-  PlatformServiceAddress:InternalGateway: http://api-gateway:8888
-  PlatformServiceAddress:PublicGateway: https://your-domain.com:8888
-  PlatformServiceAddress:FrontEnd: https://your-domain.com/store/manage
-  SalesServiceAddress:FrontEnd: https://your-domain.com/store
+  RemoteServices:InternalGateway:BaseUrl: http://api-gateway:8888
+  RemoteServices:PublicGateway:BaseUrl: https://your-domain.com:8888
 
 #default java env
 x-java-env:

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using XCloud.Core.Application.WorkContext;
 using XCloud.Core.Configuration;
 
 namespace XCloud.Core;

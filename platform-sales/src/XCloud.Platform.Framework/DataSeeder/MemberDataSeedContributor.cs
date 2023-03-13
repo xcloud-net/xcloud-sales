@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
-using XCloud.Platform.Member.Application.Service.User;
+using XCloud.Platform.Application.Member.Service.User;
 
 namespace XCloud.Platform.Framework.DataSeeder;
 

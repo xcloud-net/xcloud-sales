@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.Domain.Entities;
 using XCloud.Core.Cache;
 using XCloud.Core.Dto;
+using XCloud.Platform.Application.Common.Service.Notification;
 using XCloud.Platform.Auth.Application.User;
-using XCloud.Platform.Common.Application.Service.Notification;
 using XCloud.Platform.Framework.Controller;
 
 namespace XCloud.Platform.Api.Controller.User;

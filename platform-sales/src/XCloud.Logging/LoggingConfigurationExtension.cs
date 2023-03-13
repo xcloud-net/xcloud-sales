@@ -11,7 +11,6 @@ using Serilog.Events;
 using Volo.Abp.Auditing;
 using Volo.Abp.Modularity;
 using XCloud.Core;
-using XCloud.Core.Application.WorkContext;
 using XCloud.Core.Configuration;
 using XCloud.Core.Configuration.Builder;
 using XCloud.Core.Extension;

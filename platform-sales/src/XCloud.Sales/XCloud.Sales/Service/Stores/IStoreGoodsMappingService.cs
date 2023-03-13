@@ -1,5 +1,4 @@
 using XCloud.Application.Service;
-using XCloud.Core.Application;
 using XCloud.Database.EntityFrameworkCore.Extensions;
 using XCloud.Sales.Application;
 using XCloud.Sales.Data;

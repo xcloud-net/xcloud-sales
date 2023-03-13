@@ -8,8 +8,8 @@ using Volo.Abp;
 using XCloud.Core.Application.WorkContext;
 using XCloud.Core.Dto;
 using XCloud.Core.Extension;
+using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Auth.Authentication;
-using XCloud.Platform.Member.Application.Service.User;
 
 namespace XCloud.Platform.Auth.IdentityServer.Provider;
 

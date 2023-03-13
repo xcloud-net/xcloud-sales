@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Volo.Abp;
 using Volo.Abp.Auditing;
-using XCloud.Core.Application;
 using XCloud.Core.Application.Entity;
 using XCloud.Core.Dto;
 using XCloud.Core.Extension;

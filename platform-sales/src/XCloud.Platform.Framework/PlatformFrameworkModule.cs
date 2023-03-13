@@ -11,7 +11,7 @@ using XCloud.Platform.Core.Database;
 using XCloud.Platform.Core.Job;
 using XCloud.Platform.Data.EntityFrameworkCore;
 using XCloud.Platform.Framework.Configuration;
-using XCloud.Platform.Member.Application;
+using XCloud.Platform.Application.Member;
 using XCloud.Redis;
 
 namespace XCloud.Platform.Framework;

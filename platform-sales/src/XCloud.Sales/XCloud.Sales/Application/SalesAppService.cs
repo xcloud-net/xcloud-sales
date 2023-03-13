@@ -1,6 +1,5 @@
 ﻿using Volo.Abp.Application.Services;
 using XCloud.Application.Service;
-using XCloud.Core.Application;
 using XCloud.Redis.DistributedLock;
 using XCloud.Sales.Cache;
 using XCloud.Sales.Queue;

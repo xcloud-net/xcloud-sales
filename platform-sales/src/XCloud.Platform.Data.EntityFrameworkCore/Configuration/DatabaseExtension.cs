@@ -7,6 +7,7 @@ using XCloud.Platform.Core;
 using XCloud.Platform.Data.Database;
 using XCloud.Platform.Data.EntityFrameworkCore.Database;
 using XCloud.Platform.Shared;
+using XCloud.Platform.Shared.Constants;
 using XCloud.Redis.DistributedLock;
 
 namespace XCloud.Platform.Data.EntityFrameworkCore.Configuration;

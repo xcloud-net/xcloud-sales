@@ -19,6 +19,7 @@ using XCloud.Core.Dto;
 using XCloud.Core.Extension;
 using XCloud.Core.Helper;
 using XCloud.Platform.Auth.Application.Admin.Filter;
+using XCloud.Platform.Auth.Configuration;
 
 namespace XCloud.Platform.Auth.Authentication;
 
@@ -38,7 +39,9 @@ public static class AuthenticationExtensions
 
     public static string GetIdentityServerAddressOrThrow(this IConfiguration config)
     {
-        var identityServer = config["app:identity_server:server"];
+        var option = config.GetOAuthServerOption();
+
+        var identityServer = option.Server;
         if (string.IsNullOrWhiteSpace(identityServer))
             throw new ArgumentNullException($"请配置{nameof(identityServer)}");
 
@@ -48,7 +51,8 @@ public static class AuthenticationExtensions
         return identityServer;
     }
 
-    public static async Task<DiscoveryDocumentResponse> GetIdentityServerDiscoveryDocuments(this HttpClient httpClient, IConfiguration config)
+    public static async Task<DiscoveryDocumentResponse> GetIdentityServerDiscoveryDocuments(this HttpClient httpClient,
+        IConfiguration config)
     {
         var identityServer = config.GetIdentityServerAddressOrThrow();
 
@@ -220,6 +224,7 @@ public static class AuthenticationExtensions
                 return token;
             }
         }
+
         return null;
     }
 

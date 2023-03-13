@@ -9,7 +9,6 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
 using XCloud.Application.Mapper;
-using XCloud.Core.Application;
 using XCloud.Core.Dto;
 using XCloud.Database.EntityFrameworkCore.Repository;
 

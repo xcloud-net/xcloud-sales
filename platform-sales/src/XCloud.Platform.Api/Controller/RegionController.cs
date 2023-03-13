@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using XCloud.Core.Dto;
-using XCloud.Platform.Common.Application.Service.Region;
+using XCloud.Platform.Application.Common.Service.Region;
 using XCloud.Platform.Core.Domain.Region;
 using XCloud.Platform.Framework.Controller;
 

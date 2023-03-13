@@ -7,8 +7,8 @@ using XCloud.Core.Dto;
 using XCloud.Core.Helper;
 using XCloud.Platform.Shared.Exceptions;
 using XCloud.Platform.Auth.Application.User;
-using XCloud.Platform.Member.Application.Service.Admin;
-using XCloud.Platform.Member.Application.Service.User;
+using XCloud.Platform.Application.Member.Service.Admin;
+using XCloud.Platform.Application.Member.Service.User;
 
 namespace XCloud.Platform.Auth.Application.Admin;
 

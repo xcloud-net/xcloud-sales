@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Volo.Abp;
-using XCloud.Core.Application;
 using XCloud.Core.Application.Entity;
 using XCloud.Platform.Core.Domain.User;
 

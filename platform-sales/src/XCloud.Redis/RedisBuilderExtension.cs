@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Volo.Abp.Caching;
 using Volo.Abp.Modularity;
-using XCloud.Core.Application.WorkContext;
 using XCloud.Core.Configuration;
 using XCloud.Core.Configuration.Builder;
 using XCloud.Redis.DistributedLock;

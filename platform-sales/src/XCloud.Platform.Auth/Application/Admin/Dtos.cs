@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Application.Dtos;
-using XCloud.Platform.Member.Application.Service.Admin;
+using XCloud.Platform.Application.Member.Service.Admin;
 
 namespace XCloud.Platform.Auth.Application.Admin;
 

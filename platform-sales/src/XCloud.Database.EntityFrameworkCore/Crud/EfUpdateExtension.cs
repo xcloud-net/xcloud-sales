@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.Auditing;
-using XCloud.Core.Application;
 using XCloud.Core.Application.Entity;
 
 namespace XCloud.Database.EntityFrameworkCore.Crud;

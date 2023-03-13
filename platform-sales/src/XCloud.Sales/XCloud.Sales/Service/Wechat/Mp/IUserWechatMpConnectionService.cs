@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Options;
-using XCloud.Platform.Connection.WeChat;
+using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Connection.WeChat.Settings;
-using XCloud.Platform.Member.Application.Service.User;
 using XCloud.Sales.Application;
 using XCloud.Sales.Clients.Platform;
 using XCloud.Sales.Service.Users;

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using XCloud.Core.Application;
 using XCloud.Core.Application.Entity;
 
 namespace XCloud.Database.EntityFrameworkCore.Mapping.PreConfiguration.Builtins;

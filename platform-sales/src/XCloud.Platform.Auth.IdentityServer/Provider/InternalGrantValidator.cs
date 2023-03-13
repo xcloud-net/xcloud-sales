@@ -7,9 +7,10 @@ using IdentityServer4.Validation;
 using Volo.Abp;
 using XCloud.Core.Application.WorkContext;
 using XCloud.Core.Extension;
+using XCloud.Platform.Application.Common.Service.Token;
 using XCloud.Platform.Auth.Authentication;
-using XCloud.Platform.Common.Application.Service.Token;
 using XCloud.Platform.Shared;
+using XCloud.Platform.Shared.Constants;
 
 namespace XCloud.Platform.Auth.IdentityServer.Provider;
 

@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.Domain.Entities;
 using XCloud.Core.Dto;
 using XCloud.Core.Extension;
+using XCloud.Platform.Application.Common.Service.Address;
 using XCloud.Platform.Auth.Application.User;
-using XCloud.Platform.Common.Application.Service.Address;
 using XCloud.Platform.Core.Domain.Address;
 using XCloud.Platform.Framework.Controller;
 

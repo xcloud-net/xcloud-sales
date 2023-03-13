@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using Volo.Abp.Modularity;
 using XCloud.Platform.Core.Database;
 using XCloud.Platform.Core.Job;
@@ -14,7 +13,6 @@ public static class OptionsExtension
         var configuration = context.Services.GetConfiguration();
 
         context.Services.Configure<SalesJobOption>(option => { option.AutoStartJob = true; });
-        context.Services.Configure<SalesServiceAddressOption>(configuration.GetRequiredSection("SalesServiceAddress"));
         
         //
         context.Services.Configure<PlatformJobOption>(option =>

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using XCloud.Core.Dto;
-using XCloud.Platform.Member.Application.Service.User;
+using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Shared.Exceptions;
 
 namespace XCloud.Platform.Auth.Application.User;

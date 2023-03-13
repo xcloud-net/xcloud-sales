@@ -8,11 +8,11 @@ using XCloud.AspNetMvc.Configuration;
 using XCloud.AspNetMvc.Swagger;
 using XCloud.Core.Configuration.Builder;
 using XCloud.Core.Extension;
+using XCloud.Platform.Application.Common.Service.Messenger;
+using XCloud.Platform.Application.Member;
 using XCloud.Platform.Auth.IdentityServer;
 using XCloud.Platform.Auth.IdentityServer.Configuration;
-using XCloud.Platform.Common.Application.Service.Messenger;
 using XCloud.Platform.Framework;
-using XCloud.Platform.Member.Application;
 
 namespace XCloud.Platform.Api;
 

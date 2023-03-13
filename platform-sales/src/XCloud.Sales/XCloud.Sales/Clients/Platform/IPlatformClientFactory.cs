@@ -1,8 +1,7 @@
 ﻿using System.Net.Http;
-using Microsoft.Extensions.Options;
 using Nito.AsyncEx;
-using XCloud.Platform.Shared;
-using XCloud.Platform.Shared.Settings;
+using XCloud.Application.ServiceDiscovery;
+using XCloud.Platform.Core.Extension;
 
 namespace XCloud.Sales.Clients.Platform;
 
@@ -14,15 +13,15 @@ public interface IPlatformClientFactory
 [ExposeServices(typeof(IPlatformClientFactory))]
 public class DefaultPlatformClientFactory : IPlatformClientFactory, ITransientDependency
 {
-    private readonly IOptions<PlatformServiceAddressOption> _platformServiceAddressOption;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly AsyncLazy<HttpClient> _lazyHttpClient;
+    private readonly IServiceDiscoveryService _serviceDiscoveryService;
 
     private async Task<HttpClient> RealCreateClientAsync()
     {
         await Task.CompletedTask;
         
-        var baseUrl = this._platformServiceAddressOption.Value.InternalGateway;
+        var baseUrl = await this._serviceDiscoveryService.GetRequiredInternalGatewayAddressAsync();
         var client = _httpClientFactory.CreateClient(nameof(DefaultPlatformClientFactory));
         client.BaseAddress = new Uri(baseUrl);
         
@@ -43,10 +42,10 @@ public class DefaultPlatformClientFactory : IPlatformClientFactory, ITransientDe
         return client;
     }
 
-    public DefaultPlatformClientFactory(IHttpClientFactory httpClientFactory, IOptions<PlatformServiceAddressOption> platformServiceAddressOption)
+    public DefaultPlatformClientFactory(IHttpClientFactory httpClientFactory, IServiceDiscoveryService serviceDiscoveryService)
     {
         this._httpClientFactory = httpClientFactory;
-        _platformServiceAddressOption = platformServiceAddressOption;
+        _serviceDiscoveryService = serviceDiscoveryService;
         _lazyHttpClient = new AsyncLazy<HttpClient>(RealCreateClientAsync);
     }
 }

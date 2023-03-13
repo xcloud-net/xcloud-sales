@@ -7,7 +7,6 @@ using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Timing;
-using XCloud.Core.Application;
 using XCloud.Core.Application.Entity;
 using XCloud.Core.Dto;
 using XCloud.Core.Extension;

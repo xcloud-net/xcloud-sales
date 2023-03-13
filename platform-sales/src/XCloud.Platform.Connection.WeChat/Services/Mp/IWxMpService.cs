@@ -6,13 +6,12 @@ using SKIT.FlurlHttpClient.Wechat.Api;
 using SKIT.FlurlHttpClient.Wechat.Api.Models;
 using Volo.Abp.Application.Services;
 using XCloud.Application.Service;
-using XCloud.Core.Application;
-using XCloud.Platform.Common.Application.Extension;
-using XCloud.Platform.Common.Application.Service.Storage;
+using XCloud.Platform.Application.Common.Extension;
+using XCloud.Platform.Application.Common.Service.Storage;
 using XCloud.Platform.Connection.WeChat.Configuration;
 using XCloud.Platform.Connection.WeChat.Exceptions;
 using XCloud.Platform.Connection.WeChat.Settings;
-using XCloud.Platform.Member.Application.Service.User;
+using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Redis;
 using XCloud.Redis.DistributedLock;
 

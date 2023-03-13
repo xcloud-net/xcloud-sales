@@ -10,10 +10,10 @@ using XCloud.Core.Cache;
 using XCloud.Core.Dto;
 using XCloud.Core.Extension;
 using XCloud.Core.Helper;
+using XCloud.Platform.Application.Member.Extension;
+using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Auth.Application.User;
 using XCloud.Platform.Framework.Controller;
-using XCloud.Platform.Member.Application.Extension;
-using XCloud.Platform.Member.Application.Service.User;
 
 namespace XCloud.Platform.Api.Controller.User;
 

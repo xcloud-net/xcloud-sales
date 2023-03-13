@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Modularity;
 using XCloud.Core;
@@ -34,7 +33,6 @@ public static class WechatExtension
         return section;
     }
 
-    [Obsolete]
     public static WechatMpOption GetWxMpConfig(this IConfiguration configuration)
     {
         var config = new WechatMpOption();

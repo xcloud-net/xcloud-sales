@@ -9,7 +9,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\XCloud.Core\XCloud.Core.csproj" />
-		<ProjectReference Include="..\XCloud.Platform.Member.Application\XCloud.Platform.Member.Application.csproj" />
+		<ProjectReference Include="..\XCloud.Platform.Application.Member\XCloud.Platform.Application.Member.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 	  <None Remove="SKIT.FlurlHttpClient.Wechat.TenpayV3" />

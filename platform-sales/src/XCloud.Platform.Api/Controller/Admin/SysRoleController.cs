@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using XCloud.Core.Dto;
+using XCloud.Platform.Application.Member.Service.Security;
 using XCloud.Platform.Auth.Application.Admin;
 using XCloud.Platform.Framework.Controller;
-using XCloud.Platform.Member.Application.Service.Security;
 
 namespace XCloud.Platform.Api.Controller.Admin;
 

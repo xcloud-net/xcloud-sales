@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
 using XCloud.Core.Dto;
-using XCloud.Platform.Member.Application.Service.Admin;
-using XCloud.Platform.Member.Application.Service.User;
+using XCloud.Platform.Application.Member.Service.Admin;
+using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Redis;
 using XCloud.Sales.Application;
 using XCloud.Sales.Clients.Platform;

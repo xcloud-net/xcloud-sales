@@ -10,6 +10,7 @@ using XCloud.Core.DependencyInjection.Extension;
 using XCloud.Platform.Auth.IdentityServer.Database;
 using XCloud.Platform.Auth.IdentityServer.Provider;
 using XCloud.Platform.Shared;
+using XCloud.Platform.Shared.Constants;
 
 namespace XCloud.Platform.Auth.IdentityServer.Configuration;
 

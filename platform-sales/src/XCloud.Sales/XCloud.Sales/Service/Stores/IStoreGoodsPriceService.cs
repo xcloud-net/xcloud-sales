@@ -1,6 +1,5 @@
 using XCloud.Application.Extension;
 using XCloud.Application.Mapper;
-using XCloud.Core.Application;
 using XCloud.Core.Application.Entity;
 using XCloud.Sales.Application;
 using XCloud.Sales.Data;

@@ -1,7 +1,6 @@
 using XCloud.Application.Extension;
-using XCloud.Core.Application;
 using XCloud.Database.EntityFrameworkCore.Extensions;
-using XCloud.Platform.Shared;
+using XCloud.Platform.Shared.Extension;
 using XCloud.Redis;
 using XCloud.Sales.Application;
 using XCloud.Sales.Data;

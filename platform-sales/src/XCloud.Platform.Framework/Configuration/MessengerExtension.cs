@@ -4,8 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Volo.Abp.Modularity;
 using XCloud.Core.Configuration.Builder;
-using XCloud.Platform.Common.Application.Service.Messenger;
-using XCloud.Platform.Common.Application.Service.Messenger.Transport;
+using XCloud.Platform.Application.Common.Service.Messenger;
+using XCloud.Platform.Application.Common.Service.Messenger.Transport;
 
 namespace XCloud.Platform.Framework.Configuration;
 

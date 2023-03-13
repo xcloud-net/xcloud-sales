@@ -32,13 +32,8 @@ using XCloud.Job;
 using XCloud.MessageBus;
 using XCloud.Redis;
 using XCloud.Platform.Connection.WeChat;
-using XCloud.Platform.Core.Database;
-using XCloud.Platform.Core.Job;
 using XCloud.Platform.Framework;
 using XCloud.Sales.Configuration;
-using XCloud.Sales.Core;
-using XCloud.Sales.Core.Settings;
-using XCloud.Sales.Data.Database;
 using XCloud.Sales.Data.DataSeeder;
 using XCloud.Sales.Service.Catalog;
 

@@ -2,7 +2,6 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using XCloud.Core.Application.WorkContext;
 using XCloud.Core.Configuration;
 using XCloud.Core.Configuration.Builder;
 using XCloud.Redis;

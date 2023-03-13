@@ -4,6 +4,7 @@ using System.Linq;
 using IdentityServer4.Models;
 using XCloud.Core.Extension;
 using XCloud.Platform.Shared;
+using XCloud.Platform.Shared.Constants;
 using static IdentityServer4.IdentityServerConstants;
 
 namespace XCloud.Platform.Auth.IdentityServer.Database;

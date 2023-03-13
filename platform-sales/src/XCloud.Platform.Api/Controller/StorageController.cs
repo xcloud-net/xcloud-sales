@@ -3,19 +3,17 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using XCloud.Application.Images;
 using XCloud.Application.Storage;
 using XCloud.Core.Dto;
 using XCloud.Core.Helper;
+using XCloud.Platform.Application.Common.Configuration;
+using XCloud.Platform.Application.Common.Extension;
+using XCloud.Platform.Application.Common.Service.Storage;
 using XCloud.Platform.Auth.Application.User;
-using XCloud.Platform.Common.Application.Configuration;
-using XCloud.Platform.Common.Application.Extension;
-using XCloud.Platform.Common.Application.Service.Storage;
+using XCloud.Platform.Core.Extension;
 using XCloud.Platform.Framework.Controller;
-using XCloud.Platform.Shared;
 using XCloud.Platform.Shared.Dto;
-using XCloud.Platform.Shared.Settings;
 using XCloud.Platform.Shared.Storage;
 
 namespace XCloud.Platform.Api.Controller;
@@ -23,7 +21,6 @@ namespace XCloud.Platform.Api.Controller;
 [Route("/api/platform/storage")]
 public class StorageController : PlatformBaseController, IUserController
 {
-    private readonly IOptions<PlatformServiceAddressOption> _platformServiceAddressOption;
     private readonly IStorageService _fileUploadService;
     private readonly IStorageMetaService _storageMetaService;
     private readonly IImageProcessingService _imageProcessingService;
@@ -36,15 +33,13 @@ public class StorageController : PlatformBaseController, IUserController
         IStorageUrlResolver storageUrlResolver,
         IImageProcessingService imageProcessingService,
         IThumborService thumborService,
-        StorageHelper storageHelper, IOptions<PlatformServiceAddressOption> platformServiceAddressOption)
+        StorageHelper storageHelper)
     {
         this._storageUrlResolver = storageUrlResolver;
         this._storageMetaService = storageMetaService;
         this._imageProcessingService = imageProcessingService;
         this._thumborService = thumborService;
         this._storageHelper = storageHelper;
-        _platformServiceAddressOption = platformServiceAddressOption;
-
         this._fileUploadService = fileUploadService;
     }
 
@@ -115,7 +110,7 @@ public class StorageController : PlatformBaseController, IUserController
         var thumborEnabled = this.Configuration.IsThumborEnabled();
         if (thumborEnabled)
         {
-            var gatewayAddress = this._platformServiceAddressOption.Value.InternalGateway;
+            var gatewayAddress = await this.ServiceDiscoveryService.GetRequiredInternalGatewayAddressAsync();
 
             var thumborInputUrl = Com.ConcatUrl(gatewayAddress, "/api/platform/storage/file/origin/", key);
 
@@ -181,7 +176,7 @@ public class StorageController : PlatformBaseController, IUserController
             w ??= 0;
             if ((h > 0 || w > 0) && this._storageHelper.IsImage(key))
             {
-                var gatewayAddress = this._platformServiceAddressOption.Value.InternalGateway;
+                var gatewayAddress = await this.ServiceDiscoveryService.GetRequiredInternalGatewayAddressAsync();
 
                 var thumborInputUrl = Com.ConcatUrl(gatewayAddress, "/api/platform/storage/file/origin/", key);
 

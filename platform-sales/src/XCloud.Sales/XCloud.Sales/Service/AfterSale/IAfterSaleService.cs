@@ -1,5 +1,4 @@
-﻿using XCloud.Core.Application;
-using XCloud.Core.Application.Entity;
+﻿using XCloud.Core.Application.Entity;
 using XCloud.Core.Dto;
 using XCloud.Core.Helper;
 using XCloud.Database.EntityFrameworkCore.Extensions;
