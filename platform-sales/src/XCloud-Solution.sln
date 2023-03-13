@@ -77,6 +77,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCloud.Sales.Test", "XCloud
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCloud.Sales.ElasticSearch", "XCloud.Sales\XCloud.Sales.ElasticSearch\XCloud.Sales.ElasticSearch.csproj", "{F22569A9-7D9D-48FF-BF4B-1C94D0A9E5BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCloud.Platform.Application.Messenger", "XCloud.Platform.Application.Messenger\XCloud.Platform.Application.Messenger.csproj", "{CD1AD433-97EA-4830-9F44-76A9CCCEEA02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -203,6 +205,10 @@ Global
 		{F22569A9-7D9D-48FF-BF4B-1C94D0A9E5BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F22569A9-7D9D-48FF-BF4B-1C94D0A9E5BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F22569A9-7D9D-48FF-BF4B-1C94D0A9E5BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD1AD433-97EA-4830-9F44-76A9CCCEEA02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD1AD433-97EA-4830-9F44-76A9CCCEEA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD1AD433-97EA-4830-9F44-76A9CCCEEA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD1AD433-97EA-4830-9F44-76A9CCCEEA02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -241,6 +247,7 @@ Global
 		{DBFE1BB1-DD46-42A3-99D2-5BFD9D9C7796} = {6F974FDB-D7E4-44E0-9DD6-415C03F605BD}
 		{FE6BE23C-98B3-4053-953B-E3B2B7A2954B} = {6F974FDB-D7E4-44E0-9DD6-415C03F605BD}
 		{1422FEFE-B224-49D2-BF16-C0AEC7727CE1} = {6F974FDB-D7E4-44E0-9DD6-415C03F605BD}
+		{CD1AD433-97EA-4830-9F44-76A9CCCEEA02} = {6F974FDB-D7E4-44E0-9DD6-415C03F605BD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BCE6D6AC-1FCF-437D-87BD-EA135E67597C}

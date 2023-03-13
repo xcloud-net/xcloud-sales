@@ -29,7 +29,7 @@ public class UserNotificationController : PlatformBaseController, IUserControlle
         if (entity == null || entity.UserId != loginUser.Id)
             throw new EntityNotFoundException(nameof(DeleteNotification));
 
-        await this._notificationService.UpdateNotificationStatusAsync(dto);
+        await this._notificationService.UpdateStatusAsync(dto);
 
         return new ApiResponse<object>();
     }
@@ -40,7 +40,7 @@ public class UserNotificationController : PlatformBaseController, IUserControlle
         var loginUser = await this.GetRequiredAuthedUserAsync();
         dto.UserId = loginUser.UserId;
 
-        var res = await this._notificationService.QueryPaginationAsync(dto);
+        var res = await this._notificationService.QueryPagingAsync(dto);
 
         return res;
     }

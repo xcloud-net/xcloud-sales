@@ -3,6 +3,7 @@
     <Import Project="..\common.props" />
 
     <ItemGroup>
+      <ProjectReference Include="..\XCloud.Platform.Application.Messenger\XCloud.Platform.Application.Messenger.csproj" />
       <ProjectReference Include="..\XCloud.Platform.Connection.WeChat\XCloud.Platform.Connection.WeChat.csproj" />
       <ProjectReference Include="..\XCloud.Platform.Data.EntityFrameworkCore\XCloud.Platform.Data.EntityFrameworkCore.csproj" />
       <ProjectReference Include="..\XCloud.Platform.Application.Member\XCloud.Platform.Application.Member.csproj" />

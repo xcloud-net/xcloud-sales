@@ -15,7 +15,6 @@ using XCloud.Platform.Auth.Application.User;
 using XCloud.Platform.Auth.Authentication;
 using XCloud.Platform.Auth.Configuration;
 using XCloud.Platform.Framework.Controller;
-using XCloud.Platform.Shared;
 using XCloud.Platform.Shared.Constants;
 
 namespace XCloud.Platform.Api.Controller;

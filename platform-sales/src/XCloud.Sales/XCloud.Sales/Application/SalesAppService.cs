@@ -22,5 +22,5 @@ public abstract class SalesAppService : XCloudApplicationService, ISalesAppServi
     protected ICurrentStoreSelector CurrentStoreSelector =>
         this.LazyServiceProvider.LazyGetRequiredService<ICurrentStoreSelector>();
 
-    protected IEventBusService EventBusService => LazyServiceProvider.LazyGetRequiredService<IEventBusService>();
+    protected SalesEventBusService SalesEventBusService => LazyServiceProvider.LazyGetRequiredService<SalesEventBusService>();
 }

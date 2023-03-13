@@ -65,7 +65,7 @@ public class OrderShipmentProcessingService : SalesAppService, IOrderShipmentPro
 
         await db.TrySaveChangesAsync();
 
-        await this.EventBusService.NotifyInsertOrderNote(new OrderNote()
+        await this.SalesEventBusService.NotifyInsertOrderNote(new OrderNote()
         {
             OrderId = order.Id,
             Note = $"order has been shipped",

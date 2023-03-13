@@ -8,7 +8,6 @@ using Volo.Abp.MultiTenancy;
 using XCloud.AspNetMvc;
 using XCloud.Platform.Auth.Configuration;
 using XCloud.Platform.Application.Member;
-using XCloud.Platform.Shared;
 using XCloud.Platform.Shared.Constants;
 
 namespace XCloud.Platform.Auth;

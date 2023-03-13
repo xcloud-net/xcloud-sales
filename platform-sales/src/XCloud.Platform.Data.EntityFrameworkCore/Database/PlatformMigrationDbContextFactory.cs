@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Steeltoe.Extensions.Configuration.Placeholder;
 using XCloud.Database.EntityFrameworkCore.MySQL;
-using XCloud.Platform.Shared;
 using XCloud.Platform.Shared.Constants;
 
 namespace XCloud.Platform.Data.EntityFrameworkCore.Database;

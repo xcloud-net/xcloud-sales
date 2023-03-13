@@ -36,7 +36,7 @@ public class UserJobs : SalesAppService, ITransientDependency
 
             foreach (var m in response)
             {
-                await this.EventBusService.NotifySyncUserInfoFromPlatformAsync(m.Id);
+                await this.SalesEventBusService.NotifySyncUserInfoFromPlatformAsync(m.Id);
             }
         }
     }

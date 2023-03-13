@@ -43,9 +43,9 @@ public interface IUserMobileService : IXCloudApplicationService
 public class UserMobileService : PlatformApplicationService, IUserMobileService
 {
     private readonly IMemberRepository<SysUserIdentity> _userMobileRepository;
-    private readonly IMemberShipMessageBus _memberShipMessageBus;
+    private readonly MemberMessageBus _memberShipMessageBus;
 
-    public UserMobileService(IMemberRepository<SysUserIdentity> userMobileRepository, IMemberShipMessageBus memberShipMessageBus)
+    public UserMobileService(IMemberRepository<SysUserIdentity> userMobileRepository, MemberMessageBus memberShipMessageBus)
     {
         this._userMobileRepository = userMobileRepository;
         _memberShipMessageBus = memberShipMessageBus;

@@ -15,6 +15,6 @@ public class LoggingJobs : SalesAppService, ITransientDependency
     [LogExceptionSilence]
     public virtual async Task TriggerCleanExpiredLogsAsync()
     {
-        await this.EventBusService.NotifyClearActivityLog();
+        await this.SalesEventBusService.NotifyClearActivityLog();
     }
 }

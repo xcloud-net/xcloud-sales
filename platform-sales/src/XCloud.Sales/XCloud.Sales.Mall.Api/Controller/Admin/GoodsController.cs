@@ -86,7 +86,7 @@ public class GoodsController : ShopBaseController
 
         await this._goodsService.SetTagsAsync(dto);
             
-        await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(dto.Id));
+        await this.SalesEventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(dto.Id));
 
         return new ApiResponse<object>();
     }
@@ -101,7 +101,7 @@ public class GoodsController : ShopBaseController
 
         var res = await this._goodsService.SetSeoNameAsync(dto.GoodsId, dto.SeoName);
             
-        await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(dto.GoodsId));
+        await this.SalesEventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(dto.GoodsId));
             
         return res;
     }
@@ -183,7 +183,7 @@ public class GoodsController : ShopBaseController
 
             var res = await this._goodsService.UpdateAsync(model);
                 
-            await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(goods.Id));
+            await this.SalesEventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(goods.Id));
                 
             return res;
         }
@@ -191,7 +191,7 @@ public class GoodsController : ShopBaseController
         {
             var res = await this._goodsService.InsertAsync(model);
                 
-            //await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(res.Data.Id));
+            //await this.SalesEventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(res.Data.Id));
                 
             return res;
         }
@@ -211,7 +211,7 @@ public class GoodsController : ShopBaseController
 
         await _goodsService.UpdateStatusAsync(dto);
             
-        await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(goods.Id));
+        await this.SalesEventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(goods.Id));
 
         return new ApiResponse<object>();
     }
@@ -231,7 +231,7 @@ public class GoodsController : ShopBaseController
 
         await this._goodsService.SaveGoodsImagesV1Async(dto);
             
-        await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(goods.Id));
+        await this.SalesEventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(goods.Id));
 
         return new ApiResponse<object>();
     }
@@ -250,7 +250,7 @@ public class GoodsController : ShopBaseController
 
         await this._goodsService.SaveGoodsCombinationImagesV1Async(dto);
             
-        await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(goods.Id));
+        await this.SalesEventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(goods.Id));
 
         return new ApiResponse<object>();
     }

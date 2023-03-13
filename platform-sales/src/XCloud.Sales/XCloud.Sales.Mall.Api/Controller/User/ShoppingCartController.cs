@@ -85,7 +85,7 @@ public class ShoppingCartController : ShopBaseController
         dto.UserId = loginUser.Id;
         var res = await _shoppingCartService.AddShoppingCartAsync(dto);
 
-        await this.EventBusService.NotifyInsertActivityLog(new ActivityLog()
+        await this.SalesEventBusService.NotifyInsertActivityLog(new ActivityLog()
         {
             ActivityLogTypeId = (int)ActivityLogType.AddShoppingCart,
             UserId = loginUser.Id,
@@ -133,7 +133,7 @@ public class ShoppingCartController : ShopBaseController
 
         await this._shoppingCartService.DeleteShoppingCartAsync(new[] { dto.Id });
 
-        await this.EventBusService.NotifyInsertActivityLog(new ActivityLog()
+        await this.SalesEventBusService.NotifyInsertActivityLog(new ActivityLog()
         {
             ActivityLogTypeId = (int)ActivityLogType.DeleteShoppingCart,
             UserId = loginUser.Id,

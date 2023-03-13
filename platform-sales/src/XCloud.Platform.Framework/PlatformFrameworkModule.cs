@@ -12,6 +12,7 @@ using XCloud.Platform.Core.Job;
 using XCloud.Platform.Data.EntityFrameworkCore;
 using XCloud.Platform.Framework.Configuration;
 using XCloud.Platform.Application.Member;
+using XCloud.Platform.Application.Messenger;
 using XCloud.Redis;
 
 namespace XCloud.Platform.Framework;
@@ -23,6 +24,7 @@ namespace XCloud.Platform.Framework;
     typeof(MessageBusModule),
     typeof(WechatModule),
     typeof(PlatformMemberModule),
+    typeof(PlatformMessengerModule),
     typeof(PlatformDataEntityFrameworkCoreModule)
 )]
 public class PlatformFrameworkModule : AbpModule

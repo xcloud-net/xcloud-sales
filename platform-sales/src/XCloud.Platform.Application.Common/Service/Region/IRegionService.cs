@@ -12,13 +12,13 @@ public interface IRegionService : IXCloudApplicationService
 {
     Task<SysRegion[]> QueryByParentIdAsync(string parentId);
 
-    [Obsolete("may cause memory overflow exception")]
     Task<SysRegion[]> QueryAllAsync();
 }
 
 public class RegionService : PlatformApplicationService, IRegionService
 {
     private readonly IPlatformRepository<SysRegion> _regionRepository;
+
     public RegionService(IPlatformRepository<SysRegion> regionRepository)
     {
         this._regionRepository = regionRepository;

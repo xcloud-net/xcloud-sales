@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using XCloud.Platform.Auth.Application.Admin;
 using XCloud.Platform.Auth.Authentication;
-using XCloud.Platform.Shared;
 using XCloud.Platform.Shared.Constants;
 
 namespace XCloud.Platform.Auth.Configuration;

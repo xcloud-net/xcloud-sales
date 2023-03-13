@@ -9,6 +9,12 @@ public static class SalesMessageTopics
     public const string RemoveCartsAfterPlaceOrder = "remove-carts-after-place-order";
 
     public const string InsertOrderNote = "insert-order-note";
+
+    public const string OrderCreated = "order-created";
+
+    public const string OrderShipped = "order-shipped";
+
+    public const string OrderCanceled = "order-canceled";
         
     public const string RefreshGoodsInfo = "refresh-goods-info";
 

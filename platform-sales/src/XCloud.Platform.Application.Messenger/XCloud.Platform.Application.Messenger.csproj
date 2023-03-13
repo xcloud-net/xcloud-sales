@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\common.props" />
+
+    <ItemGroup>
+      <ProjectReference Include="..\XCloud.Job\XCloud.Job.csproj" />
+      <ProjectReference Include="..\XCloud.Redis\XCloud.Redis.csproj" />
+    </ItemGroup>
+
+</Project>

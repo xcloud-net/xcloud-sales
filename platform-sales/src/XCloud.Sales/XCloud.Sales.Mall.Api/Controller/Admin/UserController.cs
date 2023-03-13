@@ -26,7 +26,7 @@ public class UserController : ShopBaseController
         await this._userService.UpdateStatusAsync(dto);
 
         await this.CurrentUnitOfWork.SaveChangesAsync();
-        await this.EventBusService.NotifyRefreshUserInfoAsync(dto.Id);
+        await this.SalesEventBusService.NotifyRefreshUserInfoAsync(dto.Id);
         return new ApiResponse<object>();
     }
 

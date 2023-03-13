@@ -11,7 +11,6 @@ using XCloud.Platform.Core.Domain.Admin;
 using XCloud.Platform.Core.Domain.Security;
 using XCloud.Platform.Core.Domain.User;
 using XCloud.Platform.Data.Database;
-using XCloud.Platform.Shared;
 using XCloud.Platform.Shared.Constants;
 using XCloud.Platform.Shared.Helper;
 using XCloud.Redis;

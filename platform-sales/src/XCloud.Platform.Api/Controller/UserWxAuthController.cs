@@ -19,7 +19,6 @@ using XCloud.Platform.Connection.WeChat.Configuration;
 using XCloud.Platform.Connection.WeChat.Services.Mp;
 using XCloud.Platform.Core.Domain.User;
 using XCloud.Platform.Framework.Controller;
-using XCloud.Platform.Shared;
 using XCloud.Platform.Shared.Constants;
 
 namespace XCloud.Platform.Api.Controller;

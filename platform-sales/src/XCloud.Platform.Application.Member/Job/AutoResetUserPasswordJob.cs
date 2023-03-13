@@ -3,7 +3,6 @@ using Volo.Abp.DependencyInjection;
 using System.Threading.Tasks;
 using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Core.Application;
-using XCloud.Platform.Shared;
 using XCloud.Platform.Shared.Constants;
 using XCloud.Platform.Shared.Helper;
 using XCloud.Redis;

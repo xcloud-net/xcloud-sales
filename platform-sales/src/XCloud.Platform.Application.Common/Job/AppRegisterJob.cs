@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Uow;
-using XCloud.Platform.Application.Common.Service.App;
+using XCloud.Platform.Application.Common.Service.Apps;
 using XCloud.Platform.Core.Application;
 
 namespace XCloud.Platform.Application.Common.Job;

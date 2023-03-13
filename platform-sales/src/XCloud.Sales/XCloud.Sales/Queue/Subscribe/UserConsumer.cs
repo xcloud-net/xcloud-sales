@@ -25,7 +25,7 @@ public class UserConsumer : SalesAppService, ICapSubscribe
             return;
 
         await this._userProfileService.UpdateProfileFromPlatformAsync(message.Id);
-        await this.EventBusService.NotifyRefreshUserInfoAsync(message.Id);
+        await this.SalesEventBusService.NotifyRefreshUserInfoAsync(message.Id);
     }
     
     [CapSubscribe(SalesMessageTopics.RefreshUserInformation)]

@@ -15,13 +15,13 @@ public interface INotificationService : IXCloudApplicationService
 {
     Task<SysNotificationDto> QueryByIdAsync(string notificationId);
 
-    Task<SysNotification> InsertNotificationAsync(SysNotificationDto dto);
+    Task<SysNotification> InsertAsync(SysNotificationDto dto);
 
-    Task UpdateNotificationStatusAsync(UpdateNotificationStatusInput dto);
+    Task UpdateStatusAsync(UpdateNotificationStatusInput dto);
 
     Task DeleteAsync(string notificationId);
 
-    Task<PagedResponse<SysNotificationDto>> QueryPaginationAsync(QueryNotificationInput dto);
+    Task<PagedResponse<SysNotificationDto>> QueryPagingAsync(QueryNotificationInput dto);
 
     Task<int> UnreadCountAsync(string userId);
 
@@ -30,16 +30,16 @@ public interface INotificationService : IXCloudApplicationService
 
 public class NotificationService : PlatformApplicationService, INotificationService
 {
-    private readonly IPlatformRepository<SysNotification> _repo;
+    private readonly IPlatformRepository<SysNotification> _repository;
 
-    public NotificationService(IPlatformRepository<SysNotification> repo)
+    public NotificationService(IPlatformRepository<SysNotification> repository)
     {
-        this._repo = repo;
+        this._repository = repository;
     }
 
     public async Task<SysNotificationDto> QueryByIdAsync(string notificationId)
     {
-        var entity = await this._repo.QueryOneAsync(x => x.Id == notificationId);
+        var entity = await this._repository.QueryOneAsync(x => x.Id == notificationId);
 
         if (entity == null)
             return null;
@@ -49,27 +49,28 @@ public class NotificationService : PlatformApplicationService, INotificationServ
         return dto;
     }
 
-    public async Task<SysNotification> InsertNotificationAsync(SysNotificationDto dto)
+    public async Task<SysNotification> InsertAsync(SysNotificationDto dto)
     {
         var entity = this.ObjectMapper.Map<SysNotificationDto, SysNotification>(dto);
 
         entity.Id = this.GuidGenerator.CreateGuidString();
         entity.CreationTime = this.Clock.Now;
+        entity.LastModificationTime = entity.CreationTime;
 
-        await this._repo.InsertAsync(entity);
+        await this._repository.InsertAsync(entity);
 
         return entity;
     }
 
-    public async Task UpdateNotificationStatusAsync(UpdateNotificationStatusInput dto)
+    public async Task UpdateStatusAsync(UpdateNotificationStatusInput dto)
     {
-        var db = await this._repo.GetDbContextAsync();
+        var db = await this._repository.GetDbContextAsync();
         var set = db.Set<SysNotification>();
 
         var entity = await set.FirstOrDefaultAsync(x => x.Id == dto.Id);
 
         if (entity == null)
-            throw new EntityNotFoundException(nameof(UpdateNotificationStatusAsync));
+            throw new EntityNotFoundException(nameof(UpdateStatusAsync));
 
         if (dto.Read != null)
         {
@@ -79,26 +80,28 @@ public class NotificationService : PlatformApplicationService, INotificationServ
             entity.Read = dto.Read.Value;
         }
 
+        entity.LastModificationTime = this.Clock.Now;
+
         await db.TrySaveChangesAsync();
     }
 
     public async Task DeleteAsync(string notificationId)
     {
-        var entity = await this._repo.QueryOneAsync(x => x.Id == notificationId);
+        var entity = await this._repository.QueryOneAsync(x => x.Id == notificationId);
 
         if (entity == null)
             throw new ArgumentNullException(nameof(DeleteAsync));
 
-        await this._repo.DeleteAsync(entity);
+        await this._repository.DeleteAsync(entity);
         await this.UnreadCountAsync(entity.UserId, new CachePolicy() { Refresh = true });
     }
 
-    public async Task<PagedResponse<SysNotificationDto>> QueryPaginationAsync(QueryNotificationInput dto)
+    public async Task<PagedResponse<SysNotificationDto>> QueryPagingAsync(QueryNotificationInput dto)
     {
         if (string.IsNullOrWhiteSpace(dto.UserId))
             throw new ArgumentNullException(nameof(dto.UserId));
 
-        var db = await this._repo.GetDbContextAsync();
+        var db = await this._repository.GetDbContextAsync();
 
         var query = from notice in db.Set<SysNotification>().AsNoTracking()
             select new { notice };
@@ -141,7 +144,7 @@ public class NotificationService : PlatformApplicationService, INotificationServ
         if (string.IsNullOrWhiteSpace(userId))
             throw new ArgumentNullException(nameof(UnreadCountAsync));
 
-        var db = await this._repo.GetDbContextAsync();
+        var db = await this._repository.GetDbContextAsync();
 
         var query = from notice in db.Set<SysNotification>().AsNoTracking()
             select new { notice };

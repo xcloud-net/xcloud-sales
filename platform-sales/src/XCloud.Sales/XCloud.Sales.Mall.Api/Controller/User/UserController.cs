@@ -45,7 +45,7 @@ public class UserController : ShopBaseController
         var loginUser = await this.StoreAuthService.GetRequiredStoreUserAsync();
 
         //try set last activity time
-        await this.EventBusService.NotifySetUserLastActivityTimeAsync(loginUser.Id);
+        await this.SalesEventBusService.NotifySetUserLastActivityTimeAsync(loginUser.Id);
             
         var model = await this._userProfileService.QueryProfileAsync(loginUser.Id,
             new CachePolicy() { Cache = true });

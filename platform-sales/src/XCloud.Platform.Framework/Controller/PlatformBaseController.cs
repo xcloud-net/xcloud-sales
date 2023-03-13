@@ -11,11 +11,11 @@ public abstract class PlatformBaseController : XCloudBaseController
     protected IServiceDiscoveryService ServiceDiscoveryService =>
         this.LazyServiceProvider.LazyGetRequiredService<IServiceDiscoveryService>();
     
-    protected ICommonServiceMessageBus CommonServiceMessageBus =>
-        this.LazyServiceProvider.LazyGetRequiredService<ICommonServiceMessageBus>();
+    protected CommonMessageBus CommonServiceMessageBus =>
+        this.LazyServiceProvider.LazyGetRequiredService<CommonMessageBus>();
 
-    protected IMemberShipMessageBus MemberShipMessageBus =>
-        this.LazyServiceProvider.LazyGetRequiredService<IMemberShipMessageBus>();
+    protected MemberMessageBus MemberShipMessageBus =>
+        this.LazyServiceProvider.LazyGetRequiredService<MemberMessageBus>();
     
     protected IAdminSecurityService SecurityService =>
         this.LazyServiceProvider.LazyGetRequiredService<IAdminSecurityService>();

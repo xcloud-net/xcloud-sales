@@ -90,7 +90,7 @@ public class OrderProcessingService : SalesAppService, IOrderProcessingService
             Message = "from order",
         });
 
-        await this.EventBusService.NotifyInsertOrderNote(new OrderNote()
+        await this.SalesEventBusService.NotifyInsertOrderNote(new OrderNote()
         {
             OrderId = order.Id,
             Note = $"Order.Message.OrderStatusChanged:{input.Comment}",
@@ -138,7 +138,7 @@ public class OrderProcessingService : SalesAppService, IOrderProcessingService
 
         await db.TrySaveChangesAsync();
 
-        await this.EventBusService.NotifyInsertOrderNote(new OrderNote()
+        await this.SalesEventBusService.NotifyInsertOrderNote(new OrderNote()
         {
             OrderId = order.Id,
             Note = $"order is canceled:{input.Comment}",
