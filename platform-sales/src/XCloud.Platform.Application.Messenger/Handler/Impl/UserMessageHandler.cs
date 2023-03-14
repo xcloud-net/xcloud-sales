@@ -45,7 +45,7 @@ public class UserMessageHandler : IMessageHandler
             if (connection.ClientIdentity.SubjectId == payload.Receiver)
             {
                 find = true;
-                await connection.SendMessage(context.Message);
+                await connection.SendMessageToClientAsync(context.Message);
             }
         }
 

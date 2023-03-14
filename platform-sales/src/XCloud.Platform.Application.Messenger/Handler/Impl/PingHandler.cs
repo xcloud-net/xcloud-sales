@@ -17,7 +17,7 @@ public class PingHandler : IMessageHandler
 
         context.Connection.ClientIdentity.PingTime = info.Payload.PingTimeUtc;
 
-        await context.Connection.SendMessage(new MessageWrapper()
+        await context.Connection.SendMessageToClientAsync(new MessageWrapper()
         {
             MessageType = MessageTypeConst.Ping,
             Body = "success"

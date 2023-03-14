@@ -14,7 +14,7 @@ public interface IConnection : IDisposable
     
     void RequestAbort();
     
-    Task SendMessage(MessageWrapper data);
+    Task SendMessageToClientAsync(MessageWrapper data);
     
     Task CloseAsync(CancellationToken? token = null);
     

@@ -7,6 +7,7 @@ using XCloud.Core.Helper;
 using XCloud.Platform.Application.Messenger.Client;
 using XCloud.Platform.Application.Messenger.Connection;
 using XCloud.Platform.Application.Messenger.Handler;
+using XCloud.Platform.Application.Messenger.Protocol.Websocket;
 using XCloud.Platform.Application.Messenger.Server;
 
 namespace XCloud.Platform.Application.Messenger.Configuration;

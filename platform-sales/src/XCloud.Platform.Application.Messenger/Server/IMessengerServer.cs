@@ -1,5 +1,6 @@
 using XCloud.Core.Json;
 using XCloud.Platform.Application.Messenger.Connection;
+using XCloud.Platform.Application.Messenger.Event;
 using XCloud.Platform.Application.Messenger.Handler;
 using XCloud.Platform.Application.Messenger.Message;
 using XCloud.Platform.Application.Messenger.Registry;
@@ -11,6 +12,8 @@ namespace XCloud.Platform.Application.Messenger.Server;
 public interface IMessengerServer : IDisposable
 {
     ConnectionManager ConnectionManager { get; }
+    
+    IMessengerEventManager MessengerEventManager { get; }
 
     /// <summary>
     /// 用于路由
@@ -19,7 +22,6 @@ public interface IMessengerServer : IDisposable
 
     IJsonDataSerializer MessageSerializer { get; }
     IRegistrationProvider RegistrationProvider { get; }
-    IMessageStoreService MessageStoreService { get; }
     IMessageRouter MessageRouter { get; }
     IMessageHandler[] MessageHandlers { get; }
 

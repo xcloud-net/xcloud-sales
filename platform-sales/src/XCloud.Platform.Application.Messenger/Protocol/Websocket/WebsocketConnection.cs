@@ -3,11 +3,11 @@ using FluentAssertions;
 using Nito.Disposables;
 using XCloud.Core.Extension;
 using XCloud.Platform.Application.Messenger.Client;
+using XCloud.Platform.Application.Messenger.Connection;
 using XCloud.Platform.Application.Messenger.Message;
-using XCloud.Platform.Application.Messenger.Protocol.Websocket;
 using XCloud.Platform.Application.Messenger.Server;
 
-namespace XCloud.Platform.Application.Messenger.Connection;
+namespace XCloud.Platform.Application.Messenger.Protocol.Websocket;
 
 /// <summary>
 /// 需要重写等号运算符
@@ -41,7 +41,7 @@ public class WebsocketConnection : IConnection
     public WebSocket SocketChannel { get; }
     public ClientIdentity ClientIdentity { get; }
 
-    public async Task SendMessage(MessageWrapper data)
+    public async Task SendMessageToClientAsync(MessageWrapper data)
     {
         if (data == null)
             throw new ArgumentNullException(nameof(data));

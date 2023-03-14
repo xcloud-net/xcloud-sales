@@ -10,7 +10,8 @@ public class BroadcastHandler : IMessageHandler
 
     public async Task HandleMessageFromTransportAsync(TransportMessageContext context)
     {
-        var tasks = context.MessengerServer.ConnectionManager.AsReadOnlyList().Select(x => x.SendMessage(context.Message)).ToArray();
+        var tasks = context.MessengerServer.ConnectionManager.AsReadOnlyList()
+            .Select(x => x.SendMessageToClientAsync(context.Message)).ToArray();
         await Task.WhenAll(tasks);
     }
 

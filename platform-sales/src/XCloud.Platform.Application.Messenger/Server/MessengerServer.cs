@@ -2,6 +2,7 @@
 using XCloud.Core.Json;
 using XCloud.Platform.Application.Messenger.Connection;
 using XCloud.Platform.Application.Messenger.Constants;
+using XCloud.Platform.Application.Messenger.Event;
 using XCloud.Platform.Application.Messenger.Handler;
 using XCloud.Platform.Application.Messenger.Message;
 using XCloud.Platform.Application.Messenger.Registry;
@@ -22,9 +23,9 @@ public class MessengerServer : IMessengerServer
     public string ServerInstanceId { get; }
 
     public IServiceProvider ServiceProvider { get; }
+    public IMessengerEventManager MessengerEventManager { get; }
     public IJsonDataSerializer MessageSerializer { get; }
     public IRegistrationProvider RegistrationProvider { get; }
-    public IMessageStoreService MessageStoreService { get; }
     public IMessageRouter MessageRouter { get; }
     public IMessageHandler[] MessageHandlers { get; }
 
@@ -38,9 +39,9 @@ public class MessengerServer : IMessengerServer
         this.ServerInstanceId = serverInstanceId;
 
         this.ServiceProvider = provider;
+        this.MessengerEventManager = provider.GetRequiredService<IMessengerEventManager>();
         this.MessageSerializer = provider.GetRequiredService<IJsonDataSerializer>();
         this.RegistrationProvider = provider.GetRequiredService<IRegistrationProvider>();
-        this.MessageStoreService = provider.GetRequiredService<IMessageStoreService>();
         this.MessageRouter = provider.GetRequiredService<IMessageRouter>();
         this.MessageHandlers = provider.GetServices<IMessageHandler>().ToArray();
     }
@@ -54,6 +55,8 @@ public class MessengerServer : IMessengerServer
         
         await this.OnMessageFromClientAsync(msg, wsConnection);
 
+        await this.MessengerEventManager.OnlineAsync(wsConnection);
+        
         this._logger.LogInformation($"{wsConnection.ClientIdentity.ConnectionId} joined");
     }
 
@@ -63,11 +66,15 @@ public class MessengerServer : IMessengerServer
         
         await this.RegistrationProvider.RemoveRegisterInfoAsync(wsConnection.ClientIdentity.SubjectId, wsConnection.ClientIdentity.DeviceType);
 
+        await this.MessengerEventManager.OfflineAsync(wsConnection);
+        
         this._logger.LogInformation($"{wsConnection.ClientIdentity.ConnectionId} leaved");
     }
 
     public async Task OnMessageFromClientAsync(MessageWrapper message, IConnection wsConnection)
     {
+        await this.MessengerEventManager.MessageFromClientAsync(message);
+        
         var handler = this.GetHandlerOrNull(message.MessageType);
         if (handler != null)
         {
@@ -83,12 +90,14 @@ public class MessengerServer : IMessengerServer
         else
         {
             this._logger.LogWarning("no handler for this message type");
-            await wsConnection.SendMessage(new MessageWrapper() { MessageType = "no handler for this message type" });
+            await wsConnection.SendMessageToClientAsync(new MessageWrapper() { MessageType = "no handler for this message type" });
         }
     }
 
     public async Task OnMessageFromRouterAsync(MessageWrapper message)
     {
+        await this.MessengerEventManager.MessageFromRouterAsync(message);
+        
         var handler = this.GetHandlerOrNull(message.MessageType);
         if (handler != null)
         {
@@ -113,10 +122,13 @@ public class MessengerServer : IMessengerServer
         await this.MessageRouter.SubscribeMessageEndpoint(queueKey, this.OnMessageFromRouterAsync);
         //路由到所有服务器的消息
         await this.MessageRouter.SubscribeBroadcastMessageEndpoint(this.OnMessageFromRouterAsync);
+
+        await this.MessengerEventManager.ServerStartedAsync(this);
     }
 
     public void Dispose()
     {
+        Task.Run(() => this.MessengerEventManager.ServerShutdownAsync(this)).Wait();
         Task.Run(this.CleanupAsync).Wait();
         this.ConnectionManager.Dispose();
         this.MessageRouter.Dispose();
