@@ -6,26 +6,26 @@ namespace XCloud.Platform.Application.Messenger.Handler;
 
 public abstract class MessageContextBase
 {
-    public IWsServer WsServer { get; set; }
+    public IMessengerServer MessengerServer { get; set; }
     public IServiceProvider HandleServiceProvider { get; set; }
     public MessageWrapper Message { get; set; }
 }
 
 public class ClientMessageContext : MessageContextBase
 {
-    public ClientMessageContext(IWsServer wsServer)
+    public ClientMessageContext(IMessengerServer messengerServer)
     {
-        this.WsServer = wsServer;
+        this.MessengerServer = messengerServer;
     }
 
-    public WsConnection Connection { get; set; }
+    public IConnection Connection { get; set; }
 }
 
 public class TransportMessageContext : MessageContextBase
 {
-    public TransportMessageContext(IWsServer wsServer)
+    public TransportMessageContext(IMessengerServer messengerServer)
     {
-        this.WsServer = wsServer;
+        this.MessengerServer = messengerServer;
     }
 }
 

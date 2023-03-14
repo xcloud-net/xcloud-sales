@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using XCloud.Core.Json;
-using XCloud.Platform.Application.Messenger.Client;
 using XCloud.Platform.Application.Messenger.Connection;
 using XCloud.Platform.Application.Messenger.Constants;
 using XCloud.Platform.Application.Messenger.Handler;
@@ -11,38 +10,11 @@ using XCloud.Platform.Application.Messenger.Service;
 
 namespace XCloud.Platform.Application.Messenger.Server;
 
-public interface IWsServer : IDisposable
+public class MessengerServer : IMessengerServer
 {
-    ClientManager ClientManager { get; }
+    private readonly ILogger _logger;
 
-    /// <summary>
-    /// 用于路由
-    /// </summary>
-    string ServerInstanceId { get; }
-
-    IJsonDataSerializer MessageSerializer { get; }
-    IRegistrationProvider RegistrationProvider { get; }
-    IMessageStoreService MessageStoreService { get; }
-    IMessageRouter MessageRouter { get; }
-    IMessageHandler[] MessageHandlers { get; }
-
-    Task OnClientJoin(WsConnection wsConnection);
-    Task OnClientLeave(WsConnection wsConnection);
-
-
-    Task OnMessageFromClient(MessageWrapper message, WsConnection wsConnection);
-    Task OnMessageFromTransport(MessageWrapper message);
-
-    IMessageHandler GetHandlerOrNull(string type);
-    Task Cleanup();
-    Task Start();
-}
-
-public class WsServer : IWsServer
-{
-    private readonly ILogger logger;
-
-    public ClientManager ClientManager { get; }
+    public ConnectionManager ConnectionManager { get; }
 
     /// <summary>
     /// 用于路由
@@ -56,13 +28,13 @@ public class WsServer : IWsServer
     public IMessageRouter MessageRouter { get; }
     public IMessageHandler[] MessageHandlers { get; }
 
-    public WsServer(IServiceProvider provider, string serverInstanceId)
+    public MessengerServer(IServiceProvider provider, string serverInstanceId)
     {
         serverInstanceId.Should().NotBeNullOrEmpty();
 
-        this.logger = provider.GetRequiredService<ILogger<WsServer>>();
+        this._logger = provider.GetRequiredService<ILogger<MessengerServer>>();
 
-        this.ClientManager = new ClientManager();
+        this.ConnectionManager = new ConnectionManager();
         this.ServerInstanceId = serverInstanceId;
 
         this.ServiceProvider = provider;
@@ -73,26 +45,28 @@ public class WsServer : IWsServer
         this.MessageHandlers = provider.GetServices<IMessageHandler>().ToArray();
     }
 
-    public async Task OnClientJoin(WsConnection wsConnection)
+    public async Task OnClientJoinAsync(IConnection wsConnection)
     {
-        this.ClientManager.AddConnection(wsConnection);
+        this.ConnectionManager.AddConnection(wsConnection);
 
         //ping will trigger registration work
         var msg = new MessageWrapper() { MessageType = MessageTypeConst.Ping };
-        await this.OnMessageFromClient(msg, wsConnection);
+        
+        await this.OnMessageFromClientAsync(msg, wsConnection);
 
-        this.logger.LogInformation($"{wsConnection.ClientIdentity.ConnectionId} joined");
+        this._logger.LogInformation($"{wsConnection.ClientIdentity.ConnectionId} joined");
     }
 
-    public async Task OnClientLeave(WsConnection wsConnection)
+    public async Task OnClientLeaveAsync(IConnection wsConnection)
     {
-        this.ClientManager.RemoveConnection(wsConnection);
+        this.ConnectionManager.RemoveConnection(wsConnection);
+        
         await this.RegistrationProvider.RemoveRegisterInfoAsync(wsConnection.ClientIdentity.SubjectId, wsConnection.ClientIdentity.DeviceType);
 
-        this.logger.LogInformation($"{wsConnection.ClientIdentity.ConnectionId} leaved");
+        this._logger.LogInformation($"{wsConnection.ClientIdentity.ConnectionId} leaved");
     }
 
-    public async Task OnMessageFromClient(MessageWrapper message, WsConnection wsConnection)
+    public async Task OnMessageFromClientAsync(MessageWrapper message, IConnection wsConnection)
     {
         var handler = this.GetHandlerOrNull(message.MessageType);
         if (handler != null)
@@ -108,12 +82,12 @@ public class WsServer : IWsServer
         }
         else
         {
-            this.logger.LogWarning("no handler for this message type");
+            this._logger.LogWarning("no handler for this message type");
             await wsConnection.SendMessage(new MessageWrapper() { MessageType = "no handler for this message type" });
         }
     }
 
-    public async Task OnMessageFromTransport(MessageWrapper message)
+    public async Task OnMessageFromRouterAsync(MessageWrapper message)
     {
         var handler = this.GetHandlerOrNull(message.MessageType);
         if (handler != null)
@@ -128,23 +102,23 @@ public class WsServer : IWsServer
         }
         else
         {
-            this.logger.LogWarning(message: $"no handler for message:{this.MessageSerializer.SerializeToString(message)}");
+            this._logger.LogWarning(message: $"no handler for message:{this.MessageSerializer.SerializeToString(message)}");
         }
     }
 
-    public async Task Start()
+    public async Task StartAsync()
     {
         //路由到这台服务器的消息
         var queueKey = this.ServerInstanceId;
-        await this.MessageRouter.SubscribeMessageEndpoint(queueKey, this.OnMessageFromTransport);
+        await this.MessageRouter.SubscribeMessageEndpoint(queueKey, this.OnMessageFromRouterAsync);
         //路由到所有服务器的消息
-        await this.MessageRouter.SubscribeBroadcastMessageEndpoint(this.OnMessageFromTransport);
+        await this.MessageRouter.SubscribeBroadcastMessageEndpoint(this.OnMessageFromRouterAsync);
     }
 
     public void Dispose()
     {
-        Task.Run(this.Cleanup).Wait();
-        this.ClientManager.Dispose();
+        Task.Run(this.CleanupAsync).Wait();
+        this.ConnectionManager.Dispose();
         this.MessageRouter.Dispose();
     }
 
@@ -156,7 +130,7 @@ public class WsServer : IWsServer
         return handler;
     }
 
-    public async Task Cleanup()
+    public async Task CleanupAsync()
     {
         await Task.CompletedTask;
     }

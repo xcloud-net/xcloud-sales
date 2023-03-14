@@ -5,7 +5,7 @@ namespace XCloud.Platform.Application.Messenger.Extension;
 
 public static class MessengerExtension
 {
-    public static UserRegistrationInfo ToRegInfo(this WsConnection con)
+    public static UserRegistrationInfo ToRegInfo(this IConnection con)
     {
         var res = new UserRegistrationInfo()
         {

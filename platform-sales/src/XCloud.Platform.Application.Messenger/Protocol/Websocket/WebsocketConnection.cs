@@ -12,12 +12,13 @@ namespace XCloud.Platform.Application.Messenger.Connection;
 /// <summary>
 /// 需要重写等号运算符
 /// </summary>
-public class WsConnection : IDisposable
+public class WebsocketConnection : IConnection
 {
     private readonly ILogger _logger;
     private readonly CancellationTokenSource _cancellationTokenSource;
 
-    public WsConnection(IServiceProvider provider, IWsServer server, WebSocket webSocket, ClientIdentity clientIdentity)
+    public WebsocketConnection(IServiceProvider provider, IMessengerServer server, WebSocket webSocket,
+        ClientIdentity clientIdentity)
     {
         provider.Should().NotBeNull(nameof(provider));
         server.Should().NotBeNull(nameof(server));
@@ -29,14 +30,14 @@ public class WsConnection : IDisposable
         this.Server = server;
         this.SocketChannel = webSocket;
 
-        this._logger = provider.GetRequiredService<ILogger<WsConnection>>();
+        this._logger = provider.GetRequiredService<ILogger<WebsocketConnection>>();
         this._cancellationTokenSource = new CancellationTokenSource();
     }
 
     public void RequestAbort() => this._cancellationTokenSource.Cancel();
 
     public IServiceProvider Provider { get; }
-    public IWsServer Server { get; }
+    public IMessengerServer Server { get; }
     public WebSocket SocketChannel { get; }
     public ClientIdentity ClientIdentity { get; }
 
@@ -61,7 +62,7 @@ public class WsConnection : IDisposable
             if (data == null)
                 throw new BusinessException("data from clientIdentity is incorrect");
 
-            await this.Server.OnMessageFromClient(data, this);
+            await this.Server.OnMessageFromClientAsync(data, this);
         }
         catch (Exception e)
         {
@@ -79,13 +80,13 @@ public class WsConnection : IDisposable
     {
         token ??= CancellationToken.None;
 
-        await using var scope = new AsyncDisposable(async () => await this.Server.OnClientLeave(this));
+        await using var scope = new AsyncDisposable(async () => await this.Server.OnClientLeaveAsync(this));
         try
         {
-            await this.Server.OnClientJoin(this);
+            await this.Server.OnClientJoinAsync(this);
 
             await this.SocketChannel.StartReceiveLoopAsync(this.OnMessageFromClient,
-                receiveDataCancellationToken: token, 
+                receiveDataCancellationToken: token,
                 closeConnectionCancellationToken: token);
         }
         catch (Exception e)

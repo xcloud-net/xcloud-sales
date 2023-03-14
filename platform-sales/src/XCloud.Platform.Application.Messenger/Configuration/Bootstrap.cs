@@ -31,17 +31,17 @@ public static class Bootstrap
 
     public static MessengerBuilder AddDefaultHubProvider(this MessengerBuilder builder)
     {
-        builder.Services.AddSingleton(provider => new WsServer(provider, $"{System.Net.Dns.GetHostName()}_"));
-        builder.Services.AddSingleton<IWsServer>(provider => provider.GetRequiredService<WsServer>());
+        builder.Services.AddSingleton(provider => new MessengerServer(provider, $"{System.Net.Dns.GetHostName()}_"));
+        builder.Services.AddSingleton<IMessengerServer>(provider => provider.GetRequiredService<MessengerServer>());
         return builder;
     }
 
     public static IApplicationBuilder UseWebSocketEndpoint(this IApplicationBuilder app, string path)
     {
-        return UseWebSocketEndpoint<IWsServer>(app, path);
+        return UseWebSocketEndpoint<IMessengerServer>(app, path);
     }
 
-    public static IApplicationBuilder UseWebSocketEndpoint<T>(this IApplicationBuilder app, string path) where T : IWsServer
+    public static IApplicationBuilder UseWebSocketEndpoint<T>(this IApplicationBuilder app, string path) where T : IMessengerServer
     {
         app.Use(async (context, next) =>
         {
@@ -63,7 +63,7 @@ public static class Bootstrap
 
                     var webSocket = await context.WebSockets.AcceptWebSocketAsync(new WebSocketAcceptContext() { });
 
-                    using var connection = new WsConnection(context.RequestServices, server, webSocket, client);
+                    using var connection = new WebsocketConnection(context.RequestServices, server, webSocket, client);
 
                     await connection.StartReceiveMessageLoopAsync(CancellationToken.None);
                 }
@@ -77,7 +77,7 @@ public static class Bootstrap
                 await next();
             }
         });
-        app.ApplicationServices.GetRequiredService<T>().Start();
+        app.ApplicationServices.GetRequiredService<T>().StartAsync();
         return app;
     }
 }

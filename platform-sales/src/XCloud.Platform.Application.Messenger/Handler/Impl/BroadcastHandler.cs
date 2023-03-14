@@ -10,12 +10,12 @@ public class BroadcastHandler : IMessageHandler
 
     public async Task HandleMessageFromTransportAsync(TransportMessageContext context)
     {
-        var tasks = context.WsServer.ClientManager.AllConnections().Select(x => x.SendMessage(context.Message)).ToArray();
+        var tasks = context.MessengerServer.ConnectionManager.AsReadOnlyList().Select(x => x.SendMessage(context.Message)).ToArray();
         await Task.WhenAll(tasks);
     }
 
     public async Task HandleMessageFromClientAsync(ClientMessageContext context)
     {
-        await context.WsServer.MessageRouter.BroadCast(context.Message);
+        await context.MessengerServer.MessageRouter.BroadCast(context.Message);
     }
 }

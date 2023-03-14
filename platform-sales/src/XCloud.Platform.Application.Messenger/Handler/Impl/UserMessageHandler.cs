@@ -36,11 +36,11 @@ public class UserMessageHandler : IMessageHandler
     public async Task HandleMessageFromTransportAsync(TransportMessageContext context)
     {
         var payload =
-            context.WsServer.MessageSerializer.DeserializeFromString<UserToUserPayload>(context.Message.Body);
+            context.MessengerServer.MessageSerializer.DeserializeFromString<UserToUserPayload>(context.Message.Body);
 
         var find = false;
 
-        foreach (var connection in context.WsServer.ClientManager.AllConnections())
+        foreach (var connection in context.MessengerServer.ConnectionManager.AsReadOnlyList())
         {
             if (connection.ClientIdentity.SubjectId == payload.Receiver)
             {
@@ -66,7 +66,7 @@ public class UserMessageHandler : IMessageHandler
 
         foreach (var serverId in server_instance_id)
         {
-            await context.WsServer.MessageRouter.RouteToServerInstance(serverId, context.Message);
+            await context.MessengerServer.MessageRouter.RouteToServerInstance(serverId, context.Message);
         }
     }
 }

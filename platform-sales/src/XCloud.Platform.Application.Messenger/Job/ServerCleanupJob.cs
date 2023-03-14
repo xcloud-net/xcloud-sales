@@ -6,18 +6,18 @@ namespace XCloud.Platform.Application.Messenger.Job;
 
 public class ServerCleanupJob : IAutoRegistered
 {
-    private readonly IWsServer wsServer;
-    private readonly IUserGroups userGroups;
+    private readonly IMessengerServer _messengerServer;
+    private readonly IUserService _userService;
     private readonly IServiceProvider provider;
-    public ServerCleanupJob(IWsServer wsServer, IUserGroups userGroups, IServiceProvider provider)
+    public ServerCleanupJob(IMessengerServer messengerServer, IUserService userService, IServiceProvider provider)
     {
-        this.wsServer = wsServer;
-        this.userGroups = userGroups;
+        this._messengerServer = messengerServer;
+        this._userService = userService;
         this.provider = provider;
     }
 
     public async Task ExecuteAsync()
     {
-        await this.wsServer.Cleanup();
+        await this._messengerServer.CleanupAsync();
     }
 }

@@ -2,15 +2,15 @@
 
 namespace XCloud.Platform.Application.Messenger.Service;
 
-public interface IUserGroups
+public interface IUserService
 {
     Task<string[]> GetUserGroupsAsync(string userId);
     
     Task<string[]> GetUsersGroupsAsync(string[] userIds);
 }
 
-[ExposeServices(typeof(IUserGroups))]
-public class TestUserGroups : IUserGroups, ISingletonDependency
+[ExposeServices(typeof(IUserService))]
+public class TestUserService : IUserService, ISingletonDependency
 {
     public async Task<string[]> GetUserGroupsAsync(string userUid)
     {
