@@ -11,21 +11,18 @@ public class RedisRegistrationProvider : IRegistrationProvider, ISingletonDepend
 {
     private readonly int _expiredMins = 10;
 
-    private readonly IRedisDatabaseSelector redisDatabaseSelector;
+    private readonly MessengerRedisClient redisDatabaseSelector;
     private readonly IJsonDataSerializer messageSerializer;
-    private readonly IRedisKeyManager redisKeyManager;
     private readonly IClock clock;
 
     public RedisRegistrationProvider(
         IClock clock,
-        IRedisDatabaseSelector redisDatabaseSelector,
-        IJsonDataSerializer messageSerializer,
-        IRedisKeyManager redisKeyManager)
+        MessengerRedisClient redisDatabaseSelector,
+        IJsonDataSerializer messageSerializer)
     {
         this.clock = clock;
         this.redisDatabaseSelector = redisDatabaseSelector;
         this.messageSerializer = messageSerializer;
-        this.redisKeyManager = redisKeyManager;
     }
 
     /// <summary>
@@ -43,8 +40,8 @@ public class RedisRegistrationProvider : IRegistrationProvider, ISingletonDepend
 
         var data = this.messageSerializer.SerializeToBytes(info.Payload);
 
-        var userRegKey = this.redisKeyManager.UserRegInfoKey(info.UserId);
-        var deviceRegKey = this.redisKeyManager.UserDeviceRegHashKey(info.DeviceType);
+        var userRegKey = this.redisDatabaseSelector.RedisKeyManager.UserRegInfoKey(info.UserId);
+        var deviceRegKey = this.redisDatabaseSelector.RedisKeyManager.UserDeviceRegHashKey(info.DeviceType);
 
         var db = this.redisDatabaseSelector.Database;
 
@@ -59,8 +56,8 @@ public class RedisRegistrationProvider : IRegistrationProvider, ISingletonDepend
         info.Should().NotBeNull();
         info.Payload.Should().NotBeNull();
 
-        var key = this.redisKeyManager.GroupRegInfoKey(info.GroupId);
-        var hashKey = this.redisKeyManager.GroupServerHashKey(info.ServerInstance);
+        var key = this.redisDatabaseSelector.RedisKeyManager.GroupRegInfoKey(info.GroupId);
+        var hashKey = this.redisDatabaseSelector.RedisKeyManager.GroupServerHashKey(info.ServerInstance);
 
         var db = this.redisDatabaseSelector.Database;
 
@@ -75,7 +72,7 @@ public class RedisRegistrationProvider : IRegistrationProvider, ISingletonDepend
     {
         userUid.Should().NotBeNullOrEmpty();
 
-        var key = this.redisKeyManager.UserRegInfoKey(userUid);
+        var key = this.redisDatabaseSelector.RedisKeyManager.UserRegInfoKey(userUid);
 
         var db = this.redisDatabaseSelector.Database;
 
@@ -84,18 +81,18 @@ public class RedisRegistrationProvider : IRegistrationProvider, ISingletonDepend
         var data = entry.Select(x =>
             this.messageSerializer.DeserializeFromBytes<UserRegistrationInfoPayload>((byte[])x.Value)).ToArray();
 
-        var reg_time_expired_ = this.clock.Now.AddMinutes(-this._expiredMins);
+        var regTimeExpired = this.clock.Now.AddMinutes(-this._expiredMins);
 
-        var server_instance_id_arr = data.Where(x => x.PingTimeUtc > reg_time_expired_).Select(x => x.ServerInstanceId)
+        var serverInstanceIdArr = data.Where(x => x.PingTimeUtc > regTimeExpired).Select(x => x.ServerInstanceId)
             .Distinct().ToArray();
 
-        return server_instance_id_arr;
+        return serverInstanceIdArr;
     }
 
     public async Task RemoveRegisterInfoAsync(string userUid, string device)
     {
-        var userRegKey = this.redisKeyManager.UserRegInfoKey(userUid);
-        var deviceRegKey = this.redisKeyManager.UserDeviceRegHashKey(device);
+        var userRegKey = this.redisDatabaseSelector.RedisKeyManager.UserRegInfoKey(userUid);
+        var deviceRegKey = this.redisDatabaseSelector.RedisKeyManager.UserDeviceRegHashKey(device);
 
         await this.redisDatabaseSelector.Database.HashDeleteAsync(userRegKey, deviceRegKey);
     }

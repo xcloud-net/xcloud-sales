@@ -1,6 +1,5 @@
 ﻿using XCloud.Core.DependencyInjection;
 using XCloud.Core.Extension;
-using XCloud.Platform.Application.Messenger.Connection;
 using XCloud.Platform.Application.Messenger.Registry;
 using XCloud.Platform.Application.Messenger.Server;
 using XCloud.Platform.Application.Messenger.Service;
@@ -25,7 +24,7 @@ public class ServerPingJob : IAutoRegistered
     {
         using var s = this._provider.CreateScope();
 
-        var userUids = this._wsServer.ClientManager.AllConnections().Select(x => x.Client.SubjectId).WhereNotEmpty().ToArray();
+        var userUids = this._wsServer.ClientManager.AllConnections().Select(x => x.ClientIdentity.SubjectId).WhereNotEmpty().ToArray();
 
         var groupUids = await _userGroups.GetUsersGroupsAsync(userUids);
         groupUids = groupUids.Distinct().ToArray();

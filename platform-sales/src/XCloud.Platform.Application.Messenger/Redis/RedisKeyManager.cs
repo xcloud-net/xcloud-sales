@@ -2,19 +2,8 @@
 
 namespace XCloud.Platform.Application.Messenger.Redis;
 
-public interface IRedisKeyManager
-{
-    string UserRegInfoKey(string userUid);
-    
-    string UserDeviceRegHashKey(string device);
-    
-    string GroupRegInfoKey(string groupUid);
-    
-    string GroupServerHashKey(string serverId);
-}
-
-[ExposeServices(typeof(IRedisKeyManager))]
-public class DefaultRedisKeyManager : IRedisKeyManager, ISingletonDependency
+[ExposeServices(typeof(RedisKeyManager))]
+public class RedisKeyManager : ISingletonDependency
 {
     public string GroupRegInfoKey(string groupUid)
     {

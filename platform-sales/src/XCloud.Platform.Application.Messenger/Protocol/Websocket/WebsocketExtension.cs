@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Net.WebSockets;
-using XCloud.Platform.Application.Messenger.Connection;
-using XCloud.Platform.Application.Messenger.Registry;
 
-namespace XCloud.Platform.Application.Messenger.Extension;
+namespace XCloud.Platform.Application.Messenger.Protocol.Websocket;
 
-public static class SocketExtension
+public static class WebsocketExtension
 {
     public static async Task StartReceiveLoopAsync(this WebSocket ws,
         Func<byte[], Task> onMessage,
@@ -66,20 +64,5 @@ public static class SocketExtension
             var closeDescription = Enum.GetName(typeof(WebSocketCloseStatus), closeStatus);
             await ws.CloseAsync(closeStatus, closeDescription, closeConnectionCancellationToken.Value);
         }
-    }
-
-    public static UserRegistrationInfo ToRegInfo(this WsConnection con)
-    {
-        var res = new UserRegistrationInfo()
-        {
-            UserId = con.Client.SubjectId,
-            DeviceType = con.Client.DeviceType,
-            Payload = new UserRegistrationInfoPayload()
-            {
-                ServerInstanceId = con.Server.ServerInstanceId,
-                PingTimeUtc = DateTime.UtcNow
-            }
-        };
-        return res;
     }
 }

@@ -1,5 +1,5 @@
 ﻿namespace XCloud.Platform.Application.Messenger.Service;
 
-public interface IPersistenceProvider
+public interface IMessageStoreService
 {
 }

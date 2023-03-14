@@ -8,7 +8,13 @@ public class ClientManager : IDisposable
     private readonly List<WsConnection> _connections = new List<WsConnection>();
     private readonly object _lock = new object();
 
-    public IReadOnlyList<WsConnection> AllConnections() => this._connections;
+    public IReadOnlyList<WsConnection> AllConnections()
+    {
+        lock (this._lock)
+        {
+            return this._connections.ToList();
+        }
+    }
 
     public void AddConnection(WsConnection con)
     {

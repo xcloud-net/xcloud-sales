@@ -4,22 +4,18 @@ using XCloud.Redis;
 
 namespace XCloud.Platform.Application.Messenger.Redis;
 
-public interface IRedisDatabaseSelector
+[ExposeServices(typeof(MessengerRedisClient))]
+public class MessengerRedisClient : ISingletonDependency
 {
-    IDatabase Database { get; }
-    
-    IConnectionMultiplexer Connection { get; }
-}
-
-[ExposeServices(typeof(IRedisDatabaseSelector))]
-public class RedisDatabaseSelector : IRedisDatabaseSelector, ISingletonDependency
-{
-    public RedisDatabaseSelector(RedisClient redisClient)
+    public MessengerRedisClient(RedisClient redisClient, RedisKeyManager redisKeyManager)
     {
+        RedisKeyManager = redisKeyManager;
         var db = (int)RedisConsts.PubSub;
         this.Connection = redisClient.Connection;
         this.Database = redisClient.Connection.GetDatabase(db);
     }
+
+    public RedisKeyManager RedisKeyManager { get; }
 
     public IDatabase Database { get; }
     public IConnectionMultiplexer Connection { get; }

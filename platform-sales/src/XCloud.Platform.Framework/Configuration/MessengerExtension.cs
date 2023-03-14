@@ -19,8 +19,8 @@ public static class MessengerExtension
 
     public static void ConfigMessengerTransport(this ServiceConfigurationContext context)
     {
-        context.Services.RemoveAll<ITransportProvider>();
-        context.Services.AddSingleton<ITransportProvider, InMemoryTransportProvider>();
+        context.Services.RemoveAll<IMessageRouter>();
+        context.Services.AddSingleton<IMessageRouter, InMemoryMessageRouter>();
     }
 
     public static void ConfigWebsocket(this ServiceConfigurationContext context)

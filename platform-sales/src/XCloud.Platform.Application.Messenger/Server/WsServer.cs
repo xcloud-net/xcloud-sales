@@ -2,6 +2,7 @@
 using XCloud.Core.Json;
 using XCloud.Platform.Application.Messenger.Client;
 using XCloud.Platform.Application.Messenger.Connection;
+using XCloud.Platform.Application.Messenger.Constants;
 using XCloud.Platform.Application.Messenger.Handler;
 using XCloud.Platform.Application.Messenger.Message;
 using XCloud.Platform.Application.Messenger.Registry;
@@ -21,8 +22,8 @@ public interface IWsServer : IDisposable
 
     IJsonDataSerializer MessageSerializer { get; }
     IRegistrationProvider RegistrationProvider { get; }
-    IPersistenceProvider PersistenceProvider { get; }
-    ITransportProvider TransportProvider { get; }
+    IMessageStoreService MessageStoreService { get; }
+    IMessageRouter MessageRouter { get; }
     IMessageHandler[] MessageHandlers { get; }
 
     Task OnClientJoin(WsConnection wsConnection);
@@ -51,8 +52,8 @@ public class WsServer : IWsServer
     public IServiceProvider ServiceProvider { get; }
     public IJsonDataSerializer MessageSerializer { get; }
     public IRegistrationProvider RegistrationProvider { get; }
-    public IPersistenceProvider PersistenceProvider { get; }
-    public ITransportProvider TransportProvider { get; }
+    public IMessageStoreService MessageStoreService { get; }
+    public IMessageRouter MessageRouter { get; }
     public IMessageHandler[] MessageHandlers { get; }
 
     public WsServer(IServiceProvider provider, string serverInstanceId)
@@ -67,8 +68,8 @@ public class WsServer : IWsServer
         this.ServiceProvider = provider;
         this.MessageSerializer = provider.GetRequiredService<IJsonDataSerializer>();
         this.RegistrationProvider = provider.GetRequiredService<IRegistrationProvider>();
-        this.PersistenceProvider = provider.GetRequiredService<IPersistenceProvider>();
-        this.TransportProvider = provider.GetRequiredService<ITransportProvider>();
+        this.MessageStoreService = provider.GetRequiredService<IMessageStoreService>();
+        this.MessageRouter = provider.GetRequiredService<IMessageRouter>();
         this.MessageHandlers = provider.GetServices<IMessageHandler>().ToArray();
     }
 
@@ -80,15 +81,15 @@ public class WsServer : IWsServer
         var msg = new MessageWrapper() { MessageType = MessageTypeConst.Ping };
         await this.OnMessageFromClient(msg, wsConnection);
 
-        this.logger.LogInformation($"{wsConnection.Client.ConnectionId} joined");
+        this.logger.LogInformation($"{wsConnection.ClientIdentity.ConnectionId} joined");
     }
 
     public async Task OnClientLeave(WsConnection wsConnection)
     {
         this.ClientManager.RemoveConnection(wsConnection);
-        await this.RegistrationProvider.RemoveRegisterInfoAsync(wsConnection.Client.SubjectId, wsConnection.Client.DeviceType);
+        await this.RegistrationProvider.RemoveRegisterInfoAsync(wsConnection.ClientIdentity.SubjectId, wsConnection.ClientIdentity.DeviceType);
 
-        this.logger.LogInformation($"{wsConnection.Client.ConnectionId} leaved");
+        this.logger.LogInformation($"{wsConnection.ClientIdentity.ConnectionId} leaved");
     }
 
     public async Task OnMessageFromClient(MessageWrapper message, WsConnection wsConnection)
@@ -135,16 +136,16 @@ public class WsServer : IWsServer
     {
         //路由到这台服务器的消息
         var queueKey = this.ServerInstanceId;
-        await this.TransportProvider.SubscribeMessageEndpoint(queueKey, this.OnMessageFromTransport);
+        await this.MessageRouter.SubscribeMessageEndpoint(queueKey, this.OnMessageFromTransport);
         //路由到所有服务器的消息
-        await this.TransportProvider.SubscribeBroadcastMessageEndpoint(this.OnMessageFromTransport);
+        await this.MessageRouter.SubscribeBroadcastMessageEndpoint(this.OnMessageFromTransport);
     }
 
     public void Dispose()
     {
         Task.Run(this.Cleanup).Wait();
         this.ClientManager.Dispose();
-        this.TransportProvider.Dispose();
+        this.MessageRouter.Dispose();
     }
 
     public IMessageHandler GetHandlerOrNull(string type)

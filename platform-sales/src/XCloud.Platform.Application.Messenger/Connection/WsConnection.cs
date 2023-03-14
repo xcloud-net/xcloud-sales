@@ -1,12 +1,10 @@
 ﻿using System.Net.WebSockets;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Nito.Disposables;
 using XCloud.Core.Extension;
 using XCloud.Platform.Application.Messenger.Client;
-using XCloud.Platform.Application.Messenger.Extension;
 using XCloud.Platform.Application.Messenger.Message;
+using XCloud.Platform.Application.Messenger.Protocol.Websocket;
 using XCloud.Platform.Application.Messenger.Server;
 
 namespace XCloud.Platform.Application.Messenger.Connection;
@@ -18,15 +16,16 @@ public class WsConnection : IDisposable
 {
     private readonly ILogger _logger;
     private readonly CancellationTokenSource _cancellationTokenSource;
-    public WsConnection(IServiceProvider provider, IWsServer server, WebSocket webSocket, WsClient client)
+
+    public WsConnection(IServiceProvider provider, IWsServer server, WebSocket webSocket, ClientIdentity clientIdentity)
     {
         provider.Should().NotBeNull(nameof(provider));
         server.Should().NotBeNull(nameof(server));
         webSocket.Should().NotBeNull(nameof(webSocket));
-        client.Should().NotBeNull(nameof(client));
+        clientIdentity.Should().NotBeNull(nameof(clientIdentity));
 
         this.Provider = provider;
-        this.Client = client;
+        this.ClientIdentity = clientIdentity;
         this.Server = server;
         this.SocketChannel = webSocket;
 
@@ -34,12 +33,12 @@ public class WsConnection : IDisposable
         this._cancellationTokenSource = new CancellationTokenSource();
     }
 
-    public void ReuqestAbort() => this._cancellationTokenSource.Cancel();
+    public void RequestAbort() => this._cancellationTokenSource.Cancel();
 
     public IServiceProvider Provider { get; }
     public IWsServer Server { get; }
     public WebSocket SocketChannel { get; }
-    public WsClient Client { get; }
+    public ClientIdentity ClientIdentity { get; }
 
     public async Task SendMessage(MessageWrapper data)
     {
@@ -60,7 +59,7 @@ public class WsConnection : IDisposable
         {
             var data = this.Server.MessageSerializer.DeserializeFromBytes<MessageWrapper>(bs);
             if (data == null)
-                throw new BusinessException("data from client is incorrect");
+                throw new BusinessException("data from clientIdentity is incorrect");
 
             await this.Server.OnMessageFromClient(data, this);
         }
@@ -73,7 +72,7 @@ public class WsConnection : IDisposable
     public async Task CloseAsync(CancellationToken? token = null)
     {
         token ??= CancellationToken.None;
-        await this.SocketChannel.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, token.Value);
+        await this.SocketChannel.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, token.Value);
     }
 
     public async Task StartReceiveMessageLoopAsync(CancellationToken? token = null)
@@ -85,7 +84,9 @@ public class WsConnection : IDisposable
         {
             await this.Server.OnClientJoin(this);
 
-            await this.SocketChannel.StartReceiveLoopAsync((bs) => this.OnMessageFromClient(bs));
+            await this.SocketChannel.StartReceiveLoopAsync(this.OnMessageFromClient,
+                receiveDataCancellationToken: token, 
+                closeConnectionCancellationToken: token);
         }
         catch (Exception e)
         {
@@ -95,6 +96,8 @@ public class WsConnection : IDisposable
 
     public void Dispose()
     {
+        this.RequestAbort();
+        Task.Run(() => this.CloseAsync()).Wait();
         this.SocketChannel.Dispose();
     }
 }

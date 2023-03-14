@@ -1,4 +1,4 @@
-﻿using XCloud.Platform.Application.Messenger.Connection;
+﻿using XCloud.Platform.Application.Messenger.Constants;
 using XCloud.Platform.Application.Messenger.Extension;
 using XCloud.Platform.Application.Messenger.Message;
 
@@ -15,12 +15,12 @@ public class PingHandler : IMessageHandler
         var info = context.Connection.ToRegInfo();
         await context.Connection.Server.RegistrationProvider.RegisterUserInfoAsync(info);
 
-        context.Connection.Client.PingTime = info.Payload.PingTimeUtc;
+        context.Connection.ClientIdentity.PingTime = info.Payload.PingTimeUtc;
 
         await context.Connection.SendMessage(new MessageWrapper()
         {
             MessageType = MessageTypeConst.Ping,
-            Payload = "success"
+            Body = "success"
         });
     }
 

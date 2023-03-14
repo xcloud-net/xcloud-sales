@@ -1,11 +1,10 @@
 ﻿using Volo.Abp.DependencyInjection;
 using XCloud.Core.Json;
-using XCloud.Platform.Application.Messenger.Connection;
 using XCloud.Platform.Application.Messenger.Message;
 
 namespace XCloud.Platform.Application.Messenger.Router;
 
-public interface ITransportProvider : IDisposable
+public interface IMessageRouter : IDisposable
 {
     Task RouteToServerInstance(string instanceKey, MessageWrapper data);
     
@@ -16,21 +15,21 @@ public interface ITransportProvider : IDisposable
     Task SubscribeBroadcastMessageEndpoint(Func<MessageWrapper, Task> callback);
 }
 
-public class InMemoryTransportProvider : ITransportProvider, ISingletonDependency
+public class InMemoryMessageRouter : IMessageRouter, ISingletonDependency
 {
-    private readonly ILogger logger;
-    private readonly IJsonDataSerializer messageSerializer;
+    private readonly ILogger _logger;
+    private readonly IJsonDataSerializer _messageSerializer;
 
-    public InMemoryTransportProvider(IJsonDataSerializer messageSerializer, ILogger<InMemoryTransportProvider> logger)
+    public InMemoryMessageRouter(IJsonDataSerializer messageSerializer, ILogger<InMemoryMessageRouter> logger)
     {
-        this.messageSerializer = messageSerializer;
-        this.logger = logger;
+        this._messageSerializer = messageSerializer;
+        this._logger = logger;
     }
 
     public async Task BroadCast(MessageWrapper data)
     {
-        if (Subscribers != null)
-            await Subscribers.Invoke(data);
+        if (_subscribers != null)
+            await _subscribers.Invoke(data);
     }
 
     public void Dispose()
@@ -40,21 +39,21 @@ public class InMemoryTransportProvider : ITransportProvider, ISingletonDependenc
 
     public async Task RouteToServerInstance(string key, MessageWrapper data)
     {
-        if (Subscribers != null)
-            await Subscribers.Invoke(data);
+        if (_subscribers != null)
+            await _subscribers.Invoke(data);
     }
 
-    private Func<MessageWrapper, Task> Subscribers = null;
+    private Func<MessageWrapper, Task> _subscribers = null;
 
     public async Task SubscribeBroadcastMessageEndpoint(Func<MessageWrapper, Task> callback)
     {
-        this.Subscribers = callback;
+        this._subscribers = callback;
         await Task.CompletedTask;
     }
 
     public async Task SubscribeMessageEndpoint(string key, Func<MessageWrapper, Task> callback)
     {
-        this.Subscribers = callback;
+        this._subscribers = callback;
         await Task.CompletedTask;
     }
 }

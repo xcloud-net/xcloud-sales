@@ -1,23 +1,13 @@
 ﻿using Volo.Abp.Application.Dtos;
+using Volo.Abp.Auditing;
 
 namespace XCloud.Platform.Application.Messenger.Message;
 
-public static class MessageTypeConst
-{
-    public const string UserToUser = "user-to-user";
-    
-    public const string Echo = "echo";
-    
-    public const string Ping = "ping";
-    
-    public const string BroadCast = "broad-cast";
-}
-
-public class MessageWrapper : IEntityDto
+public class MessageWrapper : IEntityDto, IHasCreationTime
 {
     public string MessageType { get; set; }
-    
-    public string Payload { get; set; }
-    
-    public DateTime MessageTime { get; set; }
+
+    public string Body { get; set; }
+
+    public DateTime CreationTime { get; set; }
 }

@@ -13,6 +13,7 @@ namespace XCloud.Platform.Application.Messenger.Configuration;
 
 public static class Bootstrap
 {
+    [Obsolete]
     public static MessengerBuilder AddMessengerServer(this IXCloudBuilder builder)
     {
         var services = builder.Services;
@@ -51,7 +52,7 @@ public static class Bootstrap
                     var me = context.Request.Query["me"];
                     var device = context.Request.Query["device"];
 
-                    var client = new WsClient()
+                    var client = new ClientIdentity()
                     {
                         SubjectId = me,
                         DeviceType = device,

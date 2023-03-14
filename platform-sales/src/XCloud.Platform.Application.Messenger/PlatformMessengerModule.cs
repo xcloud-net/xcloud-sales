@@ -21,6 +21,9 @@ public class PlatformMessengerModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        this.Configure<PlatformMessengerOption>(option => { });
+        this.Configure<PlatformMessengerOption>(option =>
+        {
+            option.Enabled = false;
+        });
     }
 }

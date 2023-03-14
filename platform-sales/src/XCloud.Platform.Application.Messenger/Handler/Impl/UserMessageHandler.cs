@@ -1,19 +1,22 @@
 ﻿using Volo.Abp.Application.Dtos;
-using XCloud.Platform.Application.Messenger.Connection;
-using XCloud.Platform.Application.Messenger.Message;
+using XCloud.Platform.Application.Messenger.Constants;
 
 namespace XCloud.Platform.Application.Messenger.Handler.Impl;
 
-public class UserToUserPayload : IEntityDto
+public class UserToUserPayload : IEntityDto<string>
 {
     public UserToUserPayload()
     {
         //
     }
+    
+    public string Id { get; set; }
 
     public string Sender { get; set; }
-    public string Reciever { get; set; }
+    public string Receiver { get; set; }
+
     public string Message { get; set; }
+
     public DateTime SendTime { get; set; }
 }
 
@@ -33,13 +36,13 @@ public class UserMessageHandler : IMessageHandler
     public async Task HandleMessageFromTransportAsync(TransportMessageContext context)
     {
         var payload =
-            context.WsServer.MessageSerializer.DeserializeFromString<UserToUserPayload>(context.Message.Payload);
+            context.WsServer.MessageSerializer.DeserializeFromString<UserToUserPayload>(context.Message.Body);
 
         var find = false;
 
         foreach (var connection in context.WsServer.ClientManager.AllConnections())
         {
-            if (connection.Client.SubjectId == payload.Reciever)
+            if (connection.ClientIdentity.SubjectId == payload.Receiver)
             {
                 find = true;
                 await connection.SendMessage(context.Message);
@@ -57,13 +60,13 @@ public class UserMessageHandler : IMessageHandler
     {
         var payload =
             context.Connection.Server.MessageSerializer.DeserializeFromString<UserToUserPayload>(
-                context.Message.Payload);
+                context.Message.Body);
         var server_instance_id =
-            await context.Connection.Server.RegistrationProvider.GetUserServerInstancesAsync(payload.Reciever);
+            await context.Connection.Server.RegistrationProvider.GetUserServerInstancesAsync(payload.Receiver);
 
         foreach (var serverId in server_instance_id)
         {
-            await context.WsServer.TransportProvider.RouteToServerInstance(serverId, context.Message);
+            await context.WsServer.MessageRouter.RouteToServerInstance(serverId, context.Message);
         }
     }
 }

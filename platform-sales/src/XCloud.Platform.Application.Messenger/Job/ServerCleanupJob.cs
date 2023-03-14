@@ -1,5 +1,4 @@
 ﻿using XCloud.Core.DependencyInjection;
-using XCloud.Platform.Application.Messenger.Connection;
 using XCloud.Platform.Application.Messenger.Server;
 using XCloud.Platform.Application.Messenger.Service;
 

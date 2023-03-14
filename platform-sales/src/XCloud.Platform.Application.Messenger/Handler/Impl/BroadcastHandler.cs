@@ -1,5 +1,4 @@
-﻿using XCloud.Platform.Application.Messenger.Connection;
-using XCloud.Platform.Application.Messenger.Message;
+﻿using XCloud.Platform.Application.Messenger.Constants;
 
 namespace XCloud.Platform.Application.Messenger.Handler.Impl;
 
@@ -17,6 +16,6 @@ public class BroadcastHandler : IMessageHandler
 
     public async Task HandleMessageFromClientAsync(ClientMessageContext context)
     {
-        await context.WsServer.TransportProvider.BroadCast(context.Message);
+        await context.WsServer.MessageRouter.BroadCast(context.Message);
     }
 }

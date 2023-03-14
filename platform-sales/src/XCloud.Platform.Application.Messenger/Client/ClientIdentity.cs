@@ -2,9 +2,10 @@
 
 namespace XCloud.Platform.Application.Messenger.Client;
 
-public class WsClient : IEntityDto
+public class ClientIdentity : IEntityDto
 {
-    public WsClient() { }
+    public ClientIdentity() { }
+    
     public string SubjectId { get; set; }
     public string DeviceType { get; set; }
     public string ConnectionId { get; set; }

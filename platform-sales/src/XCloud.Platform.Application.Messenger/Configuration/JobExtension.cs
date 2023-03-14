@@ -1,8 +1,9 @@
 ﻿using Hangfire;
+using XCloud.Platform.Application.Messenger.Job;
 
-namespace XCloud.Platform.Application.Messenger.Job;
+namespace XCloud.Platform.Application.Messenger.Configuration;
 
-public static class WorkerExtension
+public static class JobExtension
 {
     [Obsolete("not ready")]
     public static void StartImWorker(this IServiceProvider provider)
