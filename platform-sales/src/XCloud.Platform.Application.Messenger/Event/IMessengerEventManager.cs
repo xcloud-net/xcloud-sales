@@ -14,40 +14,108 @@ public interface IMessengerEventManager : IMessengerEventSubscriber
 public class MessengerEventManager : IMessengerEventManager, IScopedDependency
 {
     private readonly IMessengerEventSubscriber[] _subscribers;
+    private readonly ILogger _logger;
 
-    public MessengerEventManager(IServiceProvider serviceProvider)
+    public MessengerEventManager(IServiceProvider serviceProvider, ILogger<MessengerEventManager> logger)
     {
         this._subscribers = serviceProvider.GetServices<IMessengerEventSubscriber>().ToArray();
+        this._logger = logger;
     }
 
     //
-    public Task ServerStartedAsync(IMessengerServer server)
+    public async Task ServerStartedAsync(IMessengerServer server)
     {
-        throw new NotImplementedException();
+        foreach (var s in this._subscribers)
+        {
+            try
+            {
+                await s.ServerStartedAsync(server);
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError(message: e.Message, exception: e);
+                continue;
+            }
+        }
     }
 
-    public Task ServerShutdownAsync(IMessengerServer server)
+    public async Task ServerShutdownAsync(IMessengerServer server)
     {
-        throw new NotImplementedException();
+        foreach (var s in this._subscribers)
+        {
+            try
+            {
+                await s.ServerShutdownAsync(server);
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError(message: e.Message, exception: e);
+                continue;
+            }
+        }
     }
 
-    public Task MessageFromClientAsync(MessageWrapper messageWrapper)
+    public async Task MessageFromClientAsync(MessageWrapper messageWrapper)
     {
-        throw new NotImplementedException();
+        foreach (var s in this._subscribers)
+        {
+            try
+            {
+                await s.MessageFromClientAsync(messageWrapper);
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError(message: e.Message, exception: e);
+                continue;
+            }
+        }
     }
 
-    public Task MessageFromRouterAsync(MessageWrapper messageWrapper)
+    public async Task MessageFromRouterAsync(MessageWrapper messageWrapper)
     {
-        throw new NotImplementedException();
+        foreach (var s in this._subscribers)
+        {
+            try
+            {
+                await s.MessageFromRouterAsync(messageWrapper);
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError(message: e.Message, exception: e);
+                continue;
+            }
+        }
     }
 
-    public Task OnlineAsync(IConnection connection)
+    public async Task OnlineAsync(IConnection connection)
     {
-        throw new NotImplementedException();
+        foreach (var s in this._subscribers)
+        {
+            try
+            {
+                await s.OnlineAsync(connection);
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError(message: e.Message, exception: e);
+                continue;
+            }
+        }
     }
 
-    public Task OfflineAsync(IConnection connection)
+    public async Task OfflineAsync(IConnection connection)
     {
-        throw new NotImplementedException();
+        foreach (var s in this._subscribers)
+        {
+            try
+            {
+                await s.OfflineAsync(connection);
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError(message: e.Message, exception: e);
+                continue;
+            }
+        }
     }
 }

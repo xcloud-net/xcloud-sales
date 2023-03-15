@@ -1,8 +1,10 @@
-﻿using XCloud.Platform.Application.Messenger.Constants;
+﻿using Volo.Abp.DependencyInjection;
+using XCloud.Platform.Application.Messenger.Constants;
 
 namespace XCloud.Platform.Application.Messenger.Handler.Impl;
 
-public class GroupMessageHandler : IMessageHandler
+[ExposeServices(typeof(IMessageHandler))]
+public class GroupMessageHandler : IMessageHandler, IScopedDependency
 {
     public string MessageType => MessageTypeConst.Group;
     public int Sort => default;

@@ -80,10 +80,10 @@ public class WebsocketConnection : IConnection
     {
         token ??= CancellationToken.None;
 
-        await using var scope = new AsyncDisposable(async () => await this.Server.OnClientLeaveAsync(this));
+        await using var scope = new AsyncDisposable(async () => await this.Server.OnDisConnectedAsync(this));
         try
         {
-            await this.Server.OnClientJoinAsync(this);
+            await this.Server.OnConnectedAsync(this);
 
             await this.SocketChannel.StartReceiveLoopAsync(this.OnMessageFromClient,
                 receiveDataCancellationToken: token,

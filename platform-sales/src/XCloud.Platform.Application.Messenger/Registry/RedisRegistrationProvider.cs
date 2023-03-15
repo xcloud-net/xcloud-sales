@@ -51,23 +51,6 @@ public class RedisRegistrationProvider : IRegistrationProvider, ISingletonDepend
         await db.KeyExpireAsync(userRegKey, TimeSpan.FromMinutes(this._expiredMins));
     }
 
-    public async Task RegisterGroupInfoAsync(GroupRegistrationInfo info)
-    {
-        info.Should().NotBeNull();
-        info.Payload.Should().NotBeNull();
-
-        var key = this.redisDatabaseSelector.RedisKeyManager.GroupRegInfoKey(info.GroupId);
-        var hashKey = this.redisDatabaseSelector.RedisKeyManager.GroupServerHashKey(info.ServerInstance);
-
-        var db = this.redisDatabaseSelector.Database;
-
-        var data = this.messageSerializer.SerializeToBytes(info.Payload);
-        await db.HashSetAsync(key, hashKey, data);
-
-        //五分钟没有心跳就删除key
-        await db.KeyExpireAsync(key, TimeSpan.FromMinutes(this._expiredMins));
-    }
-
     public async Task<string[]> GetUserServerInstancesAsync(string userUid)
     {
         userUid.Should().NotBeNullOrEmpty();

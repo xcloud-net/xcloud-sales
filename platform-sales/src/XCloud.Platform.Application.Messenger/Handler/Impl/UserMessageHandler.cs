@@ -1,4 +1,5 @@
 ﻿using Volo.Abp.Application.Dtos;
+using Volo.Abp.DependencyInjection;
 using XCloud.Platform.Application.Messenger.Constants;
 
 namespace XCloud.Platform.Application.Messenger.Handler.Impl;
@@ -9,7 +10,7 @@ public class UserToUserPayload : IEntityDto<string>
     {
         //
     }
-    
+
     public string Id { get; set; }
 
     public string Sender { get; set; }
@@ -20,7 +21,8 @@ public class UserToUserPayload : IEntityDto<string>
     public DateTime SendTime { get; set; }
 }
 
-public class UserMessageHandler : IMessageHandler
+[ExposeServices(typeof(IMessageHandler))]
+public class UserMessageHandler : IMessageHandler, IScopedDependency
 {
     private readonly ILogger _logger;
 
@@ -36,7 +38,7 @@ public class UserMessageHandler : IMessageHandler
     public async Task HandleMessageFromTransportAsync(TransportMessageContext context)
     {
         var payload =
-            context.MessengerServer.MessageSerializer.DeserializeFromString<UserToUserPayload>(context.Message.Body);
+            context.MessengerServer.MessageSerializer.DeserializeFromString<UserToUserPayload>(context.Message.Data);
 
         var find = false;
 
@@ -60,7 +62,7 @@ public class UserMessageHandler : IMessageHandler
     {
         var payload =
             context.Connection.Server.MessageSerializer.DeserializeFromString<UserToUserPayload>(
-                context.Message.Body);
+                context.Message.Data);
         var server_instance_id =
             await context.Connection.Server.RegistrationProvider.GetUserServerInstancesAsync(payload.Receiver);
 

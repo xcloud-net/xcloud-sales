@@ -9,7 +9,7 @@ using XCloud.AspNetMvc.Swagger;
 using XCloud.Core.Configuration.Builder;
 using XCloud.Core.Extension;
 using XCloud.Platform.Application.Member;
-using XCloud.Platform.Application.Messenger.Configuration;
+using XCloud.Platform.Application.Messenger.Protocol.Websocket;
 using XCloud.Platform.Auth.IdentityServer;
 using XCloud.Platform.Auth.IdentityServer.Configuration;
 using XCloud.Platform.Framework;

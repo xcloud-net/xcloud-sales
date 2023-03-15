@@ -7,14 +7,8 @@ namespace XCloud.Platform.Application.Messenger.Router;
 public interface IMessageRouter : IDisposable
 {
     Task RouteToServerInstance(string instanceKey, MessageWrapper data);
-    
-    [Obsolete]
-    Task BroadCast(MessageWrapper data);
-    
+
     Task SubscribeMessageEndpoint(string instanceKey, Func<MessageWrapper, Task> callback);
-    
-    [Obsolete]
-    Task SubscribeBroadcastMessageEndpoint(Func<MessageWrapper, Task> callback);
 }
 
 public class InMemoryMessageRouter : IMessageRouter, ISingletonDependency

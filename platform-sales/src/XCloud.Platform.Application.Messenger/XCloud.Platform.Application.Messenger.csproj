@@ -4,6 +4,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\XCloud.Job\XCloud.Job.csproj" />
+      <ProjectReference Include="..\XCloud.Platform.Auth\XCloud.Platform.Auth.csproj" />
       <ProjectReference Include="..\XCloud.Redis\XCloud.Redis.csproj" />
     </ItemGroup>
 

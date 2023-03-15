@@ -1,10 +1,19 @@
 using System.Collections.Generic;
 using System.Net.WebSockets;
+using Microsoft.AspNetCore.Builder;
+using XCloud.Platform.Application.Messenger.Server;
 
 namespace XCloud.Platform.Application.Messenger.Protocol.Websocket;
 
 public static class WebsocketExtension
 {
+    public static IApplicationBuilder UseWebSocketEndpoint(this IApplicationBuilder app, string path)
+    {
+        app.UseMiddleware<EndpointMiddleware>(args: new object[] { path });
+        app.ApplicationServices.GetRequiredService<IMessengerServer>().StartAsync();
+        return app;
+    }
+
     public static async Task StartReceiveLoopAsync(this WebSocket ws,
         Func<byte[], Task> onMessage,
         CancellationToken? receiveDataCancellationToken = null,
@@ -47,6 +56,7 @@ public static class WebsocketExtension
                             //reset
                             data = new List<byte>() { };
                         }
+
                         continue;
                     case WebSocketMessageType.Binary:
                         throw new NotSupportedException();

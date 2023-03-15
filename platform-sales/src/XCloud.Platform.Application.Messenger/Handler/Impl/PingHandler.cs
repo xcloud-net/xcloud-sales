@@ -1,10 +1,12 @@
-﻿using XCloud.Platform.Application.Messenger.Constants;
+﻿using Volo.Abp.DependencyInjection;
+using XCloud.Platform.Application.Messenger.Constants;
 using XCloud.Platform.Application.Messenger.Extension;
 using XCloud.Platform.Application.Messenger.Message;
 
 namespace XCloud.Platform.Application.Messenger.Handler.Impl;
 
-public class PingHandler : IMessageHandler
+[ExposeServices(typeof(IMessageHandler))]
+public class PingHandler : IMessageHandler, IScopedDependency
 {
     public string MessageType => MessageTypeConst.Ping;
 
@@ -20,7 +22,7 @@ public class PingHandler : IMessageHandler
         await context.Connection.SendMessageToClientAsync(new MessageWrapper()
         {
             MessageType = MessageTypeConst.Ping,
-            Body = "success"
+            Data = "success"
         });
     }
 

@@ -1,8 +1,10 @@
-﻿using XCloud.Platform.Application.Messenger.Constants;
+﻿using Volo.Abp.DependencyInjection;
+using XCloud.Platform.Application.Messenger.Constants;
 
 namespace XCloud.Platform.Application.Messenger.Handler.Impl;
 
-public class BroadcastHandler : IMessageHandler
+[ExposeServices(typeof(IMessageHandler))]
+public class BroadcastHandler : IMessageHandler, IScopedDependency
 {
     public string MessageType => MessageTypeConst.BroadCast;
 
@@ -17,6 +19,6 @@ public class BroadcastHandler : IMessageHandler
 
     public async Task HandleMessageFromClientAsync(ClientMessageContext context)
     {
-        await context.MessengerServer.MessageRouter.BroadCast(context.Message);
+        throw new NotImplementedException();
     }
 }
