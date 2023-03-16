@@ -21,6 +21,7 @@ public class MessengerTaskManager : IMessengerTaskManager
     }
 
     private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+    
     private CancellationToken CancellationToken => this._cancellationTokenSource.Token;
 
     private IReadOnlyList<Task> _threads;
@@ -31,6 +32,8 @@ public class MessengerTaskManager : IMessengerTaskManager
             throw new MessengerException("messenger task already started");
 
         this._threads = this._tasks.Select(x => Task.Run(() => RunMessengerTaskAsync(x), CancellationToken)).ToArray();
+
+        this._logger.LogInformation($"{this._threads.Count} messenger tasks started");
     }
 
     private async Task RunMessengerTaskAsync(IMessengerTask task)
@@ -53,6 +56,8 @@ public class MessengerTaskManager : IMessengerTaskManager
 
             await Task.Delay(task.Delay, CancellationToken);
         }
+
+        this._logger.LogInformation($"task:{task.GetType().FullName} stopped gracefully");
     }
 
     public void Dispose()
@@ -68,5 +73,7 @@ public class MessengerTaskManager : IMessengerTaskManager
         }
 
         this._cancellationTokenSource.Dispose();
+
+        this._logger.LogInformation($"messenger tasks disposed");
     }
 }

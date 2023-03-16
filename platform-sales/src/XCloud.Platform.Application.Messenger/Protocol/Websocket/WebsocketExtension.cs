@@ -7,14 +7,14 @@ namespace XCloud.Platform.Application.Messenger.Protocol.Websocket;
 
 public static class WebsocketExtension
 {
-    public static IApplicationBuilder UseWebSocketEndpoint(this IApplicationBuilder app, string path)
+    internal static IApplicationBuilder UseWebSocketEndpoint(this IApplicationBuilder app, string path)
     {
         app.UseMiddleware<EndpointMiddleware>(args: new object[] { path });
         app.ApplicationServices.GetRequiredService<IMessengerServer>().StartAsync();
         return app;
     }
 
-    public static async Task StartReceiveLoopAsync(this WebSocket ws,
+    internal static async Task StartReceiveLoopAsync(this WebSocket ws,
         Func<byte[], Task> onMessage,
         CancellationToken? receiveDataCancellationToken = null,
         CancellationToken? closeConnectionCancellationToken = null,

@@ -16,6 +16,7 @@ using XCloud.Core.Dto;
 using XCloud.Platform.Auth.Application.Admin;
 using XCloud.Platform.Auth.Authentication;
 using XCloud.Platform.Auth.Configuration;
+using XCloud.Platform.Auth.IdentityServer;
 using XCloud.Platform.Framework.Controller;
 
 namespace XCloud.Platform.Api.Controller;
@@ -41,7 +42,7 @@ public class AuthController : PlatformBaseController
     /// 刷新token
     /// </summary>
     [HttpPost("refresh-token")]
-    public async Task<ApiResponse<TokenModel>> RefreshToken([JsonData] RefreshTokenDto model)
+    public async Task<ApiResponse<AuthTokenDto>> RefreshToken([JsonData] RefreshTokenDto model)
     {
         if (model == null)
             throw new ArgumentNullException(nameof(model));
@@ -60,7 +61,7 @@ public class AuthController : PlatformBaseController
             Scope = identityServerAuthConfig.Scope,
         });
 
-        var res = tokenResponse.ToTokenModel();
+        var res = tokenResponse.ToAuthTokenDto();
         res.ThrowIfErrorOccured();
 
         return res;

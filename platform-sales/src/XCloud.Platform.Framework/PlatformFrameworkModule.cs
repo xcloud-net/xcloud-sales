@@ -33,17 +33,11 @@ public class PlatformFrameworkModule : AbpModule
     {
         var builder = context.Services.GetRequiredXCloudBuilder();
 
-        context.ConfigWebsocket();
-
-        context.ConfigMessenger(builder);
-
         this.Configure<AbpAutoMapperOptions>(option => option.AddMaps<PlatformFrameworkModule>(false));
     }
 
     public override void PostConfigureServices(ServiceConfigurationContext context)
     {
-        context.ConfigMessengerTransport();
-        
         context.Services.Configure<PlatformJobOption>(option =>
         {
             //disable job auto start

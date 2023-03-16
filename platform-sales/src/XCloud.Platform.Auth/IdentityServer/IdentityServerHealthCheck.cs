@@ -8,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Volo.Abp.DependencyInjection;
-using XCloud.Platform.Auth.Authentication;
 
 namespace XCloud.Platform.Auth.IdentityServer;
 
@@ -26,10 +25,10 @@ public class IdentityServerHealthCheck : IHealthCheck, ITransientDependency
 
         try
         {
-            var httpClientFacotry = s.ServiceProvider.GetRequiredService<IHttpClientFactory>();
+            var httpClientFactory = s.ServiceProvider.GetRequiredService<IHttpClientFactory>();
             var config = s.ServiceProvider.GetRequiredService<IConfiguration>();
 
-            var httpClient = httpClientFacotry.CreateClient(nameof(IdentityServerHealthCheck));
+            var httpClient = httpClientFactory.CreateClient(nameof(IdentityServerHealthCheck));
 
             var disco = await httpClient.GetIdentityServerDiscoveryDocuments(config);
             disco.IsError.Should().BeFalse("can not get identity server disco");

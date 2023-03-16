@@ -32,7 +32,7 @@ public class UserAuthService : PlatformApplicationService, IUserAuthService
         _platformAuthResultHolder = platformAuthResultHolder;
     }
 
-    private async Task<ClaimsPrincipal> AuthenticationAsync()
+    private async Task<ClaimsPrincipal> GetRequiredClaimsAsync()
     {
         await Task.CompletedTask;
 
@@ -52,7 +52,7 @@ public class UserAuthService : PlatformApplicationService, IUserAuthService
 
         try
         {
-            var authResult = await this.AuthenticationAsync();
+            var authResult = await this.GetRequiredClaimsAsync();
             if (authResult == null || !authResult.IsAuthenticated(out var claims))
             {
                 res.SetError("auth failed");

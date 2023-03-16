@@ -52,7 +52,16 @@ public class DatabaseUserRegistrationService : PlatformApplicationService, IUser
 
     public async Task RegisterUserInfoAsync(SysUserOnlineStatusDto dto)
     {
-        var key = $"{dto.UserId}.{dto.DeviceId}.{dto.ServerInstanceId}";
+        if (string.IsNullOrWhiteSpace(dto.UserId))
+            throw new ArgumentNullException(nameof(dto.UserId));
+
+        if (string.IsNullOrWhiteSpace(dto.DeviceId))
+            throw new ArgumentNullException(nameof(dto.DeviceId));
+
+        if (string.IsNullOrWhiteSpace(dto.ServerInstanceId))
+            throw new ArgumentNullException(nameof(dto.ServerInstanceId));
+
+        var key = $"im.user.reg.{dto.UserId}.{dto.DeviceId}.{dto.ServerInstanceId}";
 
         await this.CacheProvider.GetOrSetAsync<string>(async () =>
         {

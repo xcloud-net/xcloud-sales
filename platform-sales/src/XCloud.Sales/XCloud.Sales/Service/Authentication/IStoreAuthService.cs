@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Net.Http.Headers;
 using XCloud.Core.Dto;
 using XCloud.Platform.Application.Member.Service.Admin;
 using XCloud.Platform.Application.Member.Service.User;
+using XCloud.Platform.Auth.Authentication;
 using XCloud.Redis;
 using XCloud.Sales.Application;
 using XCloud.Sales.Clients.Platform;
@@ -56,25 +56,14 @@ public class StoreAuthService : SalesAppService, IStoreAuthService
 
     private TimeSpan CacheExpired => TimeSpan.FromMinutes(2);
 
-    private string GetBearerToken()
+    private string GetBearerTokenOrEmpty()
     {
         if (this._httpContextAccessor.HttpContext == null)
             throw new NotSupportedException(nameof(this._httpContextAccessor));
 
-        var hasTokenHeader =
-            this._httpContextAccessor.HttpContext.Request.Headers.TryGetValue(HeaderNames.Authorization,
-                out var val);
-        if (hasTokenHeader)
-        {
-            var headerValue = (string)val;
-            if (!string.IsNullOrWhiteSpace(headerValue))
-            {
-                var token = headerValue.Split(' ').Skip(1).FirstOrDefault();
-                return token;
-            }
-        }
+        var token = this._httpContextAccessor.HttpContext.GetBearerToken();
 
-        return string.Empty;
+        return token ?? string.Empty;
     }
 
     async Task<AuthedGlobalUserResult> GetGlobalAuthedUserAsync()
@@ -86,7 +75,7 @@ public class StoreAuthService : SalesAppService, IStoreAuthService
         var res = new AuthedGlobalUserResult();
         try
         {
-            var token = this.GetBearerToken();
+            var token = this.GetBearerTokenOrEmpty();
             if (string.IsNullOrWhiteSpace(token))
             {
                 res.TokenIsRequired = true;
@@ -134,6 +123,7 @@ public class StoreAuthService : SalesAppService, IStoreAuthService
                 res.SetError(globalUserResponse.Error.Message);
                 return res;
             }
+
             var globalUser = globalUserResponse.Data!;
 
             var key = $"sales.admin.by.user:{globalUser.UserId}";
@@ -167,7 +157,7 @@ public class StoreAuthService : SalesAppService, IStoreAuthService
             resource:
             $"create-mall-user-for-global-user:{globalUserId}",
             expiryTime: TimeSpan.FromSeconds(5));
-            
+
         if (lk.IsAcquired)
         {
             var mallUser = await this._userService.GetOrCreateUserByGlobalUserId(globalUserId);
@@ -255,7 +245,7 @@ public class StoreAuthService : SalesAppService, IStoreAuthService
 
             var storeManager = await this._storeManagerService.QueryByGlobalUserIdAsync(
                 storeId,
-                globalUserResponse.Data.UserId, 
+                globalUserResponse.Data.UserId,
                 new CachePolicy() { Cache = true });
 
             if (storeManager == null)

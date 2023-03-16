@@ -35,7 +35,7 @@ public static class IdentityServerConfigurationExtension
              */
             option.Authentication ??= new IdentityServer4.Configuration.AuthenticationOptions();
             option.Authentication.CookieAuthenticationScheme =
-                IdentityConsts.Scheme.IdentityServerWebCookieScheme;
+                AuthConstants.Scheme.IdentityServerWebCookieScheme;
 
             option.Endpoints.EnableJwtRequestUri = true;
         });

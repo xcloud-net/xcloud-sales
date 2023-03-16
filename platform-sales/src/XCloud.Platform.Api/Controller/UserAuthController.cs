@@ -10,6 +10,7 @@ using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Auth.Application.User;
 using XCloud.Platform.Auth.Authentication;
 using XCloud.Platform.Auth.Configuration;
+using XCloud.Platform.Auth.IdentityServer;
 using XCloud.Platform.Framework.Controller;
 
 namespace XCloud.Platform.Api.Controller;
@@ -39,7 +40,7 @@ public class UserAuthController : PlatformBaseController, IUserController
     /// 密码授权模式
     /// </summary>
     [HttpPost("password-login")]
-    public async Task<ApiResponse<TokenModel>> OauthPwdLogin([JsonData] PasswordLoginDto model)
+    public async Task<ApiResponse<AuthTokenDto>> OauthPwdLogin([JsonData] PasswordLoginDto model)
     {
         if (model == null)
             throw new ArgumentNullException(nameof(model));
@@ -63,7 +64,7 @@ public class UserAuthController : PlatformBaseController, IUserController
             }
         });
 
-        var res = tokenResponse.ToTokenModel();
+        var res = tokenResponse.ToAuthTokenDto();
 
         return res;
     }

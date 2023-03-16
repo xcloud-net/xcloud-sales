@@ -7,7 +7,9 @@ namespace XCloud.Platform.Application.Messenger.Connection;
 public interface IConnection : IDisposable
 {
     IServiceProvider Provider { get; }
-    
+
+    bool IsActive { get; }
+
     IMessengerServer Server { get; }
     
     ClientIdentity ClientIdentity { get; }

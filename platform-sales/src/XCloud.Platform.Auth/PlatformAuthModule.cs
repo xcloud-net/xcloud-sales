@@ -46,7 +46,7 @@ public class PlatformAuthModule : AbpModule
         context.Services.Configure<AuthenticationOptions>(option =>
         {
             //set default auth scheme
-            option.DefaultScheme = IdentityConsts.Scheme.BearerTokenScheme;
+            option.DefaultScheme = AuthConstants.Scheme.BearerTokenScheme;
         });
     }
 }

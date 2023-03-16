@@ -58,15 +58,21 @@ public class UserMessageHandler : IMessageHandler, IScopedDependency
         }
     }
 
+    /// <summary>
+    /// optimise required
+    /// combine routes
+    /// </summary>
+    /// <param name="context"></param>
     public async Task HandleMessageFromClientAsync(ClientMessageContext context)
     {
         var payload =
             context.Connection.Server.MessageSerializer.DeserializeFromString<UserToUserPayload>(
                 context.Message.Data);
-        var server_instance_id =
+        
+        var serverInstanceId =
             await context.Connection.Server.UserRegistrationService.GetUserServerInstancesAsync(payload.Receiver);
 
-        foreach (var serverId in server_instance_id)
+        foreach (var serverId in serverInstanceId)
         {
             await context.MessengerServer.MessageRouter.RouteToServerInstance(serverId, context.Message);
         }

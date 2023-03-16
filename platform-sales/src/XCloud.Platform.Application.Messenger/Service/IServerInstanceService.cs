@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using XCloud.Application.Service;
+using XCloud.Core.Cache;
 using XCloud.Core.IdGenerator;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Core.Domain.Messenger;
@@ -22,8 +23,8 @@ public class ServerInstanceService : PlatformApplicationService, IServerInstance
     {
         _repository = repository;
     }
-
-    public async Task RegAsync(ServerInstanceDto dto)
+    
+    private async Task RegImplAsync(ServerInstanceDto dto)
     {
         var entity = await this._repository.QueryOneAsync(x => x.InstanceId == dto.InstanceId);
 
@@ -45,6 +46,22 @@ public class ServerInstanceService : PlatformApplicationService, IServerInstance
         }
 
         await this.CurrentUnitOfWork.SaveChangesAsync();
+    }
+    
+    public async Task RegAsync(ServerInstanceDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.InstanceId))
+            throw new ArgumentNullException(nameof(dto.InstanceId));
+
+        await this.CacheProvider.GetOrSetAsync(async () =>
+        {
+            await this.RegImplAsync(dto);
+            return string.Empty;
+        }, new CacheOption<string>()
+        {
+            Key = $"im.server.instance.reg.{dto.InstanceId}",
+            Expiration = TimeSpan.FromMinutes(1)
+        });
     }
 
     public async Task<string[]> QueryAllInstancesAsync()

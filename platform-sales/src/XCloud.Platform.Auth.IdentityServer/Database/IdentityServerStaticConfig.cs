@@ -108,9 +108,9 @@ public static class IdentityServerStaticConfig
             };
             m.AllowedGrantTypes = m.AllowedGrantTypes.AppendManyItems(new string[]
             {
-                IdentityConsts.GrantType.UserWechat,
-                IdentityConsts.GrantType.AdminPassword,
-                IdentityConsts.GrantType.InternalGrantType
+                AuthConstants.GrantType.UserWechat,
+                AuthConstants.GrantType.AdminPassword,
+                AuthConstants.GrantType.InternalGrantType
             }).ToArray();
             //m.AllowedCorsOrigins = new string[] { };
             m.AllowAccessTokensViaBrowser = true;

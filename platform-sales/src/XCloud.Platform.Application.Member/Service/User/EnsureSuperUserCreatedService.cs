@@ -64,7 +64,7 @@ public class EnsureSuperUserCreatedService : PlatformApplicationService
     {
         var dto = new CreateSeedDataInput()
         {
-            UserName = IdentityConsts.Account.DefaultUserName,
+            UserName = AuthConstants.Account.DefaultUserName,
             UserMobilePhone = "13915280232",
             IdCardNo = "320623199406255621"
         };

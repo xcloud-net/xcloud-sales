@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using XCloud.Core.Json;
+﻿using XCloud.Core.Json;
 using XCloud.Platform.Application.Messenger.Connection;
 using XCloud.Platform.Application.Messenger.Constants;
 using XCloud.Platform.Application.Messenger.Event;
@@ -13,12 +12,9 @@ namespace XCloud.Platform.Application.Messenger.Server;
 
 public interface IMessengerServer : IDisposable
 {
-    ConnectionManager ConnectionManager { get; }
-
-    /// <summary>
-    /// 用于路由
-    /// </summary>
     string ServerInstanceId { get; }
+    
+    ConnectionManager ConnectionManager { get; }
 
     IJsonDataSerializer MessageSerializer { get; }
     IUserRegistrationService UserRegistrationService { get; }
@@ -54,7 +50,8 @@ public class MessengerServer : IMessengerServer
 
     public MessengerServer(IServiceProvider provider, string serverInstanceId)
     {
-        serverInstanceId.Should().NotBeNullOrEmpty();
+        if (string.IsNullOrWhiteSpace(serverInstanceId))
+            throw new ArgumentNullException(nameof(serverInstanceId));
 
         this._logger = provider.GetRequiredService<ILogger<MessengerServer>>();
 
@@ -145,8 +142,7 @@ public class MessengerServer : IMessengerServer
     public async Task StartAsync()
     {
         //路由到这台服务器的消息
-        var queueKey = this.ServerInstanceId;
-        await this.MessageRouter.SubscribeMessageEndpoint(queueKey, this.OnMessageFromRouterAsync);
+        await this.MessageRouter.SubscribeMessageEndpoint(this.ServerInstanceId, this.OnMessageFromRouterAsync);
 
         this.MessengerTaskManager.StartTasks();
 
@@ -162,7 +158,7 @@ public class MessengerServer : IMessengerServer
         this.MessageRouter.Dispose();
     }
 
-    public IMessageHandler GetHandlerOrNull(string type)
+    private IMessageHandler GetHandlerOrNull(string type)
     {
         var handler = this.MessageHandlers
             .OrderByDescending(x => x.Sort)

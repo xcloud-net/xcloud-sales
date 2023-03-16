@@ -14,6 +14,7 @@ using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Auth.Application.User;
 using XCloud.Platform.Auth.Authentication;
 using XCloud.Platform.Auth.Configuration;
+using XCloud.Platform.Auth.IdentityServer;
 using XCloud.Platform.Framework.Controller;
 using XCloud.Platform.Shared.Constants;
 
@@ -83,7 +84,7 @@ public class UserMobileAuthController : PlatformBaseController, IUserController
     }
 
     [HttpPost("sms-login")]
-    public async Task<ApiResponse<TokenModel>> SmsLoginAsync([FromBody] SmsLoginInput dto)
+    public async Task<ApiResponse<AuthTokenDto>> SmsLoginAsync([FromBody] SmsLoginInput dto)
     {
         dto.Mobile = this._userMobileService.NormalizeMobilePhone(dto.Mobile);
 
@@ -109,7 +110,7 @@ public class UserMobileAuthController : PlatformBaseController, IUserController
         var tokenResponse = await this._httpClient.RequestTokenAsync(new TokenRequest
         {
             Address = disco.TokenEndpoint,
-            GrantType = IdentityConsts.GrantType.InternalGrantType,
+            GrantType = AuthConstants.GrantType.InternalGrantType,
 
             ClientId = _oAuthConfig.ClientId,
             ClientSecret = _oAuthConfig.ClientSecret,
@@ -121,7 +122,7 @@ public class UserMobileAuthController : PlatformBaseController, IUserController
             }
         });
 
-        var res = tokenResponse.ToTokenModel();
+        var res = tokenResponse.ToAuthTokenDto();
         res.ThrowIfErrorOccured();
 
         return res;

@@ -16,7 +16,7 @@ public class WebsocketConnection : IConnection
 {
     private readonly ILogger _logger;
     private readonly CancellationTokenSource _cancellationTokenSource;
-
+    private readonly WebSocket _socketChannel;
     public WebsocketConnection(IServiceProvider provider, IMessengerServer server, WebSocket webSocket,
         ClientIdentity clientIdentity)
     {
@@ -28,7 +28,7 @@ public class WebsocketConnection : IConnection
         this.Provider = provider;
         this.ClientIdentity = clientIdentity;
         this.Server = server;
-        this.SocketChannel = webSocket;
+        this._socketChannel = webSocket;
 
         this._logger = provider.GetRequiredService<ILogger<WebsocketConnection>>();
         this._cancellationTokenSource = new CancellationTokenSource();
@@ -38,8 +38,9 @@ public class WebsocketConnection : IConnection
 
     public IServiceProvider Provider { get; }
     public IMessengerServer Server { get; }
-    public WebSocket SocketChannel { get; }
     public ClientIdentity ClientIdentity { get; }
+
+    public bool IsActive => this._socketChannel.State == WebSocketState.Open;
 
     public async Task SendMessageToClientAsync(MessageDto data)
     {
@@ -47,7 +48,7 @@ public class WebsocketConnection : IConnection
             throw new ArgumentNullException(nameof(data));
 
         var bs = this.Server.MessageSerializer.SerializeToBytes(data);
-        await this.SocketChannel.SendAsync(
+        await this._socketChannel.SendAsync(
             new ArraySegment<byte>(bs),
             WebSocketMessageType.Text,
             true,
@@ -70,12 +71,6 @@ public class WebsocketConnection : IConnection
         }
     }
 
-    public async Task CloseAsync(CancellationToken? token = null)
-    {
-        token ??= CancellationToken.None;
-        await this.SocketChannel.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, token.Value);
-    }
-
     public async Task StartReceiveMessageLoopAsync(CancellationToken? token = null)
     {
         token ??= CancellationToken.None;
@@ -85,7 +80,7 @@ public class WebsocketConnection : IConnection
         {
             await this.Server.OnConnectedAsync(this);
 
-            await this.SocketChannel.StartReceiveLoopAsync(this.OnMessageFromClient,
+            await this._socketChannel.StartReceiveLoopAsync(this.OnMessageFromClient,
                 receiveDataCancellationToken: token,
                 closeConnectionCancellationToken: token);
         }
@@ -98,7 +93,10 @@ public class WebsocketConnection : IConnection
     public void Dispose()
     {
         this.RequestAbort();
-        Task.Run(() => this.CloseAsync()).Wait();
-        this.SocketChannel.Dispose();
+        Task.Run(async () =>
+        {
+            await this._socketChannel.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+            this._socketChannel.Dispose();
+        }).Wait();
     }
 }

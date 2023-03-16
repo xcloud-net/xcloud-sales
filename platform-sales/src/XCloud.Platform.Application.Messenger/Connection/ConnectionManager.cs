@@ -1,58 +1,49 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace XCloud.Platform.Application.Messenger.Connection;
 
-public class ConnectionManager : List<IConnection>, IDisposable
+public class ConnectionManager : IDisposable
 {
-    private readonly object _lock = new object();
+    private readonly ConcurrentDictionary<string, IConnection> _connections =
+        new ConcurrentDictionary<string, IConnection>();
+
+    private string BuildKey(IConnection connection)
+    {
+        return $"{connection.ClientIdentity.ConnectionId}@{connection.ClientIdentity.SubjectId}";
+    }
 
     public IReadOnlyList<IConnection> AsReadOnlyList()
     {
-        lock (this._lock)
-        {
-            return this.ToList();
-        }
+        return this._connections.Values.ToArray();
     }
 
     public void AddConnection(IConnection con)
     {
-        lock (this._lock)
-        {
-            this.Add(con);
-        }
+        if (con == null)
+            throw new ArgumentNullException(nameof(con));
+
+        this._connections[BuildKey(con)] = con;
     }
 
     public void RemoveConnection(IConnection con)
     {
-        lock (this._lock)
-        {
-            this.Remove(con);
-        }
-    }
+        this._connections.TryRemove(BuildKey(con), out var _);
 
-    public void RemoveWhere(Func<IConnection, bool> where)
-    {
-        lock (this._lock)
+        var items = this._connections.Where(x => x.Value == con).ToArray();
+        foreach (var m in items)
         {
-            this.RemoveAll(where.Invoke);
-        }
-    }
-
-    public void RemoveAll()
-    {
-        lock (this._lock)
-        {
-            this.Clear();
+            this._connections.TryRemove(m.Key, out var _);
         }
     }
 
     public void Dispose()
     {
-        foreach (var m in this)
+        foreach (var m in this._connections.Values)
         {
             m.Dispose();
         }
 
-        this.RemoveAll();
+        this._connections.Clear();
     }
 }

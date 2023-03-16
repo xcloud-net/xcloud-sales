@@ -1,6 +1,8 @@
 using System.Net;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Http;
 using Volo.Abp.Authorization;
+using XCloud.Core.Dto;
 using XCloud.Core.Helper;
 using XCloud.Platform.Application.Messenger.Client;
 using XCloud.Platform.Application.Messenger.Connection;
@@ -15,25 +17,37 @@ public class EndpointMiddleware : IMiddleware
 
     public EndpointMiddleware(string path)
     {
+        if (string.IsNullOrWhiteSpace(path))
+            throw new ArgumentNullException(nameof(path));
+        
         _path = path;
     }
 
     private async Task<ClientIdentity> GetRequiredClientIdentityAsync(HttpContext context)
     {
+        var device = context.Request.Query["device"];
+        if (string.IsNullOrWhiteSpace(device))
+            throw new ArgumentNullException(nameof(device));
+        
         using var s = context.RequestServices.CreateScope();
+        
+        var handler = s.ServiceProvider.GetRequiredService<IdentityServerAuthenticationHandler>();
+
+        var result = await handler.AuthenticateAsync();
+        
         var userAuthService = s.ServiceProvider.GetRequiredService<IUserAuthService>();
 
         var response = await userAuthService.GetAuthUserAsync();
 
-        var me = context.Request.Query["me"];
-        var device = context.Request.Query["device"];
+        response.ThrowIfErrorOccured();
 
         var client = new ClientIdentity()
         {
-            SubjectId = me,
+            SubjectId = response.Data.Id,
             DeviceType = device,
             ConnectionId = context.Connection.Id
         };
+
         throw new NotImplementedException();
     }
 

@@ -1,6 +1,6 @@
 namespace XCloud.Platform.Application.Messenger.Tasks;
 
-public interface IMessengerTask : IDisposable
+public interface IMessengerTask
 {
     TimeSpan Delay { get; }
     

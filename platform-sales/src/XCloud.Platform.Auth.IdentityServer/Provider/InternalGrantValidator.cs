@@ -23,7 +23,7 @@ public class InternalGrantValidator : IExtensionGrantValidator
         this._workContext = workContext;
     }
 
-    public string GrantType => IdentityConsts.GrantType.InternalGrantType;
+    public string GrantType => AuthConstants.GrantType.InternalGrantType;
 
     public async Task ValidateAsync(ExtensionGrantValidationContext context)
     {

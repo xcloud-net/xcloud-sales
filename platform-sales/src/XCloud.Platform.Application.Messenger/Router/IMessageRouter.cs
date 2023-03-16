@@ -22,12 +22,6 @@ public class InMemoryMessageRouter : IMessageRouter, ISingletonDependency
         this._logger = logger;
     }
 
-    public async Task BroadCast(MessageDto data)
-    {
-        if (_subscribers != null)
-            await _subscribers.Invoke(data);
-    }
-
     public void Dispose()
     {
         //
@@ -40,12 +34,6 @@ public class InMemoryMessageRouter : IMessageRouter, ISingletonDependency
     }
 
     private Func<MessageDto, Task> _subscribers = null;
-
-    public async Task SubscribeBroadcastMessageEndpoint(Func<MessageDto, Task> callback)
-    {
-        this._subscribers = callback;
-        await Task.CompletedTask;
-    }
 
     public async Task SubscribeMessageEndpoint(string key, Func<MessageDto, Task> callback)
     {

@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using StackExchange.Redis;
 using Volo.Abp.DependencyInjection;
 using XCloud.Core.Extension;
 using XCloud.Core.Json;
@@ -18,7 +17,6 @@ public class RedisMessageRouter : IMessageRouter, ISingletonDependency
 
     private Task _refreshKeyTask;
     private Task _consumeTask;
-    private Task _consumeBroadcastTask;
 
     public RedisMessageRouter(MessengerRedisClient redisDatabaseSelector, IJsonDataSerializer messageSerializer, ILogger<RedisMessageRouter> logger)
     {
@@ -27,17 +25,8 @@ public class RedisMessageRouter : IMessageRouter, ISingletonDependency
         this._logger = logger;
     }
 
-    private const string BroadCastKey = "message_all";
-
-    public async Task BroadCast(MessageDto data)
-    {
-        var bs = this._messageSerializer.SerializeToBytes(data);
-        await this._redisDatabaseSelector.Database.PublishAsync(BroadCastKey, bs);
-    }
-
     public void Dispose()
     {
-        this._queue?.Unsubscribe();
         this._tokenSource.Cancel();
     }
 
@@ -45,36 +34,6 @@ public class RedisMessageRouter : IMessageRouter, ISingletonDependency
     {
         var bs = this._messageSerializer.SerializeToBytes(data);
         await this._redisDatabaseSelector.Database.ListLeftPushAsync(key, bs);
-    }
-
-    private ChannelMessageQueue _queue;
-    public async Task SubscribeBroadcastMessageEndpoint(Func<MessageDto, Task> callback)
-    {
-        async Task Consume()
-        {
-            this._queue = await this._redisDatabaseSelector.Connection.GetSubscriber().SubscribeAsync(BroadCastKey);
-            while (true && !this._tokenSource.IsCancellationRequested)
-            {
-                try
-                {
-                    if (!_queue.TryRead(out var item))
-                    {
-                        await Task.Delay(TimeSpan.FromMilliseconds(100), this._tokenSource.Token);
-                        continue;
-                    }
-                    var message = this._messageSerializer.DeserializeFromBytes<MessageDto>((byte[])item.Message);
-                    await callback.Invoke(message);
-                }
-                catch (Exception e)
-                {
-                    this._logger.AddErrorLog(e.Message, e);
-                    await Task.Delay(TimeSpan.FromMilliseconds(100), this._tokenSource.Token);
-                }
-            }
-        }
-        this._consumeBroadcastTask = Task.Run(Consume, this._tokenSource.Token);
-        this._logger.LogInformation("开始订阅广播");
-        await Task.CompletedTask;
     }
 
     private async Task refresh_key(string key)

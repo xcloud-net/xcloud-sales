@@ -5,6 +5,13 @@ using XCloud.Platform.Core.Domain.User;
 
 namespace XCloud.Platform.Application.Member.Service.User;
 
+public class ParsedTokenDto : ExtensibleEntityDto, IEntityDto<string>, IHasCreationTime
+{
+    public string Id { get; set; }
+    
+    public DateTime CreationTime { get; set; }
+}
+
 public class QueryUserConnectionRequest : IEntityDto
 {
     public string UserId { get; set; }

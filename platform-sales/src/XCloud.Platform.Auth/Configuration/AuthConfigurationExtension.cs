@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using XCloud.Platform.Auth.Application.Admin;
 using XCloud.Platform.Auth.Authentication;
+using XCloud.Platform.Auth.IdentityServer;
 using XCloud.Platform.Shared.Constants;
 
 namespace XCloud.Platform.Auth.Configuration;
@@ -24,7 +25,7 @@ public static class AuthConfigurationExtension
     {
         var config = builder.Services.GetConfiguration();
 
-        var scheme = IdentityConsts.Scheme.BearerTokenScheme;
+        var scheme = AuthConstants.Scheme.BearerTokenScheme;
         var identityServer = config.GetIdentityServerAddressOrThrow();
 
         builder.AddIdentityServerAuthentication(scheme, option =>
@@ -40,7 +41,7 @@ public static class AuthConfigurationExtension
 
     private static void AddJwtAuthentication(this AuthenticationBuilder builder)
     {
-        var scheme = IdentityConsts.Scheme.JwtTokenScheme;
+        var scheme = AuthConstants.Scheme.JwtTokenScheme;
 
         builder.AddJwtBearer(option =>
         {
@@ -64,7 +65,7 @@ public static class AuthConfigurationExtension
     /// </summary>
     private static void AddCookieAuthentication(this AuthenticationBuilder builder)
     {
-        var cookieScheme = IdentityConsts.Scheme.IdentityServerWebCookieScheme;
+        var cookieScheme = AuthConstants.Scheme.IdentityServerWebCookieScheme;
 
         builder.AddCookie(cookieScheme, option =>
         {
@@ -79,7 +80,7 @@ public static class AuthConfigurationExtension
 
     private static void AddExternalCookieAuthentication(this AuthenticationBuilder builder)
     {
-        var cookieExternalScheme = IdentityConsts.Scheme.ExternalLoginScheme;
+        var cookieExternalScheme = AuthConstants.Scheme.ExternalLoginScheme;
 
         builder.AddCookie(cookieExternalScheme, option =>
         {
@@ -94,7 +95,7 @@ public static class AuthConfigurationExtension
     public static void AddUserAuthentication(this IServiceCollection collection)
     {
         //认证配置
-        var defaultAuthScheme = IdentityConsts.Scheme.BearerTokenScheme;
+        var defaultAuthScheme = AuthConstants.Scheme.BearerTokenScheme;
 
         var builder = collection.AddAuthentication(defaultScheme: defaultAuthScheme);
         

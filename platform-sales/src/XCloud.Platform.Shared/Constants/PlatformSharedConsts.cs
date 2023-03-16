@@ -3,22 +3,27 @@ using System.ComponentModel;
 
 namespace XCloud.Platform.Shared.Constants;
 
-public static class Roles
+public static class PlatformSharedConstants
 {
-    /// <summary>
-    /// 管理员
-    /// </summary>
-    public static int ManagerRole => (int)(MemberRoleEnum.管理员);
+    public const string ServiceName = "platform";
+    
+    public static class Roles
+    {
+        /// <summary>
+        /// 管理员
+        /// </summary>
+        public static int ManagerRole => (int)(MemberRoleEnum.管理员);
 
-    /// <summary>
-    /// 管理员或者普通成员
-    /// </summary>
-    public static int MemberRole => (int)(MemberRoleEnum.管理员 | MemberRoleEnum.普通成员);
+        /// <summary>
+        /// 管理员或者普通成员
+        /// </summary>
+        public static int MemberRole => (int)(MemberRoleEnum.管理员 | MemberRoleEnum.普通成员);
 
-    /// <summary>
-    /// 所有
-    /// </summary>
-    public static int AnyRole => (int)(MemberRoleEnum.管理员 | MemberRoleEnum.普通成员 | MemberRoleEnum.观察者);
+        /// <summary>
+        /// 所有
+        /// </summary>
+        public static int AnyRole => (int)(MemberRoleEnum.管理员 | MemberRoleEnum.普通成员 | MemberRoleEnum.观察者);
+    }
 }
 
 [Flags]
@@ -56,7 +61,7 @@ public static class SubjectTypes
     public static string Member => "member";
 }
 
-public static class IdentityConsts
+public static class AuthConstants
 {
     public static class GrantType
     {

@@ -41,7 +41,7 @@ public class AutoResetUserPasswordJob : PlatformApplicationService, ITransientDe
 
     private async Task TryUpdateUserPasswordAsync(string password)
     {
-        var defaultUserName = IdentityConsts.Account.DefaultUserName;
+        var defaultUserName = AuthConstants.Account.DefaultUserName;
 
         var user = await this._userAccountService.GetUserByIdentityNameAsync(defaultUserName);
         if (user == null)

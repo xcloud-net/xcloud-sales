@@ -15,6 +15,7 @@ using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Auth.Application.User;
 using XCloud.Platform.Auth.Authentication;
 using XCloud.Platform.Auth.Configuration;
+using XCloud.Platform.Auth.IdentityServer;
 using XCloud.Platform.Connection.WeChat.Configuration;
 using XCloud.Platform.Connection.WeChat.Services.Mp;
 using XCloud.Platform.Core.Domain.User;
@@ -56,7 +57,7 @@ public class UserWxAuthController : PlatformBaseController, IUserController
     }
 
     [HttpPost("wx-mp-code-auth")]
-    public async Task<ApiResponse<TokenModel>> WxMpCodeAuth([FromBody] OAuthCodeDto dto)
+    public async Task<ApiResponse<AuthTokenDto>> WxMpCodeAuth([FromBody] OAuthCodeDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Code))
             throw new ArgumentNullException(nameof(dto.Code));
@@ -124,7 +125,7 @@ public class UserWxAuthController : PlatformBaseController, IUserController
         var tokenResponse = await this._httpClient.RequestTokenAsync(new TokenRequest
         {
             Address = disco.TokenEndpoint,
-            GrantType = IdentityConsts.GrantType.InternalGrantType,
+            GrantType = AuthConstants.GrantType.InternalGrantType,
 
             ClientId = oAuthConfig.ClientId,
             ClientSecret = oAuthConfig.ClientSecret,
@@ -136,7 +137,7 @@ public class UserWxAuthController : PlatformBaseController, IUserController
             }
         });
 
-        var res = tokenResponse.ToTokenModel();
+        var res = tokenResponse.ToAuthTokenDto();
         res.ThrowIfErrorOccured();
 
         return res;
@@ -147,7 +148,7 @@ public class UserWxAuthController : PlatformBaseController, IUserController
     /// </summary>
     [HttpPost("code-login")]
     [Obsolete]
-    public async Task<ApiResponse<TokenModel>> WxOauthLogin([JsonData] UserCodeLoginDto model)
+    public async Task<ApiResponse<AuthTokenDto>> WxOauthLogin([JsonData] UserCodeLoginDto model)
     {
         model.Should().NotBeNull();
 
@@ -157,7 +158,7 @@ public class UserWxAuthController : PlatformBaseController, IUserController
         var tokenResponse = await this._httpClient.RequestTokenAsync(new TokenRequest
         {
             Address = disco.TokenEndpoint,
-            GrantType = IdentityConsts.GrantType.UserWechat,
+            GrantType = AuthConstants.GrantType.UserWechat,
 
             ClientId = oAuthConfig.ClientId,
             ClientSecret = oAuthConfig.ClientSecret,
@@ -171,7 +172,7 @@ public class UserWxAuthController : PlatformBaseController, IUserController
             }
         });
 
-        var res = tokenResponse.ToTokenModel();
+        var res = tokenResponse.ToAuthTokenDto();
         res.ThrowIfErrorOccured();
 
         return res;
