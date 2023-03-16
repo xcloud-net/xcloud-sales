@@ -5,8 +5,8 @@ using XCloud.Platform.Application.Messenger.Constants;
 using XCloud.Platform.Application.Messenger.Event;
 using XCloud.Platform.Application.Messenger.Handler;
 using XCloud.Platform.Application.Messenger.Message;
-using XCloud.Platform.Application.Messenger.Registry;
 using XCloud.Platform.Application.Messenger.Router;
+using XCloud.Platform.Application.Messenger.Service;
 using XCloud.Platform.Application.Messenger.Tasks;
 
 namespace XCloud.Platform.Application.Messenger.Server;
@@ -21,14 +21,14 @@ public interface IMessengerServer : IDisposable
     string ServerInstanceId { get; }
 
     IJsonDataSerializer MessageSerializer { get; }
-    IRegistrationProvider RegistrationProvider { get; }
+    IUserRegistrationService UserRegistrationService { get; }
     IMessageRouter MessageRouter { get; }
 
     Task OnConnectedAsync(IConnection wsConnection);
     Task OnDisConnectedAsync(IConnection wsConnection);
     
-    Task OnMessageFromClientAsync(MessageWrapper message, IConnection wsConnection);
-    Task OnMessageFromRouterAsync(MessageWrapper message);
+    Task OnMessageFromClientAsync(MessageDto message, IConnection wsConnection);
+    Task OnMessageFromRouterAsync(MessageDto message);
 
     Task StartAsync();
 }
@@ -47,7 +47,7 @@ public class MessengerServer : IMessengerServer
     public IServiceProvider ServiceProvider { get; }
     public IMessengerEventManager MessengerEventManager { get; }
     public IJsonDataSerializer MessageSerializer { get; }
-    public IRegistrationProvider RegistrationProvider { get; }
+    public IUserRegistrationService UserRegistrationService { get; }
     public IMessageRouter MessageRouter { get; }
     public IMessageHandler[] MessageHandlers { get; }
     public IMessengerTaskManager MessengerTaskManager { get; }
@@ -65,7 +65,7 @@ public class MessengerServer : IMessengerServer
         this.MessengerEventManager = provider.GetRequiredService<IMessengerEventManager>();
         this.MessengerTaskManager = provider.GetRequiredService<IMessengerTaskManager>();
         this.MessageSerializer = provider.GetRequiredService<IJsonDataSerializer>();
-        this.RegistrationProvider = provider.GetRequiredService<IRegistrationProvider>();
+        this.UserRegistrationService = provider.GetRequiredService<IUserRegistrationService>();
         this.MessageRouter = provider.GetRequiredService<IMessageRouter>();
         this.MessageHandlers = provider.GetServices<IMessageHandler>().ToArray();
     }
@@ -75,7 +75,7 @@ public class MessengerServer : IMessengerServer
         this.ConnectionManager.AddConnection(wsConnection);
 
         //ping will trigger registration work
-        var msg = new MessageWrapper() { MessageType = MessageTypeConst.Ping };
+        var msg = new MessageDto() { MessageType = MessageTypeConst.Ping };
 
         await this.OnMessageFromClientAsync(msg, wsConnection);
 
@@ -88,7 +88,7 @@ public class MessengerServer : IMessengerServer
     {
         this.ConnectionManager.RemoveConnection(wsConnection);
 
-        await this.RegistrationProvider.RemoveRegisterInfoAsync(wsConnection.ClientIdentity.SubjectId,
+        await this.UserRegistrationService.RemoveRegisterInfoAsync(wsConnection.ClientIdentity.SubjectId,
             wsConnection.ClientIdentity.DeviceType);
 
         await this.MessengerEventManager.OfflineAsync(wsConnection);
@@ -96,7 +96,7 @@ public class MessengerServer : IMessengerServer
         this._logger.LogInformation($"{wsConnection.ClientIdentity.ConnectionId} leaved");
     }
 
-    public async Task OnMessageFromClientAsync(MessageWrapper message, IConnection wsConnection)
+    public async Task OnMessageFromClientAsync(MessageDto message, IConnection wsConnection)
     {
         await this.MessengerEventManager.MessageFromClientAsync(message);
 
@@ -115,12 +115,12 @@ public class MessengerServer : IMessengerServer
         else
         {
             this._logger.LogWarning("no handler for this message type");
-            await wsConnection.SendMessageToClientAsync(new MessageWrapper()
+            await wsConnection.SendMessageToClientAsync(new MessageDto()
                 { MessageType = "no handler for this message type" });
         }
     }
 
-    public async Task OnMessageFromRouterAsync(MessageWrapper message)
+    public async Task OnMessageFromRouterAsync(MessageDto message)
     {
         await this.MessengerEventManager.MessageFromRouterAsync(message);
 

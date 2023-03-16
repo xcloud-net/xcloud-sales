@@ -6,9 +6,9 @@ namespace XCloud.Platform.Application.Messenger.Router;
 
 public interface IMessageRouter : IDisposable
 {
-    Task RouteToServerInstance(string instanceKey, MessageWrapper data);
+    Task RouteToServerInstance(string instanceKey, MessageDto data);
 
-    Task SubscribeMessageEndpoint(string instanceKey, Func<MessageWrapper, Task> callback);
+    Task SubscribeMessageEndpoint(string instanceKey, Func<MessageDto, Task> callback);
 }
 
 public class InMemoryMessageRouter : IMessageRouter, ISingletonDependency
@@ -22,7 +22,7 @@ public class InMemoryMessageRouter : IMessageRouter, ISingletonDependency
         this._logger = logger;
     }
 
-    public async Task BroadCast(MessageWrapper data)
+    public async Task BroadCast(MessageDto data)
     {
         if (_subscribers != null)
             await _subscribers.Invoke(data);
@@ -33,21 +33,21 @@ public class InMemoryMessageRouter : IMessageRouter, ISingletonDependency
         //
     }
 
-    public async Task RouteToServerInstance(string key, MessageWrapper data)
+    public async Task RouteToServerInstance(string key, MessageDto data)
     {
         if (_subscribers != null)
             await _subscribers.Invoke(data);
     }
 
-    private Func<MessageWrapper, Task> _subscribers = null;
+    private Func<MessageDto, Task> _subscribers = null;
 
-    public async Task SubscribeBroadcastMessageEndpoint(Func<MessageWrapper, Task> callback)
+    public async Task SubscribeBroadcastMessageEndpoint(Func<MessageDto, Task> callback)
     {
         this._subscribers = callback;
         await Task.CompletedTask;
     }
 
-    public async Task SubscribeMessageEndpoint(string key, Func<MessageWrapper, Task> callback)
+    public async Task SubscribeMessageEndpoint(string key, Func<MessageDto, Task> callback)
     {
         this._subscribers = callback;
         await Task.CompletedTask;

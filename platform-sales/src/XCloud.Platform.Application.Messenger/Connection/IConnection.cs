@@ -11,12 +11,8 @@ public interface IConnection : IDisposable
     IMessengerServer Server { get; }
     
     ClientIdentity ClientIdentity { get; }
-    
-    void RequestAbort();
-    
-    Task SendMessageToClientAsync(MessageWrapper data);
-    
-    Task CloseAsync(CancellationToken? token = null);
-    
+
+    Task SendMessageToClientAsync(MessageDto data);
+
     Task StartReceiveMessageLoopAsync(CancellationToken? token = null);
 }

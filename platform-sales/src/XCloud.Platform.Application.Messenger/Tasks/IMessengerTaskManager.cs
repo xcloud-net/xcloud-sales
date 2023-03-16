@@ -60,7 +60,12 @@ public class MessengerTaskManager : IMessengerTaskManager
         this._cancellationTokenSource.Cancel();
 
         if (ValidateHelper.IsNotEmptyCollection(this._threads))
-            Task.WaitAll(this._threads.ToArray());
+        {
+            var waitForThreads = Task.WhenAll(this._threads.ToArray());
+            var waitForDelay = Task.Delay(TimeSpan.FromSeconds(10));
+
+            Task.WhenAny(waitForThreads, waitForDelay);
+        }
 
         this._cancellationTokenSource.Dispose();
     }

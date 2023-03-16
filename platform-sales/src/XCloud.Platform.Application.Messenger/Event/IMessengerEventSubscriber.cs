@@ -9,8 +9,8 @@ public interface IMessengerEventSubscriber
     Task ServerStartedAsync(IMessengerServer server);
     Task ServerShutdownAsync(IMessengerServer server);
 
-    Task MessageFromClientAsync(MessageWrapper messageWrapper);
-    Task MessageFromRouterAsync(MessageWrapper messageWrapper);
+    Task MessageFromClientAsync(MessageDto messageDto);
+    Task MessageFromRouterAsync(MessageDto messageDto);
 
     Task OnlineAsync(IConnection connection);
     Task OfflineAsync(IConnection connection);

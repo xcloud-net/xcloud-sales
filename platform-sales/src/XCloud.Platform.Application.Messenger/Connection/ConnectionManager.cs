@@ -48,8 +48,11 @@ public class ConnectionManager : List<IConnection>, IDisposable
 
     public void Dispose()
     {
-        var closeTasks = this.Select(x => x.CloseAsync()).ToArray();
-        Task.WhenAll(closeTasks).Wait();
+        foreach (var m in this)
+        {
+            m.Dispose();
+        }
+
         this.RemoveAll();
     }
 }

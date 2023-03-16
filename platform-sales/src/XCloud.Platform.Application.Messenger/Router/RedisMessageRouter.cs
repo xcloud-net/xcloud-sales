@@ -29,7 +29,7 @@ public class RedisMessageRouter : IMessageRouter, ISingletonDependency
 
     private const string BroadCastKey = "message_all";
 
-    public async Task BroadCast(MessageWrapper data)
+    public async Task BroadCast(MessageDto data)
     {
         var bs = this._messageSerializer.SerializeToBytes(data);
         await this._redisDatabaseSelector.Database.PublishAsync(BroadCastKey, bs);
@@ -41,14 +41,14 @@ public class RedisMessageRouter : IMessageRouter, ISingletonDependency
         this._tokenSource.Cancel();
     }
 
-    public async Task RouteToServerInstance(string key, MessageWrapper data)
+    public async Task RouteToServerInstance(string key, MessageDto data)
     {
         var bs = this._messageSerializer.SerializeToBytes(data);
         await this._redisDatabaseSelector.Database.ListLeftPushAsync(key, bs);
     }
 
     private ChannelMessageQueue _queue;
-    public async Task SubscribeBroadcastMessageEndpoint(Func<MessageWrapper, Task> callback)
+    public async Task SubscribeBroadcastMessageEndpoint(Func<MessageDto, Task> callback)
     {
         async Task Consume()
         {
@@ -62,7 +62,7 @@ public class RedisMessageRouter : IMessageRouter, ISingletonDependency
                         await Task.Delay(TimeSpan.FromMilliseconds(100), this._tokenSource.Token);
                         continue;
                     }
-                    var message = this._messageSerializer.DeserializeFromBytes<MessageWrapper>((byte[])item.Message);
+                    var message = this._messageSerializer.DeserializeFromBytes<MessageDto>((byte[])item.Message);
                     await callback.Invoke(message);
                 }
                 catch (Exception e)
@@ -95,7 +95,7 @@ public class RedisMessageRouter : IMessageRouter, ISingletonDependency
         this._logger.LogInformation("结束刷新key");
     }
 
-    public async Task SubscribeMessageEndpoint(string key, Func<MessageWrapper, Task> callback)
+    public async Task SubscribeMessageEndpoint(string key, Func<MessageDto, Task> callback)
     {
         async Task Consume()
         {
@@ -109,7 +109,7 @@ public class RedisMessageRouter : IMessageRouter, ISingletonDependency
                         await Task.Delay(TimeSpan.FromMilliseconds(100), this._tokenSource.Token);
                         continue;
                     }
-                    var data = this._messageSerializer.DeserializeFromBytes<MessageWrapper>((byte[])res);
+                    var data = this._messageSerializer.DeserializeFromBytes<MessageDto>((byte[])res);
                     await callback.Invoke(data);
                 }
                 catch (Exception e)

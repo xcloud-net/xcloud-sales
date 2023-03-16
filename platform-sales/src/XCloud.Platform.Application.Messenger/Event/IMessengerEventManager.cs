@@ -55,13 +55,13 @@ public class MessengerEventManager : IMessengerEventManager, IScopedDependency
         }
     }
 
-    public async Task MessageFromClientAsync(MessageWrapper messageWrapper)
+    public async Task MessageFromClientAsync(MessageDto messageDto)
     {
         foreach (var s in this._subscribers)
         {
             try
             {
-                await s.MessageFromClientAsync(messageWrapper);
+                await s.MessageFromClientAsync(messageDto);
             }
             catch (Exception e)
             {
@@ -71,13 +71,13 @@ public class MessengerEventManager : IMessengerEventManager, IScopedDependency
         }
     }
 
-    public async Task MessageFromRouterAsync(MessageWrapper messageWrapper)
+    public async Task MessageFromRouterAsync(MessageDto messageDto)
     {
         foreach (var s in this._subscribers)
         {
             try
             {
-                await s.MessageFromRouterAsync(messageWrapper);
+                await s.MessageFromRouterAsync(messageDto);
             }
             catch (Exception e)
             {

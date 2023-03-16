@@ -41,7 +41,7 @@ public class WebsocketConnection : IConnection
     public WebSocket SocketChannel { get; }
     public ClientIdentity ClientIdentity { get; }
 
-    public async Task SendMessageToClientAsync(MessageWrapper data)
+    public async Task SendMessageToClientAsync(MessageDto data)
     {
         if (data == null)
             throw new ArgumentNullException(nameof(data));
@@ -58,7 +58,7 @@ public class WebsocketConnection : IConnection
     {
         try
         {
-            var data = this.Server.MessageSerializer.DeserializeFromBytes<MessageWrapper>(bs);
+            var data = this.Server.MessageSerializer.DeserializeFromBytes<MessageDto>(bs);
             if (data == null)
                 throw new BusinessException("data from clientIdentity is incorrect");
 

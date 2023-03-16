@@ -1,21 +1,17 @@
 ﻿using XCloud.Platform.Application.Messenger.Connection;
-using XCloud.Platform.Application.Messenger.Registry;
+using XCloud.Platform.Application.Messenger.Service;
 
 namespace XCloud.Platform.Application.Messenger.Extension;
 
 public static class MessengerExtension
 {
-    public static UserRegistrationInfo ToRegInfo(this IConnection con)
+    public static SysUserOnlineStatusDto ToRegInfo(this IConnection con)
     {
-        var res = new UserRegistrationInfo()
+        var res = new SysUserOnlineStatusDto()
         {
             UserId = con.ClientIdentity.SubjectId,
-            DeviceType = con.ClientIdentity.DeviceType,
-            Payload = new UserRegistrationInfoPayload()
-            {
-                ServerInstanceId = con.Server.ServerInstanceId,
-                PingTimeUtc = DateTime.UtcNow
-            }
+            DeviceId = con.ClientIdentity.DeviceType,
+            ServerInstanceId = con.Server.ServerInstanceId,
         };
         return res;
     }

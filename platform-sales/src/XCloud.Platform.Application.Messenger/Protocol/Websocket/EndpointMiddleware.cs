@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Volo.Abp.Authorization;
 using XCloud.Core.Helper;
 using XCloud.Platform.Application.Messenger.Client;
+using XCloud.Platform.Application.Messenger.Connection;
 using XCloud.Platform.Application.Messenger.Server;
 using XCloud.Platform.Auth.Application.User;
 
@@ -44,7 +45,7 @@ public class EndpointMiddleware : IMiddleware
 
         var webSocket = await context.WebSockets.AcceptWebSocketAsync(new WebSocketAcceptContext() { });
 
-        using var connection = new WebsocketConnection(context.RequestServices, server, webSocket, client);
+        using IConnection connection = new WebsocketConnection(context.RequestServices, server, webSocket, client);
 
         await connection.StartReceiveMessageLoopAsync(CancellationToken.None);
     }

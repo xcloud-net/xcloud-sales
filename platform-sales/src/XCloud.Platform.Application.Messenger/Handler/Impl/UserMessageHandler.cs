@@ -64,7 +64,7 @@ public class UserMessageHandler : IMessageHandler, IScopedDependency
             context.Connection.Server.MessageSerializer.DeserializeFromString<UserToUserPayload>(
                 context.Message.Data);
         var server_instance_id =
-            await context.Connection.Server.RegistrationProvider.GetUserServerInstancesAsync(payload.Receiver);
+            await context.Connection.Server.UserRegistrationService.GetUserServerInstancesAsync(payload.Receiver);
 
         foreach (var serverId in server_instance_id)
         {

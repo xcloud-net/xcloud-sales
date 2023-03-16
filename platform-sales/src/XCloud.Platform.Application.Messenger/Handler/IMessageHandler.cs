@@ -8,7 +8,7 @@ public abstract class MessageContextBase
 {
     public IMessengerServer MessengerServer { get; set; }
     public IServiceProvider HandleServiceProvider { get; set; }
-    public MessageWrapper Message { get; set; }
+    public MessageDto Message { get; set; }
 }
 
 public class ClientMessageContext : MessageContextBase
