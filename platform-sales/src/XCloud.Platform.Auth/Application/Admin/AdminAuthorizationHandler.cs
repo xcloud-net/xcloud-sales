@@ -7,6 +7,8 @@ using XCloud.Core.Application.Entity;
 using XCloud.Core.Cache;
 using XCloud.Core.Helper;
 using XCloud.Platform.Application.Member.Service.Admin;
+using XCloud.Platform.Application.Member.Service.Permission;
+using XCloud.Platform.Application.Member.Service.Role;
 using XCloud.Platform.Application.Member.Service.Security;
 
 namespace XCloud.Platform.Auth.Application.Admin;

@@ -5,13 +5,13 @@ namespace XCloud.Platform.Connection.WeChat.Settings;
 
 public abstract class WechatOptionBase
 {
-    private WeChatPayOption _weChatPayOption;
+    private WechatPaymentOption _payment;
 
     [NotNull]
-    public WeChatPayOption Payment
+    public WechatPaymentOption Payment
     {
-        get => this._weChatPayOption ??= new WeChatPayOption();
-        set { this._weChatPayOption = value; }
+        get => this._payment ??= new WechatPaymentOption();
+        set { this._payment = value; }
     }
 }
 
@@ -32,7 +32,7 @@ public class WechatOpenOption : WechatOptionBase, IEntityDto
 /// <summary>
 /// WeChatPay 配置选项
 /// </summary>
-public class WeChatPayOption : IEntityDto
+public class WechatPaymentOption : IEntityDto
 {
     /// <summary>
     /// 应用号

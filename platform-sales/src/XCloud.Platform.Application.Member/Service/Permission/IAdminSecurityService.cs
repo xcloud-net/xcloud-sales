@@ -3,11 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using XCloud.Application.Service;
 using XCloud.Core.Dto;
 using XCloud.Platform.Application.Member.Service.Admin;
+using XCloud.Platform.Application.Member.Service.Security;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Core.Domain.Security;
 using XCloud.Platform.Data.Database;
 
-namespace XCloud.Platform.Application.Member.Service.Security;
+namespace XCloud.Platform.Application.Member.Service.Permission;
 
 public interface IAdminSecurityService : IXCloudApplicationService
 {

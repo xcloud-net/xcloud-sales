@@ -4,6 +4,7 @@ using XCloud.Core.Dto;
 using XCloud.Platform.Application.Common.Service.Address;
 using XCloud.Platform.Application.Common.Service.IdGenerator;
 using XCloud.Platform.Application.Member.Service.Admin;
+using XCloud.Platform.Application.Member.Service.Permission;
 using XCloud.Platform.Application.Member.Service.Security;
 using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Core.Domain.Address;

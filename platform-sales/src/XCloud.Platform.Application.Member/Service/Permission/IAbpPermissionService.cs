@@ -6,7 +6,7 @@ using XCloud.Core.Dto;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Shared.Localization;
 
-namespace XCloud.Platform.Application.Member.Service.Security;
+namespace XCloud.Platform.Application.Member.Service.Permission;
 
 public interface IAbpPermissionService: IXCloudApplicationService
 {

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using XCloud.Platform.Application.Member.Service.Admin;
-using XCloud.Platform.Application.Member.Service.Department;
+using XCloud.Platform.Application.Member.Service.Organization;
 using XCloud.Platform.Application.Member.Service.Security;
 using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Core.Domain.Admin;

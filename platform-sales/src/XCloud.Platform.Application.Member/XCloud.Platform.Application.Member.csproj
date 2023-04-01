@@ -5,8 +5,4 @@
 	<ItemGroup>
 		<ProjectReference Include="..\XCloud.Platform.Application.Common\XCloud.Platform.Application.Common.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Service" />
-	</ItemGroup>
 </Project>

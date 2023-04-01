@@ -5,6 +5,7 @@ using Volo.Abp.DependencyInjection;
 using XCloud.Core.Application.Entity;
 using XCloud.Core.Dto;
 using XCloud.Platform.Application.Member.Service.Admin;
+using XCloud.Platform.Application.Member.Service.Role;
 using XCloud.Platform.Application.Member.Service.Security;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Core.Domain.Admin;

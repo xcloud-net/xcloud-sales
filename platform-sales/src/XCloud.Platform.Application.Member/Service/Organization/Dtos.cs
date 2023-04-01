@@ -1,7 +1,7 @@
 ﻿using Volo.Abp.Application.Dtos;
 using XCloud.Platform.Core.Domain.Department;
 
-namespace XCloud.Platform.Application.Member.Service.Department;
+namespace XCloud.Platform.Application.Member.Service.Organization;
 
 public class SysDepartmentDto : SysDepartment, IEntityDto<string>
 {

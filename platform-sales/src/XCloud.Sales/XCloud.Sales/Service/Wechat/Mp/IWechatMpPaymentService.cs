@@ -28,7 +28,7 @@ public class WechatMpPaymentService : SalesAppService, IWechatMpPaymentService
     private readonly IOrderRefundBillService _orderRefundBillService;
     private readonly IUserWechatMpConnectionService _wechatMpConnectionService;
 
-    private WeChatPayOption WechatPaymentOption => this._wechatMpOption.Value.Payment;
+    private WechatPaymentOption WechatPaymentOption => this._wechatMpOption.Value.Payment;
 
     public WechatMpPaymentService(IOptions<WechatMpOption> wechatMpOption, IOrderService orderService,
         OrderUtils orderUtils,

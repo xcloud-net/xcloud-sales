@@ -9,7 +9,7 @@ using XCloud.Platform.Core.Domain.Admin;
 using XCloud.Platform.Core.Domain.Department;
 using XCloud.Platform.Data.Database;
 
-namespace XCloud.Platform.Application.Member.Service.Department;
+namespace XCloud.Platform.Application.Member.Service.Organization;
 
 public interface IDepartmentMemberService : IXCloudApplicationService
 {

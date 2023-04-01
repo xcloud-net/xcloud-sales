@@ -1,10 +1,11 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using XCloud.Platform.Application.Member.Service.Security;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Core.Domain.Security;
 using XCloud.Platform.Data.Database;
 
-namespace XCloud.Platform.Application.Member.Service.Security;
+namespace XCloud.Platform.Application.Member.Service.Permission;
 
 public interface IPermissionService : IPlatformCrudAppService<SysPermission, SysPermissionDto>
 {

@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using XCloud.Core.Dto;
+using XCloud.Platform.Application.Member.Service.Permission;
+using XCloud.Platform.Application.Member.Service.Role;
 using XCloud.Platform.Application.Member.Service.Security;
 using XCloud.Platform.Auth.Application.Admin;
 using XCloud.Platform.Framework.Controller;

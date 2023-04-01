@@ -2,6 +2,7 @@
 using XCloud.AspNetMvc.Controller;
 using XCloud.Platform.Application.Common.Queue;
 using XCloud.Platform.Application.Member.Queue;
+using XCloud.Platform.Application.Member.Service.Permission;
 using XCloud.Platform.Application.Member.Service.Security;
 
 namespace XCloud.Platform.Framework.Controller;

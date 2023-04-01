@@ -3,11 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using XCloud.Core.Application.Entity;
 using XCloud.Core.IdGenerator;
 using XCloud.Database.EntityFrameworkCore.Extensions;
+using XCloud.Platform.Application.Member.Service.Security;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Core.Domain.Security;
 using XCloud.Platform.Data.Database;
 
-namespace XCloud.Platform.Application.Member.Service.Security;
+namespace XCloud.Platform.Application.Member.Service.Role;
 
 public interface IRoleService : IPlatformPagingCrudService<SysRole, SysRoleDto, QueryRolePagingInput>
 {
