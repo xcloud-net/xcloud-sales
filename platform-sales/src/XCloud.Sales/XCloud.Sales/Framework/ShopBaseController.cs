@@ -21,8 +21,8 @@ public abstract class ShopBaseController : XCloudBaseController
     protected ISalesPermissionService SalesPermissionService =>
         this.LazyServiceProvider.LazyGetRequiredService<ISalesPermissionService>();
 
-    protected IEventBusService EventBusService =>
-        this.LazyServiceProvider.LazyGetRequiredService<IEventBusService>();
+    protected SalesEventBusService SalesEventBusService =>
+        this.LazyServiceProvider.LazyGetRequiredService<SalesEventBusService>();
 
     protected ICurrentStoreSelector CurrentStoreSelector =>
         this.LazyServiceProvider.LazyGetRequiredService<ICurrentStoreSelector>();

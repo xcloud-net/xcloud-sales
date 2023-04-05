@@ -151,7 +151,7 @@ public class OrderPaymentProcessingService : SalesAppService, IOrderPaymentProce
 
             await db.TrySaveChangesAsync();
 
-            await this.EventBusService.NotifyInsertOrderNote(new OrderNote()
+            await this.SalesEventBusService.NotifyInsertOrderNote(new OrderNote()
             {
                 OrderId = order.Id,
                 Note =
@@ -185,7 +185,7 @@ public class OrderPaymentProcessingService : SalesAppService, IOrderPaymentProce
 
         await this._orderRepository.UpdateAsync(order);
 
-        await this.EventBusService.NotifyInsertOrderNote(new OrderNote()
+        await this.SalesEventBusService.NotifyInsertOrderNote(new OrderNote()
         {
             OrderId = order.Id,
             Note = "Order.Message.OrderMarkedPaid",

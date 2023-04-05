@@ -1,17 +1,22 @@
-﻿using XCloud.AspNetMvc.Controller;
-using XCloud.Platform.Common.Application.Queue;
-using XCloud.Platform.Member.Application.Queue;
-using XCloud.Platform.Member.Application.Service.Security;
+﻿using XCloud.Application.ServiceDiscovery;
+using XCloud.AspNetMvc.Controller;
+using XCloud.Platform.Application.Common.Queue;
+using XCloud.Platform.Application.Member.Queue;
+using XCloud.Platform.Application.Member.Service.Permission;
+using XCloud.Platform.Application.Member.Service.Security;
 
 namespace XCloud.Platform.Framework.Controller;
 
 public abstract class PlatformBaseController : XCloudBaseController
 {
-    protected ICommonServiceMessageBus CommonServiceMessageBus =>
-        this.LazyServiceProvider.LazyGetRequiredService<ICommonServiceMessageBus>();
+    protected IServiceDiscoveryService ServiceDiscoveryService =>
+        this.LazyServiceProvider.LazyGetRequiredService<IServiceDiscoveryService>();
+    
+    protected CommonMessageBus CommonServiceMessageBus =>
+        this.LazyServiceProvider.LazyGetRequiredService<CommonMessageBus>();
 
-    protected IMemberShipMessageBus MemberShipMessageBus =>
-        this.LazyServiceProvider.LazyGetRequiredService<IMemberShipMessageBus>();
+    protected MemberMessageBus MemberShipMessageBus =>
+        this.LazyServiceProvider.LazyGetRequiredService<MemberMessageBus>();
     
     protected IAdminSecurityService SecurityService =>
         this.LazyServiceProvider.LazyGetRequiredService<IAdminSecurityService>();

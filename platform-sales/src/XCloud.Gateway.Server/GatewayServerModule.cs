@@ -8,13 +8,13 @@ using XCloud.AspNetMvc;
 using XCloud.AspNetMvc.Builder;
 using XCloud.AspNetMvc.Middleware;
 using XCloud.AspNetMvc.Swagger;
-using XCloud.Core.Builder;
 using XCloud.Core.Http.Dynamic;
 using XCloud.Gateway.Server.Controller;
 using XCloud.Logging.Serilog;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using XCloud.Core;
+using XCloud.Core.Configuration.Builder;
 
 namespace XCloud.Gateway.Server;
 

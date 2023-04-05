@@ -26,7 +26,9 @@ x-env:
   app:mysql:password: '123'
   app:redis:host: redis-5
   app:config:audit: 'false'
-  RemoteServices:Gateway:BaseUrl: http://api-gateway:8888
+  # address
+  RemoteServices:InternalGateway:BaseUrl: http://api-gateway:8888
+  RemoteServices:PublicGateway:BaseUrl: http://localhost:8888
 
 #default java env
 x-java-env:
@@ -81,7 +83,7 @@ services:
     volumes:
       - ./logs/platform-api/:/app/logs/
       # file storage path
-      - ./static_files/:/app/static_files/
+      - ./upload/:/app/upload/
   # mall
   mall-api:
     <<: *x-deft

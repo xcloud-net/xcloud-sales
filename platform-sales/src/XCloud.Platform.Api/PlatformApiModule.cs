@@ -6,13 +6,14 @@ using Volo.Abp.Modularity;
 using XCloud.AspNetMvc.Builder;
 using XCloud.AspNetMvc.Configuration;
 using XCloud.AspNetMvc.Swagger;
-using XCloud.Core.Builder;
+using XCloud.Core.Configuration.Builder;
 using XCloud.Core.Extension;
+using XCloud.Platform.Application.Member;
+using XCloud.Platform.Application.Messenger.Protocol.Websocket;
 using XCloud.Platform.Auth.IdentityServer;
 using XCloud.Platform.Auth.IdentityServer.Configuration;
-using XCloud.Platform.Common.Application.Service.Messenger;
 using XCloud.Platform.Framework;
-using XCloud.Platform.Member.Application;
+using XCloud.Platform.Shared.Constants;
 
 namespace XCloud.Platform.Api;
 
@@ -20,15 +21,13 @@ namespace XCloud.Platform.Api;
     typeof(PlatformFrameworkModule),
     typeof(PlatformIdentityServerModule)
 )]
-[SwaggerConfiguration(ServiceName, ServiceName)]
+[SwaggerConfiguration(PlatformSharedConstants.ServiceName, PlatformSharedConstants.ServiceName)]
 public class PlatformApiModule : AbpModule
 {
     public PlatformApiModule()
     {
         //
     }
-
-    private const string ServiceName = "platform";
 
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
@@ -64,10 +63,6 @@ public class PlatformApiModule : AbpModule
 
         //审计日志
         pipeline.App.UseAuditing();
-
-        //web socket
-        pipeline.App.UseWebSockets();
-        pipeline.App.UseWebSocketEndpoint($"/api/{ServiceName}-ws/ws");
     }
 
     public override void OnPostApplicationInitialization(ApplicationInitializationContext context)

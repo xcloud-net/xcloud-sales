@@ -65,7 +65,7 @@ public class FavoritesController : ShopBaseController
         await this._favoritesService.CheckIsFavoritesAsync(loginUser.Id, dto.Id,
             new CachePolicy() { Refresh = true });
             
-        await this.EventBusService.NotifyInsertActivityLog(new ActivityLog()
+        await this.SalesEventBusService.NotifyInsertActivityLog(new ActivityLog()
         {
             ActivityLogTypeId = (int)ActivityLogType.AddFavorite,
             UserId = loginUser.Id,
@@ -90,7 +90,7 @@ public class FavoritesController : ShopBaseController
         await this._favoritesService.CheckIsFavoritesAsync(loginUser.Id, dto.Id,
             new CachePolicy() { Refresh = true });
 
-        await this.EventBusService.NotifyInsertActivityLog(new ActivityLog()
+        await this.SalesEventBusService.NotifyInsertActivityLog(new ActivityLog()
         {
             ActivityLogTypeId = (int)ActivityLogType.DeleteFavorite,
             UserId = loginUser.Id,

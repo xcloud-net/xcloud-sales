@@ -1,4 +1,4 @@
-using XCloud.Core.Application;
+using XCloud.Application.Service;
 using XCloud.Platform.Shared.Helper;
 using XCloud.Redis.DistributedLock;
 

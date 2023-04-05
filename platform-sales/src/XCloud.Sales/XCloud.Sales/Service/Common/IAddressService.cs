@@ -1,5 +1,5 @@
 using XCloud.Core.Dto;
-using XCloud.Platform.Common.Application.Service.Address;
+using XCloud.Platform.Application.Common.Service.Address;
 using XCloud.Sales.Application;
 using XCloud.Sales.Clients.Platform;
 

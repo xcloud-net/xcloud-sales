@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using IdentityServer4.Models;
 using XCloud.Core.Extension;
-using XCloud.Platform.Shared;
+using XCloud.Platform.Shared.Constants;
 using static IdentityServer4.IdentityServerConstants;
 
 namespace XCloud.Platform.Auth.IdentityServer.Database;
@@ -108,9 +108,9 @@ public static class IdentityServerStaticConfig
             };
             m.AllowedGrantTypes = m.AllowedGrantTypes.AppendManyItems(new string[]
             {
-                IdentityConsts.GrantType.UserWechat,
-                IdentityConsts.GrantType.AdminPassword,
-                IdentityConsts.GrantType.InternalGrantType
+                AuthConstants.GrantType.UserWechat,
+                AuthConstants.GrantType.AdminPassword,
+                AuthConstants.GrantType.InternalGrantType
             }).ToArray();
             //m.AllowedCorsOrigins = new string[] { };
             m.AllowAccessTokensViaBrowser = true;

@@ -49,7 +49,7 @@ public class CommonController : ShopBaseController
         {
             log.UserId = storeUser.Id;
             log = this._activityLogService.AttachHttpContextInfo(log);
-            await this.EventBusService.NotifyInsertActivityLog(log);
+            await this.SalesEventBusService.NotifyInsertActivityLog(log);
         }
 
         return new ApiResponse<object>();

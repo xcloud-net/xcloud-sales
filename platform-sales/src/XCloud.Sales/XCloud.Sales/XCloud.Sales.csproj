@@ -48,4 +48,8 @@
       <None Remove="Localization\Resources\zh-Hans.json" />
       <EmbeddedResource Include="Localization\Resources\Sales\en.json" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Provider\" />
+    </ItemGroup>
 </Project>

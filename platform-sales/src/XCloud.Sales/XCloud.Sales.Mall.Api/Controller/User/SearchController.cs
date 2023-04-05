@@ -133,7 +133,7 @@ public class SearchController : ShopBaseController
         response = await this.HandleSearchResultAsync(response, dto, option, loginUser);
 
         if (dto.Page == 1 && !string.IsNullOrWhiteSpace(dto.Keywords) && loginUser != null)
-            await this.EventBusService.NotifyInsertActivityLog(new ActivityLog()
+            await this.SalesEventBusService.NotifyInsertActivityLog(new ActivityLog()
             {
                 UserId = loginUser.Id,
                 ActivityLogTypeId = (int)ActivityLogType.SearchGoods,

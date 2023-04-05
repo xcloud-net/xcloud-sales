@@ -1,6 +1,6 @@
 ﻿using Volo.Abp.Application.Dtos;
 using XCloud.Core.Dto;
-using XCloud.Platform.Member.Application.Service.User;
+using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Sales.Data.Domain.Stores;
 using XCloud.Sales.Data.Domain.Users;
 

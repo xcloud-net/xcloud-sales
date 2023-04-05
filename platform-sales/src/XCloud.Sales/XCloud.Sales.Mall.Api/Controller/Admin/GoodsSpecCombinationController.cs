@@ -119,7 +119,7 @@ public class GoodsSpecCombinationController : ShopBaseController
 
         await this._goodsStockService.SetCombinationStockAsync(combination.Id, dto.StockQuantity);
 
-        await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(combination.GoodsId));
+        await this.SalesEventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(combination.GoodsId));
 
         return new ApiResponse<object>();
     }
@@ -147,7 +147,7 @@ public class GoodsSpecCombinationController : ShopBaseController
         if (dto.GradePriceToSave != null)
             await this._gradeGoodsPriceService.SaveGradePriceAsync(combination.Id, dto.GradePriceToSave);
 
-        await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(combination.GoodsId));
+        await this.SalesEventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(combination.GoodsId));
 
         return new ApiResponse<object>();
     }
@@ -167,7 +167,7 @@ public class GoodsSpecCombinationController : ShopBaseController
 
         await this._specCombinationService.UpdateStatusAsync(dto);
 
-        await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(entity.GoodsId));
+        await this.SalesEventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(entity.GoodsId));
 
         return new ApiResponse<object>();
     }
@@ -246,7 +246,7 @@ public class GoodsSpecCombinationController : ShopBaseController
         {
             var res = await this._specCombinationService.UpdateAsync(dto);
 
-            await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(goods.Id));
+            await this.SalesEventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(goods.Id));
 
             return new ApiResponse<GoodsSpecCombination>(res);
         }
@@ -254,7 +254,7 @@ public class GoodsSpecCombinationController : ShopBaseController
         {
             var res = await this._specCombinationService.InsertAsync(dto);
 
-            await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(goods.Id));
+            await this.SalesEventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(goods.Id));
 
             return new ApiResponse<GoodsSpecCombination>(res);
         }
@@ -295,7 +295,7 @@ public class GoodsSpecCombinationController : ShopBaseController
 
         await this._storeGoodsMappingService.SaveGoodsStoreMappingAsync(dto);
 
-        await this.EventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(combination.GoodsId));
+        await this.SalesEventBusService.NotifyRefreshGoodsInfo(new IdDto<int>(combination.GoodsId));
 
         return new ApiResponse<object>();
     }

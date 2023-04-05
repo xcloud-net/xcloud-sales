@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
+using XCloud.Application.Service;
 using XCloud.Core;
-using XCloud.Core.Application;
 
 namespace XCloud.Platform.Framework.DataSeeder;
 

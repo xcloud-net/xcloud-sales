@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using XCloud.Core.Application;
+using XCloud.Core.Application.Entity;
 using XCloud.Database.EntityFrameworkCore.Extensions;
 
 namespace XCloud.Database.EntityFrameworkCore.Crud;

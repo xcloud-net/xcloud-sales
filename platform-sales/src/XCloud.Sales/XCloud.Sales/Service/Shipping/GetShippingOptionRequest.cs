@@ -1,5 +1,5 @@
 using Volo.Abp.Application.Dtos;
-using XCloud.Platform.Common.Application.Service.Address;
+using XCloud.Platform.Application.Common.Service.Address;
 using XCloud.Sales.Data.Domain.Orders;
 
 namespace XCloud.Sales.Service.Shipping;

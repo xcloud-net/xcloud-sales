@@ -14,11 +14,11 @@ using XCloud.AspNetMvc.Builder;
 using XCloud.AspNetMvc.Configuration;
 using XCloud.AspNetMvc.Middleware;
 using XCloud.AspNetMvc.Swagger;
-using XCloud.Core.Builder;
 using XCloud.Core.Cache.RequestCache;
 using XCloud.Core.Extension;
 using XCloud.Logging;
 using XCloud.AspNetMvc.RequestCache;
+using XCloud.Core.Configuration.Builder;
 using XCloud.Logging.Serilog;
 
 namespace XCloud.AspNetMvc;

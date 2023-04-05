@@ -1,5 +1,5 @@
 using XCloud.Core.Dto;
-using XCloud.Platform.Member.Application.Service.Security;
+using XCloud.Platform.Application.Member.Service.Security;
 using XCloud.Sales.Application;
 using XCloud.Sales.Clients.Platform;
 

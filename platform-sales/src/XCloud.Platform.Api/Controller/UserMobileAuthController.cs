@@ -9,21 +9,21 @@ using XCloud.Core.Dto;
 using XCloud.Core.Extension;
 using XCloud.Core.Helper;
 using XCloud.Core.IdGenerator;
+using XCloud.Platform.Application.Common.Service.Token;
+using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Auth.Application.User;
 using XCloud.Platform.Auth.Authentication;
+using XCloud.Platform.Auth.Configuration;
 using XCloud.Platform.Auth.IdentityServer;
-using XCloud.Platform.Common.Application.Service.Token;
 using XCloud.Platform.Framework.Controller;
-using XCloud.Platform.Member.Application.Service.User;
-using XCloud.Platform.Shared;
+using XCloud.Platform.Shared.Constants;
 
 namespace XCloud.Platform.Api.Controller;
 
 [Route("/api/platform/user/mobile-auth")]
-public class UserMobileAuthController: PlatformBaseController,IUserController
+public class UserMobileAuthController : PlatformBaseController, IUserController
 {
     private readonly HttpClient _httpClient;
-    private readonly IdentityServerAuthConfig _oAuthConfig;
     private readonly IWorkContext _workContext;
     private readonly IUserMobileService _userMobileService;
     private readonly IUserAccountService _userAccountService;
@@ -35,18 +35,16 @@ public class UserMobileAuthController: PlatformBaseController,IUserController
         IValidationTokenService validationTokenService,
         IUserMobileService userMobileService,
         IWorkContext<UserAuthController> workContext,
-        IHttpClientFactory factory,
-        IdentityServerAuthConfig oAuthConfig)
+        IHttpClientFactory factory)
     {
         this._userMobileService = userMobileService;
         this._tempCodeService = tempCodeService;
         this._userAccountService = userAccountService;
         this._validationTokenService = validationTokenService;
         this._workContext = workContext;
-        this._oAuthConfig = oAuthConfig;
         this._httpClient = factory.CreateClient("wx_login_");
     }
-    
+
     private string SmsLoginValidationCodeGroup => "sms-login";
 
     [HttpPost("send-sms-code")]
@@ -61,10 +59,12 @@ public class UserMobileAuthController: PlatformBaseController,IUserController
             if (await this._userMobileService.IsPhoneExistAsync(dto.Mobile))
                 throw new UserFriendlyException("the account associated to this phone number is not available");
 
-            var createUserResponse = await this._userAccountService.CreateUserAccountAsync(new IdentityNameDto() { IdentityName = this.GuidGenerator.CreateGuidString() });
+            var createUserResponse = await this._userAccountService.CreateUserAccountAsync(new IdentityNameDto()
+                { IdentityName = this.GuidGenerator.CreateGuidString() });
             createUserResponse.ThrowIfErrorOccured();
 
-            var setMobileResponse = await this._userMobileService.SetUserMobilePhoneAsync(createUserResponse.Data.Id, dto.Mobile);
+            var setMobileResponse =
+                await this._userMobileService.SetUserMobilePhoneAsync(createUserResponse.Data.Id, dto.Mobile);
             setMobileResponse.ThrowIfErrorOccured();
 
             await this._userMobileService.ConfirmMobileAsync(setMobileResponse.Data.Id);
@@ -84,7 +84,7 @@ public class UserMobileAuthController: PlatformBaseController,IUserController
     }
 
     [HttpPost("sms-login")]
-    public async Task<ApiResponse<TokenModel>> SmsLoginAsync([FromBody] SmsLoginInput dto)
+    public async Task<ApiResponse<AuthTokenDto>> SmsLoginAsync([FromBody] SmsLoginInput dto)
     {
         dto.Mobile = this._userMobileService.NormalizeMobilePhone(dto.Mobile);
 
@@ -93,23 +93,27 @@ public class UserMobileAuthController: PlatformBaseController,IUserController
         if (user == null)
             throw new UserFriendlyException("the account is not available");
 
-        var codeResponse = await this._validationTokenService.GetValidationCodeAsync(this.SmsLoginValidationCodeGroup, user.Id);
+        var codeResponse =
+            await this._validationTokenService.GetValidationCodeAsync(this.SmsLoginValidationCodeGroup, user.Id);
 
-        if (codeResponse == null || codeResponse.Code != dto.SmsCode || codeResponse.CreateTime < this.Clock.Now.AddMinutes(-5))
+        if (codeResponse == null || codeResponse.Code != dto.SmsCode ||
+            codeResponse.CreateTime < this.Clock.Now.AddMinutes(-5))
             throw new UserFriendlyException("wrong sms code");
 
         //create temp key
         var tempCode = await this._tempCodeService.CreateTempCode(new IdDto(user.Id));
+
+        var _oAuthConfig = this.Configuration.GetOAuthServerOption();
 
         //create access token
         var disco = await this._httpClient.GetIdentityServerDiscoveryDocuments(this._workContext.Configuration);
         var tokenResponse = await this._httpClient.RequestTokenAsync(new TokenRequest
         {
             Address = disco.TokenEndpoint,
-            GrantType = IdentityConsts.GrantType.InternalGrantType,
+            GrantType = AuthConstants.GrantType.InternalGrantType,
 
-            ClientId = this._oAuthConfig.ClientId,
-            ClientSecret = this._oAuthConfig.ClientSecret,
+            ClientId = _oAuthConfig.ClientId,
+            ClientSecret = _oAuthConfig.ClientSecret,
 
             Parameters =
             {
@@ -118,10 +122,9 @@ public class UserMobileAuthController: PlatformBaseController,IUserController
             }
         });
 
-        var res = tokenResponse.ToTokenModel();
+        var res = tokenResponse.ToAuthTokenDto();
         res.ThrowIfErrorOccured();
 
         return res;
     }
-
 }

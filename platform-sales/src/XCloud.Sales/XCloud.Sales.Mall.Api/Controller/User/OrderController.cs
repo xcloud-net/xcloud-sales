@@ -58,7 +58,7 @@ public class OrderController : ShopBaseController
         var result = await _placeOrderService.PlaceOrderAsync(dto);
 
         if (result.IsSuccess())
-            await this.EventBusService.NotifyInsertActivityLog(new ActivityLog()
+            await this.SalesEventBusService.NotifyInsertActivityLog(new ActivityLog()
             {
                 ActivityLogTypeId = (int)ActivityLogType.PlaceOrder,
                 UserId = loginUser.Id,

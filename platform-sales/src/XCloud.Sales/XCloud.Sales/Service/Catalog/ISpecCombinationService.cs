@@ -1,8 +1,9 @@
-﻿using XCloud.Core.Application;
+﻿using XCloud.Application.Extension;
+using XCloud.Core.Application.Entity;
 using XCloud.Core.Dto;
 using XCloud.Core.Helper;
 using XCloud.Database.EntityFrameworkCore.Extensions;
-using XCloud.Platform.Shared;
+using XCloud.Platform.Shared.Extension;
 using XCloud.Sales.Application;
 using XCloud.Sales.Data;
 using XCloud.Sales.Data.Domain.Catalog;

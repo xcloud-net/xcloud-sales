@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities;
-using XCloud.Core.Application;
+using XCloud.Core.Application.Entity;
 using XCloud.Core.Dto;
 using XCloud.Core.Extension;
 using XCloud.Database.EntityFrameworkCore.Mapping;

@@ -1,8 +1,8 @@
 ﻿using System;
 using FluentAssertions;
 using Volo.Abp.DependencyInjection;
-using XCloud.Core.Application;
-using XCloud.Core.Application.WorkContext;
+using XCloud.Core.Application.Entity;
+using XCloud.Core.Configuration;
 using XCloud.Core.Extension;
 using XCloud.Core.Helper;
 using XCloud.Core.Security.Hash;

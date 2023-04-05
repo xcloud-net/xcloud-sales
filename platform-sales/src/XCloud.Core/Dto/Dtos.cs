@@ -1,6 +1,5 @@
 ﻿using JetBrains.Annotations;
 using Volo.Abp.Application.Dtos;
-using XCloud.Core.Application;
 using XCloud.Core.Helper;
 
 namespace XCloud.Core.Dto;
@@ -89,8 +88,6 @@ public class IdDto : IEntityDto<string>
     }
 
     public string Id { get; set; }
-
-    public static implicit operator IdDto(EntityBase entity) => new IdDto(entity?.Id);
 
     public static implicit operator IdDto(string id) => new IdDto(id);
 

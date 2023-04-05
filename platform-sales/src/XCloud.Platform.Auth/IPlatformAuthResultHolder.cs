@@ -1,8 +1,8 @@
 ﻿using Volo.Abp.DependencyInjection;
 
 using XCloud.Core.Cache.RequestCache;
-using XCloud.Platform.Member.Application.Service.Admin;
-using XCloud.Platform.Member.Application.Service.User;
+using XCloud.Platform.Application.Member.Service.Admin;
+using XCloud.Platform.Application.Member.Service.User;
 
 namespace XCloud.Platform.Auth;
 

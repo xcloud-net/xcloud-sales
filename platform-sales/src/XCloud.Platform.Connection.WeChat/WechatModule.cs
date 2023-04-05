@@ -4,7 +4,7 @@ using Volo.Abp;
 using Volo.Abp.Modularity;
 using XCloud.Platform.Connection.WeChat.Configuration;
 using XCloud.Platform.Core.Job;
-using XCloud.Platform.Member.Application;
+using XCloud.Platform.Application.Member;
 
 namespace XCloud.Platform.Connection.WeChat;
 

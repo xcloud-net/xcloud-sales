@@ -10,16 +10,17 @@ using XCloud.AspNetMvc.ModelBinder.JsonModel;
 using XCloud.Core.Application.WorkContext;
 using XCloud.Core.Dto;
 using XCloud.Core.IdGenerator;
+using XCloud.Platform.Application.Common.Service.Token;
+using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Auth.Application.User;
 using XCloud.Platform.Auth.Authentication;
+using XCloud.Platform.Auth.Configuration;
 using XCloud.Platform.Auth.IdentityServer;
-using XCloud.Platform.Common.Application.Service.Token;
 using XCloud.Platform.Connection.WeChat.Configuration;
-using XCloud.Platform.Connection.WeChat.Services;
+using XCloud.Platform.Connection.WeChat.Services.Mp;
 using XCloud.Platform.Core.Domain.User;
 using XCloud.Platform.Framework.Controller;
-using XCloud.Platform.Member.Application.Service.User;
-using XCloud.Platform.Shared;
+using XCloud.Platform.Shared.Constants;
 
 namespace XCloud.Platform.Api.Controller;
 
@@ -27,7 +28,6 @@ namespace XCloud.Platform.Api.Controller;
 public class UserWxAuthController : PlatformBaseController, IUserController
 {
     private readonly HttpClient _httpClient;
-    private readonly IdentityServerAuthConfig _oAuthConfig;
     private readonly IWorkContext _workContext;
     private readonly IWxMpService _wxMpService;
     private readonly IExternalConnectService _externalConnectService;
@@ -44,7 +44,6 @@ public class UserWxAuthController : PlatformBaseController, IUserController
         IWxMpService wxMpService,
         IWorkContext<UserAuthController> workContext,
         IHttpClientFactory factory,
-        IdentityServerAuthConfig oAuthConfig,
         IWxUnionService wxUnionService)
     {
         this._configuration = configuration;
@@ -53,13 +52,12 @@ public class UserWxAuthController : PlatformBaseController, IUserController
         this._externalConnectService = userExternalAccountService;
         this._wxMpService = wxMpService;
         this._workContext = workContext;
-        this._oAuthConfig = oAuthConfig;
         _wxUnionService = wxUnionService;
         this._httpClient = factory.CreateClient("wx_login_");
     }
 
     [HttpPost("wx-mp-code-auth")]
-    public async Task<ApiResponse<TokenModel>> WxMpCodeAuth([FromBody] OAuthCodeDto dto)
+    public async Task<ApiResponse<AuthTokenDto>> WxMpCodeAuth([FromBody] OAuthCodeDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Code))
             throw new ArgumentNullException(nameof(dto.Code));
@@ -120,15 +118,17 @@ public class UserWxAuthController : PlatformBaseController, IUserController
         //create temp key
         var tempCode = await this._tempCodeService.CreateTempCode(new IdDto(userId));
 
+        var oAuthConfig = this.Configuration.GetOAuthServerOption();
+
         //create access token
         var disco = await this._httpClient.GetIdentityServerDiscoveryDocuments(this._workContext.Configuration);
         var tokenResponse = await this._httpClient.RequestTokenAsync(new TokenRequest
         {
             Address = disco.TokenEndpoint,
-            GrantType = IdentityConsts.GrantType.InternalGrantType,
+            GrantType = AuthConstants.GrantType.InternalGrantType,
 
-            ClientId = this._oAuthConfig.ClientId,
-            ClientSecret = this._oAuthConfig.ClientSecret,
+            ClientId = oAuthConfig.ClientId,
+            ClientSecret = oAuthConfig.ClientSecret,
 
             Parameters =
             {
@@ -137,7 +137,7 @@ public class UserWxAuthController : PlatformBaseController, IUserController
             }
         });
 
-        var res = tokenResponse.ToTokenModel();
+        var res = tokenResponse.ToAuthTokenDto();
         res.ThrowIfErrorOccured();
 
         return res;
@@ -148,29 +148,31 @@ public class UserWxAuthController : PlatformBaseController, IUserController
     /// </summary>
     [HttpPost("code-login")]
     [Obsolete]
-    public async Task<ApiResponse<TokenModel>> WxOauthLogin([JsonData] UserCodeLoginDto model)
+    public async Task<ApiResponse<AuthTokenDto>> WxOauthLogin([JsonData] UserCodeLoginDto model)
     {
         model.Should().NotBeNull();
+
+        var oAuthConfig = this.Configuration.GetOAuthServerOption();
 
         var disco = await this._httpClient.GetIdentityServerDiscoveryDocuments(this._workContext.Configuration);
         var tokenResponse = await this._httpClient.RequestTokenAsync(new TokenRequest
         {
             Address = disco.TokenEndpoint,
-            GrantType = IdentityConsts.GrantType.UserWechat,
+            GrantType = AuthConstants.GrantType.UserWechat,
 
-            ClientId = this._oAuthConfig.ClientId,
-            ClientSecret = this._oAuthConfig.ClientSecret,
+            ClientId = oAuthConfig.ClientId,
+            ClientSecret = oAuthConfig.ClientSecret,
 
             Parameters =
             {
-                { "scope", this._oAuthConfig.Scope },
+                { "scope", oAuthConfig.Scope },
                 { "code", model.Code },
                 { "nick_name", model.NickName },
                 { "avatar_url", model.AvatarUrl }
             }
         });
 
-        var res = tokenResponse.ToTokenModel();
+        var res = tokenResponse.ToAuthTokenDto();
         res.ThrowIfErrorOccured();
 
         return res;

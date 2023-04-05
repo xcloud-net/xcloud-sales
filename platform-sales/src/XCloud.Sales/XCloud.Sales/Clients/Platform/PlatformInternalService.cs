@@ -1,17 +1,18 @@
 ﻿using JetBrains.Annotations;
-using XCloud.Core.Application;
+using XCloud.Application.Mapper;
 using XCloud.Core.Dto;
-using XCloud.Platform.Common.Application.Service.Address;
-using XCloud.Platform.Common.Application.Service.IdGenerator;
+using XCloud.Platform.Application.Common.Service.Address;
+using XCloud.Platform.Application.Common.Service.IdGenerator;
+using XCloud.Platform.Application.Member.Service.Admin;
+using XCloud.Platform.Application.Member.Service.Permission;
+using XCloud.Platform.Application.Member.Service.Security;
+using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Core.Domain.Address;
 using XCloud.Platform.Core.Domain.User;
-using XCloud.Platform.Member.Application.Service.Admin;
-using XCloud.Platform.Member.Application.Service.Security;
-using XCloud.Platform.Member.Application.Service.User;
 using XCloud.Platform.Shared.Dto;
 using XCloud.Sales.Application;
 using XCloud.Sales.Service.Users;
-using IUserProfileService = XCloud.Platform.Member.Application.Service.User.IUserProfileService;
+using IUserProfileService = XCloud.Platform.Application.Member.Service.User.IUserProfileService;
 
 namespace XCloud.Sales.Clients.Platform;
 

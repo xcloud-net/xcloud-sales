@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using XCloud.Core.Dto;
-using XCloud.Platform.Common.Application.Service.Address;
-using XCloud.Platform.Common.Application.Service.IdGenerator;
+using XCloud.Platform.Application.Common.Service.Address;
+using XCloud.Platform.Application.Common.Service.IdGenerator;
 using XCloud.Platform.Framework.Controller;
 using XCloud.Platform.Shared.Dto;
 

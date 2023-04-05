@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using XCloud.Application.Service;
-using XCloud.Core.Application;
+using XCloud.Core.Application.Entity;
 using XCloud.Core.Dto;
 using XCloud.Database.EntityFrameworkCore.Repository;
 

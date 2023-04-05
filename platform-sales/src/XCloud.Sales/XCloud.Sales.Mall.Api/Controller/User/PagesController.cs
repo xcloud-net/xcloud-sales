@@ -46,7 +46,7 @@ public class PagesController : ShopBaseController
 
         var loginUser = await this.StoreAuthService.GetStoreUserOrNullAsync();
         if (loginUser != null)
-            await this.EventBusService.NotifyInsertActivityLog(new ActivityLog()
+            await this.SalesEventBusService.NotifyInsertActivityLog(new ActivityLog()
             {
                 ActivityLogTypeId = (int)ActivityLogType.VisitPage,
                 UserId = loginUser.Id,

@@ -1,4 +1,4 @@
-using XCloud.Platform.Common.Application.Service.Address;
+using XCloud.Platform.Application.Common.Service.Address;
 using XCloud.Sales.Application;
 using XCloud.Sales.Data;
 using XCloud.Sales.Data.Domain.Orders;

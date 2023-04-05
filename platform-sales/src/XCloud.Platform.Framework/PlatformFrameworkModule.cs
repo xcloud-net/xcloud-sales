@@ -3,7 +3,7 @@ using Volo.Abp;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 using XCloud.AspNetMvc;
-using XCloud.Core.Builder;
+using XCloud.Core.Configuration.Builder;
 using XCloud.Job;
 using XCloud.MessageBus;
 using XCloud.Platform.Connection.WeChat;
@@ -11,7 +11,8 @@ using XCloud.Platform.Core.Database;
 using XCloud.Platform.Core.Job;
 using XCloud.Platform.Data.EntityFrameworkCore;
 using XCloud.Platform.Framework.Configuration;
-using XCloud.Platform.Member.Application;
+using XCloud.Platform.Application.Member;
+using XCloud.Platform.Application.Messenger;
 using XCloud.Redis;
 
 namespace XCloud.Platform.Framework;
@@ -23,6 +24,7 @@ namespace XCloud.Platform.Framework;
     typeof(MessageBusModule),
     typeof(WechatModule),
     typeof(PlatformMemberModule),
+    typeof(PlatformMessengerModule),
     typeof(PlatformDataEntityFrameworkCoreModule)
 )]
 public class PlatformFrameworkModule : AbpModule
@@ -31,17 +33,11 @@ public class PlatformFrameworkModule : AbpModule
     {
         var builder = context.Services.GetRequiredXCloudBuilder();
 
-        context.ConfigWebsocket();
-
-        context.ConfigMessenger(builder);
-
         this.Configure<AbpAutoMapperOptions>(option => option.AddMaps<PlatformFrameworkModule>(false));
     }
 
     public override void PostConfigureServices(ServiceConfigurationContext context)
     {
-        context.ConfigMessengerTransport();
-        
         context.Services.Configure<PlatformJobOption>(option =>
         {
             //disable job auto start

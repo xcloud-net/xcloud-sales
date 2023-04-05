@@ -15,6 +15,7 @@ using XCloud.AspNetMvc.ModelBinder.JsonModel;
 using XCloud.Core.Dto;
 using XCloud.Platform.Auth.Application.Admin;
 using XCloud.Platform.Auth.Authentication;
+using XCloud.Platform.Auth.Configuration;
 using XCloud.Platform.Auth.IdentityServer;
 using XCloud.Platform.Framework.Controller;
 
@@ -24,14 +25,12 @@ namespace XCloud.Platform.Api.Controller;
 public class AuthController : PlatformBaseController
 {
     private readonly HttpClient _httpClient;
-    private readonly IdentityServerAuthConfig _identityServerAuthConfig;
     private readonly IAuthenticationSchemeProvider _authenticationSchemeProvider;
 
     public AuthController(
-        IHttpClientFactory factory, IdentityServerAuthConfig identityServerAuthConfig, 
+        IHttpClientFactory factory, 
         IAuthenticationSchemeProvider authenticationSchemeProvider)
     {
-        _identityServerAuthConfig = identityServerAuthConfig;
         _authenticationSchemeProvider = authenticationSchemeProvider;
         this._httpClient = factory.CreateClient("identity");
     }
@@ -43,10 +42,12 @@ public class AuthController : PlatformBaseController
     /// 刷新token
     /// </summary>
     [HttpPost("refresh-token")]
-    public async Task<ApiResponse<TokenModel>> RefreshToken([JsonData] RefreshTokenDto model)
+    public async Task<ApiResponse<AuthTokenDto>> RefreshToken([JsonData] RefreshTokenDto model)
     {
         if (model == null)
             throw new ArgumentNullException(nameof(model));
+
+        var identityServerAuthConfig = this.Configuration.GetOAuthServerOption();
 
         var disco = await this._httpClient.GetIdentityServerDiscoveryDocuments(this.Configuration);
 
@@ -55,12 +56,12 @@ public class AuthController : PlatformBaseController
             Address = disco.TokenEndpoint,
             RefreshToken = model.RefreshToken,
             GrantType = "refresh_token",
-            ClientId = this._identityServerAuthConfig.ClientId,
-            ClientSecret = this._identityServerAuthConfig.ClientSecret,
-            Scope = this._identityServerAuthConfig.Scope,
+            ClientId = identityServerAuthConfig.ClientId,
+            ClientSecret = identityServerAuthConfig.ClientSecret,
+            Scope = identityServerAuthConfig.Scope,
         });
 
-        var res = tokenResponse.ToTokenModel();
+        var res = tokenResponse.ToAuthTokenDto();
         res.ThrowIfErrorOccured();
 
         return res;

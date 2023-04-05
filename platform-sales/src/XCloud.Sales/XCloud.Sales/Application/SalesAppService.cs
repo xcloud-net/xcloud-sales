@@ -1,5 +1,5 @@
 ﻿using Volo.Abp.Application.Services;
-using XCloud.Core.Application;
+using XCloud.Application.Service;
 using XCloud.Redis.DistributedLock;
 using XCloud.Sales.Cache;
 using XCloud.Sales.Queue;
@@ -22,5 +22,5 @@ public abstract class SalesAppService : XCloudApplicationService, ISalesAppServi
     protected ICurrentStoreSelector CurrentStoreSelector =>
         this.LazyServiceProvider.LazyGetRequiredService<ICurrentStoreSelector>();
 
-    protected IEventBusService EventBusService => LazyServiceProvider.LazyGetRequiredService<IEventBusService>();
+    protected SalesEventBusService SalesEventBusService => LazyServiceProvider.LazyGetRequiredService<SalesEventBusService>();
 }

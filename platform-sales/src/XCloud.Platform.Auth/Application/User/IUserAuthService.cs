@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Volo.Abp;
-using XCloud.Core.Application;
+using XCloud.Application.Service;
 using XCloud.Core.Dto;
 using XCloud.Platform.Auth.Authentication;
 using XCloud.Platform.Core.Application;
-using XCloud.Platform.Member.Application.Service.User;
+using XCloud.Platform.Application.Member.Service.User;
 
 namespace XCloud.Platform.Auth.Application.User;
 
@@ -32,7 +32,7 @@ public class UserAuthService : PlatformApplicationService, IUserAuthService
         _platformAuthResultHolder = platformAuthResultHolder;
     }
 
-    private async Task<ClaimsPrincipal> AuthenticationAsync()
+    private async Task<ClaimsPrincipal> GetRequiredClaimsAsync()
     {
         await Task.CompletedTask;
 
@@ -52,7 +52,7 @@ public class UserAuthService : PlatformApplicationService, IUserAuthService
 
         try
         {
-            var authResult = await this.AuthenticationAsync();
+            var authResult = await this.GetRequiredClaimsAsync();
             if (authResult == null || !authResult.IsAuthenticated(out var claims))
             {
                 res.SetError("auth failed");

@@ -1,4 +1,4 @@
-﻿using XCloud.Platform.Common.Application.Service.Settings;
+﻿using XCloud.Platform.Application.Common.Service.Settings;
 using XCloud.Sales.Application;
 
 namespace XCloud.Sales.Service.Configuration;

@@ -1,7 +1,7 @@
-using XCloud.Core.Application;
+using XCloud.Application.Mapper;
 using XCloud.Core.Dto;
 using XCloud.Core.Helper;
-using XCloud.Platform.Common.Application.Service.Address;
+using XCloud.Platform.Application.Common.Service.Address;
 using XCloud.Redis;
 using XCloud.Sales.Application;
 using XCloud.Sales.Core;
@@ -438,7 +438,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
 
     private async Task AfterOrderCreatedAsync(PlaceOrderRequestDto processRequest, Order order)
     {
-        await this.EventBusService.NotifyInsertOrderNote(new OrderNote()
+        await this.SalesEventBusService.NotifyInsertOrderNote(new OrderNote()
         {
             Note = "order created",
             OrderId = order.Id,
@@ -452,7 +452,7 @@ public class PlaceOrderService : SalesAppService, IPlaceOrderService
             await this._goodsStockService.AdjustCombinationStockAsync(m.GoodsSpecCombinationId, -m.Quantity);
         }
 
-        await this.EventBusService.NotifyRemoveCartsBySpecs(new RemoveCartBySpecs()
+        await this.SalesEventBusService.NotifyRemoveCartsBySpecs(new RemoveCartBySpecs()
         {
             UserId = order.UserId,
             GoodsSpecCombinationId = processRequest.Items.Select(x => x.GoodsSpecCombinationId).ToArray()

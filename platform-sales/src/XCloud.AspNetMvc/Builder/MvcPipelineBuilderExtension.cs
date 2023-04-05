@@ -3,8 +3,8 @@ using System.IO;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp;
-using XCloud.Core.Application.WorkContext;
-using XCloud.Core.Builder;
+using XCloud.Core.Configuration;
+using XCloud.Core.Configuration.Builder;
 using XCloud.Core.DependencyInjection.Extension;
 
 namespace XCloud.AspNetMvc.Builder;

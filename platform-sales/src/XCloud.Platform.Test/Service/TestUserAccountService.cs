@@ -2,12 +2,14 @@ using System.Threading.Tasks;
 using Volo.Abp.DependencyInjection;
 using XCloud.Core.Dto;
 using XCloud.Core.IdGenerator;
+using XCloud.Platform.Application.Member.Service.Admin;
+using XCloud.Platform.Application.Member.Service.Permission;
+using XCloud.Platform.Application.Member.Service.Role;
+using XCloud.Platform.Application.Member.Service.Security;
+using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Core.Application;
 using XCloud.Platform.Core.Domain.Admin;
 using XCloud.Platform.Core.Domain.User;
-using XCloud.Platform.Member.Application.Service.Admin;
-using XCloud.Platform.Member.Application.Service.Security;
-using XCloud.Platform.Member.Application.Service.User;
 
 namespace XCloud.Platform.Test.Service;
 

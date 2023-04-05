@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using XCloud.AspNetMvc.ModelBinder.JsonModel;
 using XCloud.Core.Dto;
+using XCloud.Platform.Application.Member.Service.User;
 using XCloud.Platform.Auth.Application.Admin;
 using XCloud.Platform.Core.Domain.User;
 using XCloud.Platform.Framework.Controller;
-using XCloud.Platform.Member.Application.Service.User;
 
 namespace XCloud.Platform.Api.Controller.Admin;
 

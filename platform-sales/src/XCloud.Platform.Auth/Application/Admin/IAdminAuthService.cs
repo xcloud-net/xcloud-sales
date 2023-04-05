@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using XCloud.Core.Application;
+using XCloud.Application.Service;
 using XCloud.Platform.Core.Application;
-using XCloud.Platform.Member.Application.Service.Admin;
-using XCloud.Platform.Member.Application.Service.User;
+using XCloud.Platform.Application.Member.Service.Admin;
+using XCloud.Platform.Application.Member.Service.User;
 
 namespace XCloud.Platform.Auth.Application.Admin;
 

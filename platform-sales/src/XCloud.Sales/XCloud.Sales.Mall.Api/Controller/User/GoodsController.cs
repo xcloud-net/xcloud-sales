@@ -197,7 +197,7 @@ public class GoodsController : ShopBaseController
             goods.IsFavorite = await this._favoritesService.CheckIsFavoritesAsync(loginUserOrNull.Id, goods.Id,
                 new CachePolicy() { Cache = true });
 
-            await this.EventBusService.NotifyInsertActivityLog(new ActivityLog()
+            await this.SalesEventBusService.NotifyInsertActivityLog(new ActivityLog()
             {
                 UserId = loginUserOrNull.Id,
                 ActivityLogTypeId = (int)ActivityLogType.VisitGoods,
@@ -212,7 +212,7 @@ public class GoodsController : ShopBaseController
             if (settings.HidePriceForGuest)
                 goods.HidePrice();
 
-            await this.EventBusService.NotifyInsertActivityLog(new ActivityLog()
+            await this.SalesEventBusService.NotifyInsertActivityLog(new ActivityLog()
             {
                 UserId = default,
                 ActivityLogTypeId = (int)ActivityLogType.VisitGoods,

@@ -20,11 +20,10 @@ using Volo.Abp.Modularity;
 using XCloud.AspNetMvc;
 using XCloud.AspNetMvc.Builder;
 using XCloud.AspNetMvc.Swagger;
-using XCloud.Core.Builder;
+using XCloud.Core.Configuration.Builder;
 using XCloud.Redis;
 using XCloud.Sales.Clients.Platform;
 using XCloud.Sales.Data.Database;
-using XCloud.Sales.ElasticSearch;
 using XCloud.Sales.Service.Authentication;
 using XCloud.Sales.Service.Stores;
 

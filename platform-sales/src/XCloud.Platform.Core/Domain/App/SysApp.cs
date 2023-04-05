@@ -1,6 +1,6 @@
-﻿using XCloud.Core.Application;
+﻿using XCloud.Core.Application.Entity;
 using XCloud.Platform.Core.Database;
-using XCloud.Platform.Shared;
+using XCloud.Platform.Shared.Entity;
 
 namespace XCloud.Platform.Core.Domain.App;
 

@@ -17,19 +17,19 @@ public class StoreAuditLogAttribute : Attribute { }
 public class AuditLogInterceptor : IAbpInterceptor, ITransientDependency
 {
     private readonly ILogger _logger;
-    private readonly IEventBusService _eventBusService;
+    private readonly SalesEventBusService _salesEventBusService;
     private readonly IJsonDataSerializer _jsonDataSerializer;
     private readonly ISalesWorkContext _salesWorkContext;
     private readonly IActivityLogService _activityLogService;
 
-    public AuditLogInterceptor(IEventBusService eventBusService,
+    public AuditLogInterceptor(SalesEventBusService salesEventBusService,
         IJsonDataSerializer jsonDataSerializer,
         ISalesWorkContext salesWorkContext,
         ILogger<AuditLogInterceptor> logger,
         IActivityLogService activityLogService)
     {
         this._salesWorkContext = salesWorkContext;
-        this._eventBusService = eventBusService;
+        this._salesEventBusService = salesEventBusService;
         this._jsonDataSerializer = jsonDataSerializer;
         this._logger = logger;
         this._activityLogService = activityLogService;
@@ -86,7 +86,7 @@ public class AuditLogInterceptor : IAbpInterceptor, ITransientDependency
 
             log = this._activityLogService.AttachHttpContextInfo(log);
 
-            await this._eventBusService.NotifyInsertActivityLog(log);
+            await this._salesEventBusService.NotifyInsertActivityLog(log);
         }
         catch (Exception e)
         {

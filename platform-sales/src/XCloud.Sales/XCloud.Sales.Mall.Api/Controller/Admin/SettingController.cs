@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XCloud.Core.Cache;
 using XCloud.Core.Dto;
-using XCloud.Platform.Common.Application.Service.Settings;
+using XCloud.Platform.Application.Common.Service.Settings;
 using XCloud.Sales.Service.Authentication;
 using XCloud.Sales.Service.Configuration;
 using XCloud.Sales.ViewService;

@@ -23,7 +23,8 @@ const PaymentMethod = {
   None: 0,
   Manual: 1,
   Balance: 2,
-  Wechat: 3,
+  WechatMp: 3,
+  WechatOpen: 4,
 };
 
 const ShippingStatus = {
@@ -134,8 +135,12 @@ const allStatus = {
       name: '余额支付',
     },
     {
-      id: PaymentMethod.Wechat,
-      name: '微信支付',
+      id: PaymentMethod.WechatMp,
+      name: '微信公众号支付',
+    },
+    {
+      id: PaymentMethod.WechatOpen,
+      name: '微信小程序支付',
     },
   ],
   paymentStatus: [
@@ -168,19 +173,19 @@ const allStatus = {
 };
 
 const getOrderStatus = (status: any) => {
-  var item = u.find(allStatus.orderStatus, (x) => x.status == status);
+  const item = u.find(allStatus.orderStatus, (x) => x.status == status);
 
   return item;
 };
 
 const getPaymentMethod = (method: any) => {
-  var item = u.find(allStatus.paymentMethod, (x) => x.id == method);
+  const item = u.find(allStatus.paymentMethod, (x) => x.id == method);
 
   return item;
 };
 
 const getPaymentStatus = (status: any) => {
-  var item = u.find(allStatus.paymentStatus, (x) => x.status == status);
+  const item = u.find(allStatus.paymentStatus, (x) => x.status == status);
 
   return item;
 };

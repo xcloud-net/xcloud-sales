@@ -9,7 +9,7 @@ using XCloud.Core;
 using XCloud.Core.DependencyInjection.Extension;
 using XCloud.Platform.Auth.IdentityServer.Database;
 using XCloud.Platform.Auth.IdentityServer.Provider;
-using XCloud.Platform.Shared;
+using XCloud.Platform.Shared.Constants;
 
 namespace XCloud.Platform.Auth.IdentityServer.Configuration;
 
@@ -35,7 +35,7 @@ public static class IdentityServerConfigurationExtension
              */
             option.Authentication ??= new IdentityServer4.Configuration.AuthenticationOptions();
             option.Authentication.CookieAuthenticationScheme =
-                IdentityConsts.Scheme.IdentityServerWebCookieScheme;
+                AuthConstants.Scheme.IdentityServerWebCookieScheme;
 
             option.Endpoints.EnableJwtRequestUri = true;
         });

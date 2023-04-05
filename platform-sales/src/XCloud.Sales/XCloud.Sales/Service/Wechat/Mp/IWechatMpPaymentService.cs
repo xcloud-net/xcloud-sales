@@ -3,8 +3,8 @@ using SKIT.FlurlHttpClient.Wechat.TenpayV3;
 using SKIT.FlurlHttpClient.Wechat.TenpayV3.Models;
 using XCloud.Core;
 using XCloud.Core.Helper;
-using XCloud.Platform.Connection.WeChat;
-using XCloud.Platform.Shared.Settings;
+using XCloud.Platform.Connection.WeChat.Settings;
+using XCloud.Platform.Core.Extension;
 using XCloud.Sales.Application;
 using XCloud.Sales.Data.Domain.Finance;
 using XCloud.Sales.Service.Finance;
@@ -22,19 +22,17 @@ public interface IWechatMpPaymentService : ISalesAppService
 public class WechatMpPaymentService : SalesAppService, IWechatMpPaymentService
 {
     private readonly IOptions<WechatMpOption> _wechatMpOption;
-    private readonly IOptions<PlatformServiceAddressOption> _platformServiceAddressOption;
     private readonly IOrderService _orderService;
     private readonly OrderUtils _orderUtils;
     private readonly IOrderBillService _orderBillService;
     private readonly IOrderRefundBillService _orderRefundBillService;
     private readonly IUserWechatMpConnectionService _wechatMpConnectionService;
 
-    private WeChatPayOption WechatPaymentOption => this._wechatMpOption.Value.Payment;
+    private WechatPaymentOption WechatPaymentOption => this._wechatMpOption.Value.Payment;
 
     public WechatMpPaymentService(IOptions<WechatMpOption> wechatMpOption, IOrderService orderService,
         OrderUtils orderUtils,
         IOrderBillService orderBillService,
-        IOptions<PlatformServiceAddressOption> platformServiceAddressOption,
         IUserWechatMpConnectionService wechatMpConnectionService,
         IOrderRefundBillService orderRefundBillService)
     {
@@ -42,7 +40,6 @@ public class WechatMpPaymentService : SalesAppService, IWechatMpPaymentService
         _orderService = orderService;
         _orderUtils = orderUtils;
         _orderBillService = orderBillService;
-        _platformServiceAddressOption = platformServiceAddressOption;
         _wechatMpConnectionService = wechatMpConnectionService;
         _orderRefundBillService = orderRefundBillService;
     }
@@ -105,12 +102,14 @@ public class WechatMpPaymentService : SalesAppService, IWechatMpPaymentService
 
         var wechatPaymentClient = this.GetRequiredPaymentClient();
 
+        var apiGateway = await this.ServiceDiscoveryService.GetRequiredPublicGatewayAddressAsync();
+
         var request = new CreateRefundDomesticRefundRequest()
         {
             OutRefundNumber = refundBill.Id,
             OutTradeNumber = bill.Id,
             Reason = default,
-            NotifyUrl = Com.ConcatUrl(this._platformServiceAddressOption.Value.PublicGateway,
+            NotifyUrl = Com.ConcatUrl(apiGateway,
                 this._wechatMpOption.Value.Payment.RefundNotifyUrl),
             Amount = new CreateRefundDomesticRefundRequest.Types.Amount()
             {
@@ -140,11 +139,13 @@ public class WechatMpPaymentService : SalesAppService, IWechatMpPaymentService
 
         var wechatPaymentClient = this.GetRequiredPaymentClient();
 
+        var apiGateway = await this.ServiceDiscoveryService.GetRequiredPublicGatewayAddressAsync();
+
         var request = new CreatePayTransactionJsapiRequest()
         {
             OutTradeNumber = bill.Id,
             Description = string.Empty,
-            NotifyUrl = Com.ConcatUrl(this._platformServiceAddressOption.Value.PublicGateway,
+            NotifyUrl = Com.ConcatUrl(apiGateway,
                 this.WechatPaymentOption.PaymentNotifyUrl),
             Detail = new CreatePayPartnerTransactionJsapiRequest.Types.Detail()
             {
